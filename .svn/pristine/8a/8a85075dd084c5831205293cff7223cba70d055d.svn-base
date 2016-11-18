@@ -1,0 +1,87 @@
+<style>
+body{
+    background: #ffffff;
+}
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    color: #555;
+    background-color: #FFFFFF;
+}
+/*nav-bar*/
+.nav-bar-overiding{
+    padding-top: 10px;
+    padding-left: 10px;
+    background-color: #E4E4E4;
+    border-bottom:0px solid transparent;
+}
+
+.navbar-nav>li{
+    margin-right:5px
+}
+.navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom:0px
+}
+
+ .navbar-nav .active{
+     border:1px solid #ccc;
+     border-bottom:none;
+     
+ }
+ .navbar-nav .active>a{
+     color:#FF6633 !important;
+     font-weight: bold !important;
+ }
+.navbar-right {
+     margin-right: 0px; 
+}
+.user_info{
+    margin-top:-5px
+}
+.user_info small{
+    width:100%;
+    text-align:right;
+    display:inline-block
+}
+.logout{
+    margin:0px 8px;
+}
+.logout i{
+  margin-top: -6px
+}
+.logout i:hover{
+    cursor:pointer;
+    color:#000;
+}
+</style>
+
+<new-board reset-form="resetNewBoardForm()"></new-board>
+
+<nav class="navbar navbar-default navbar-static-top nav-bar-overiding">
+    <ul class="nav navbar-nav"> 
+        <li ng-repeat="(index, board_name) in boards_names" ng-class="{'active': $index === selected_index}" ng-click="setSelectedIndex($index)" ng-if="$index<tab_limit"><a href="#">{{board_name.name}}</a></li> 
+        <li ng-if="boards_names.length>tab_limit">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                More Boards <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" >
+                <li  ng-repeat="(index, board_name) in boards_names" ng-if="$index>=tab_limit" ng-click="setSelectedIndex($index)"><a href="#">{{board_name.name}}</a></li>
+            </ul>
+        </li>
+        <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal"><i class="fa fa-plus"></i></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <div class="user_info">
+            <div><small>Logedin as</small></div>
+            <div>{{ user }}</div>
+            <div>
+        </li>
+        <li>
+            <div class="logout" ui-sref="login">
+                <i class="fa fa-bars fa-3x"></i>
+            </div>
+        </li>
+      </ul>
+    
+</nav>

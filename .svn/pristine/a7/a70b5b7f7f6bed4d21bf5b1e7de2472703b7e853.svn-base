@@ -1,0 +1,403 @@
+<style>
+html{
+    position: relative;
+    min-height: 100%;
+}
+html, body{
+    height:100%;
+    position:relative
+}
+h1{
+    font-style:italic
+}
+
+body{
+    background: #ffffff;
+    overflow-x:hidden
+    
+}
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    color: #555;
+    background-color: #FFFFFF;
+}
+/*nav-bar*/
+.nav-bar-overiding{
+    padding-top: 10px;
+    padding-left: 10px;
+    background-color: #E4E4E4;
+    border-bottom:0px solid transparent;
+}
+
+.navbar-nav>li{
+    margin-right:5px
+}
+.navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom:0px
+}
+
+ .navbar-nav .active{
+     border:1px solid #ccc;
+     border-bottom:none;
+     
+ }
+ .navbar-nav .active>a{
+     color:#FF6633 !important;
+     font-weight: bold !important;
+ }
+.navbar-right {
+     margin-right: 0px; 
+}
+.user_info{
+    margin-top:-5px
+}
+.user_info small{
+    width:100%;
+    text-align:right;
+    display:inline-block
+}
+.logout{
+    margin:0px 8px;
+}
+.logout i{
+  margin-top: -6px
+}
+.logout i:hover{
+    cursor:pointer;
+    color:#000;
+} 
+.no-bottom-margin{
+    margin-bottom:0px !important
+}
+
+.content-tool-body{
+    height:calc(100% - 51px);
+}
+.aside{
+    width:70%;min-height:100%;
+}
+.aside h1:before{
+    font-style:italic
+}    
+.bside{
+    width:30%;min-height:100%;position:relative
+}
+
+/* angular-ui-tree css file */
+.angular-ui-tree-empty{
+  border:1px dashed #bbb;
+  min-height:100px;
+  background-color:#e5e5e5;
+  background-image:-webkit-linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff),-webkit-linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff);
+  background-image:-moz-linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff),-moz-linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff);
+  background-image:linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff),linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff);
+  background-size:60px 60px;background-position:0 0,30px 30px
+  
+}
+.angular-ui-tree-nodes{
+  display:block;
+  position:relative;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.angular-ui-tree-nodes 
+.angular-ui-tree-nodes{
+  padding-left:35px
+}
+
+.angular-ui-tree-node,
+.angular-ui-tree-placeholder{
+  display:block;
+  position:relative;
+  margin:0;
+  padding:0;
+  min-height:20px;
+  line-height:20px
+}
+
+.angular-ui-tree-hidden{
+  display:none
+  
+}
+.angular-ui-tree-placeholder{
+  margin:5px 0;
+  padding:0;
+  min-height:30px
+  
+}
+.angular-ui-tree-handle{
+  display:inline-block;
+  cursor:move;
+  text-decoration:none;
+  font-weight:700;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  box-sizing:border-box;
+  min-height:20px;
+  line-height:20px
+  
+}
+
+  .angular-ui-tree-drag{
+    position:absolute;
+    pointer-events:none;
+    cursor:move;
+    z-index:999;
+    opacity:.8
+    
+  }
+.btn
+/*angular ui styles*/
+/*angular ui custom*/
+.handle-content .btn {
+    margin-right: 8px;
+}
+
+.angular-ui-tree-handle {
+    background: #f8faff;
+    border: 1px solid #dae2ea;
+    color: #7c9eb2;
+    padding: 10px 6px;
+    margin:5px 0px;
+    line-height:1.2
+}
+
+.angular-ui-tree-handle:hover {
+    color: #438eb9;
+    background: #f4f6f7;
+    border-color: #dce2e8;
+}
+
+.angular-ui-tree-placeholder {
+    background: #f0f9ff;
+    border: 2px dashed #bed2db;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+.group-title {
+    background-color: #687074 !important;
+    color: #FFF !important;
+}
+
+    .handle-content{
+        border:1px solid #ccc;
+        height:46px;
+        width:0px;
+        line-height:1.8;
+        border-radius:4px 0px 0px 4px;
+    }
+    .list-body-content{
+        padding:8px;
+        /*border:1px solid #ccc;*/
+        border-left:none;
+        line-height:2;
+        border-radius:0px 4px 4px 0px;
+
+        height:46px;
+        background: rgba(254,254,254,1);
+        background: -moz-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(254,254,254,1)), color-stop(100%, rgba(226,226,226,1)));
+        background: -webkit-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
+        background: -o-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
+        background: -ms-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
+        background: linear-gradient(to bottom, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#e2e2e2', GradientType=0 );
+    }
+
+    .list-body-content:hover{
+
+    }
+
+    .list-body-content>span, .list-body-content>a{
+        cursor:pointer !important
+    }
+    
+
+    .list-body-content input{
+        line-height:normal;
+    }
+ 
+.minus, .plus{
+    visibility:hidden;float:right
+}
+ .bgColor, .bgColor:hover, .bgColor-handle, .bgColor-handle:hover{
+    color:#FF6633 !important;
+     background:#ffffff !important;
+     border:1px solid #FF6633 !important;
+ }  
+ .bgColor, .bgColor:hover{
+     
+     border-left:0px solid transparent !important;
+ }  
+
+/* Handlebar status */
+ .open{background-color:#c6c6c5 !important} 
+ .delivered{background-color:#4b68ba !important} 
+ .transferred{background-color:#95c8f8 !important} 
+ .modified{background-color:#f9b123 !important} 
+ .released{background-color:#c0db55 !important} 
+
+/*page content layout*/
+.bside-container{
+     position:absolute;
+     min-height:100%;
+     background-color:#fbfafa;
+     width:calc(100% - 41px);
+     border-left:1px solid #eee;
+     right:0px;
+     -webkit-box-shadow: -11px 1px 19px -15px rgba(0,0,0,0.75);
+    -moz-box-shadow: -11px 1px 19px -15px rgba(0,0,0,0.75);
+    box-shadow: -11px 1px 19px -15px rgba(0,0,0,0.75);
+ }
+ .page-content {
+     margin: 40px;
+ }
+
+ .page-content h2{
+     font-weight:bold;
+ }
+
+ 
+.close-handle{
+    -webkit-box-shadow: -2px 0px 1px 1px rgba(0,0,0,0.43);
+    -moz-box-shadow: -1px 0px 1px 0px rgba(0,0,0,0.20);
+    box-shadow: -1px 0px 1px 0px rgba(0,0,0,0.20);
+    border:1px solid #eee;
+    border-right:none;
+    margin-top:50px;
+    padding:0px 10px;
+    background-color:#fbfafa;
+    position:absolute;
+    margin-left:-71px;
+    cursor:pointer;
+}
+ 
+ 
+</style>
+
+<new-board board-length="$parent.boards_names.length" add-new-board="addNewBoard(name)"></new-board>
+<div style="height:100%;width:100%;position:absolute">
+<nav class="navbar navbar-default navbar-static-top nav-bar-overiding no-bottom-margin">
+    <ul class="nav navbar-nav"> 
+        <li ng-repeat="(index, board_name) in $parent.boards_names" ng-class="{'active': $index === selected_index}"  ng-if="$index<tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})">
+            <a href="#" >{{board_name.name}}</a>
+        </li> <!-- ng-click="setSelectedIndex($index)" -->
+        <li ng-show="$parent.boards_names.length > tab_limit">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                More Boards <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" >
+                <li ng-repeat="(index, board_name) in $parent.boards_names" ng-if="$index>=tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})" ><a href="#" >{{ board_name.name }}</a></li>
+            </ul>
+        </li>
+        <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ><i class="fa fa-plus"></i></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+        <li >
+            <div class="user_info">
+            <div><small>Logedin as</small></div>
+            <div>{{ user }}</div>
+            <div>
+        </li>
+        <li style="margin-left:10px"><button class="btn btn-danger" ui-sref="login">Logout</button></li>
+        <li>
+            <div class="logout"  data-toggle="dropdown">
+                <i class="fa fa-bars fa-3x"></i>
+            </div>
+            <ul class="dropdown-menu">
+                <li ui-sref="login"><a href="#" >Logout</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Manual</a></li>
+            </ul>
+        </li>
+      </ul>
+    
+</nav>
+
+<div class="content-tool-body clearfix">
+    <div class="pull-left aside">
+        <div style="margin:0px 15px;position:relative">
+        <h1>{{ board.name}}</h1>
+      
+          <button class="btn btn-primary pull-right" style="position:absolute;z-index:3;right:0%;" ng-click="addNewPage()" >Add new page</button>
+          <div ui-tree data-drag-enabled="tree.enabled" data-drag-delay="200" id="tree-root" ng-if="data.length>0">
+            <ol ui-tree-nodes="" ng-model="data" >
+              <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_render'" ></li>
+            </ol>
+          </div>
+       <!-- <pre>{{ data | json }} </pre>-->
+         <!-- <pre>{{temporary_node | json}}</pre>-->
+        </div>
+    </div>
+    <div class="pull-left bside" >
+        <!-- -->
+        <div class="bside-container">
+            <div class="page-content">
+                <div class="close-handle" ng-click="closeSidebar($event)" >
+                <i class="fa fa-angle-left fa-2x"></i> 
+                </div>
+                <div ng-if="(temporary_node | isEmpty) !== true">
+                    <h2>{{temporary_node.title}}</h2>
+                    <p style="font-weight:bold">
+                        <span ng-repeat="($index, breadcrumb) in breadcrumbs">{{ breadcrumb }}  <i class="fa fa-chevron-right"></i> </span>
+                        <span>{{temporary_node.title}}</span>
+                    </p>
+                    <!--status of the site section -->
+                    <div class="dropdown" style="display:inline-block">
+                        <button class="btn btn-default dropdown-toggle" type="button"  id="statuses" data-toggle="dropdown">Status of the site <i class="fa fa-angle-down"></i></button>
+                        <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
+                            <li ng-click="changeStatus('open')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'open', 'fa-check-square-o': temporary_node.status == 'open'}"></i> Open</a></li>
+                            <li ng-click="changeStatus('delivered')"><a href="javascript:void(0)" ><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'delivered', 'fa-check-square-o': temporary_node.status == 'delivered'}"></i> Delivered</a></li>
+                            <li ng-click="changeStatus('transferred')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'transferred', 'fa-check-square-o': temporary_node.status == 'transferred'}"></i> Transfered</a></li>
+                            <li ng-click="changeStatus('modified')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'modified', 'fa-check-square-o': temporary_node.status == 'modified'}"></i> Modified</a></li>
+                            <li ng-click="changeStatus('released')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'released', 'fa-check-square-o': temporary_node.status == 'released'}"></i> Released</a></li>
+                        </ul>
+                    </div>
+
+                    <hr />
+                    <form name="" ng-submit="fileUpload()" action="" novalidate>
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-default">
+                                    Choose a file <i class="fa fa-folder-open-o"></i> <input type="file" class="fileinput" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly>
+                        </div>
+                    </form>
+                </div>      
+            </div>    
+       <!-- <pre>{{temporary_node | json}}</pre>-->
+        </div>
+    </div>
+</div>
+
+
+<script>
+  
+
+  // We can attach the `fileselect` event to all file inputs on the page
+  $(document).on('change', '.fileinput', function() {
+    var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.parents('label').next().val(label);
+        input.trigger('fileselect', [numFiles, label]);
+  });
+
+  
+  
+  
+
+</script>
+</div>
+
+
+
+

@@ -1,0 +1,21 @@
+[Wed Nov 09 16:01:24.214028 2016] [authn_file:error] [pid 30170] (2)No such file or directory: [client 82.214.86.122:65121] AH01620: Could not open password file: /etc/apache2/htaccess_pass\\.htpasswd
+[Wed Nov 09 16:03:13.999789 2016] [authn_file:error] [pid 30618] (2)No such file or directory: [client 82.214.86.122:65135] AH01620: Could not open password file: /etc/apache2/htaccess_pass\\.htpasswd
+[Wed Nov 09 16:06:48.989297 2016] [:error] [pid 31606] [client 82.214.86.122:65170] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/www/lib/Database.php on line 3
+[Wed Nov 09 16:06:51.894219 2016] [:error] [pid 31513] [client 82.214.86.122:65169] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/www/lib/Database.php on line 3
+[Wed Nov 09 16:08:05.324457 2016] [:error] [pid 31609] [client 82.214.86.122:65179] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/www/lib/Database.php on line 3
+[Wed Nov 09 16:08:06.075056 2016] [:error] [pid 31513] [client 82.214.86.122:65180] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/www/lib/Database.php on line 3
+[Wed Nov 09 16:08:06.549264 2016] [:error] [pid 31606] [client 82.214.86.122:65181] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/www/lib/Database.php on line 3
+[Wed Nov 09 16:08:15.484070 2016] [:error] [pid 31172] [client 82.214.86.122:65183] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/www/lib/Database.php on line 3
+[Wed Nov 09 16:08:16.052294 2016] [:error] [pid 32027] [client 82.214.86.122:65184] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/www/lib/Database.php on line 3
+[Wed Nov 09 16:08:17.831630 2016] [:error] [pid 31968] [client 82.214.86.122:65187] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/www/lib/Database.php on line 3
+[Wed Nov 09 16:08:46.739792 2016] [:error] [pid 31645] [client 82.214.86.122:65190] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/www/lib/Database.php on line 3
+[Wed Nov 09 16:10:20.813570 2016] [:error] [pid 31669] [client 82.214.86.122:65197] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3, referer: http://contenttool.dev.newtec-solutions.com/
+[Wed Nov 09 16:10:48.360155 2016] [:error] [pid 31172] [client 82.214.86.122:65202] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3, referer: http://contenttool.dev.newtec-solutions.com/
+[Wed Nov 09 16:11:26.723139 2016] [:error] [pid 31609] [client 82.214.86.122:65205] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3, referer: http://contenttool.dev.newtec-solutions.com/
+[Wed Nov 09 16:11:39.851887 2016] [:error] [pid 522] [client 82.214.86.122:65207] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3
+[Wed Nov 09 16:14:57.824784 2016] [:error] [pid 1021] [client 82.214.86.122:65257] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3, referer: http://contenttool.dev.newtec-solutions.com/
+[Wed Nov 09 16:14:59.444542 2016] [:error] [pid 1026] [client 82.214.86.122:65258] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3
+[Wed Nov 09 16:15:00.748656 2016] [:error] [pid 31609] [client 82.214.86.122:65259] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3
+[Wed Nov 09 16:15:01.669663 2016] [:error] [pid 1100] [client 82.214.86.122:65260] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3
+[Wed Nov 09 16:15:02.852097 2016] [:error] [pid 1026] [client 82.214.86.122:65261] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3
+[Wed Nov 09 16:15:04.125991 2016] [:error] [pid 510] [client 82.214.86.122:65262] PHP Fatal error:  Class 'SQLite3' not found in /var/www/vhosts/contenttool/www/trunk/www/lib/Database.php on line 3

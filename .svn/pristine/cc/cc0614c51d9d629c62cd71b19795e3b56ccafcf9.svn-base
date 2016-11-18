@@ -1,0 +1,42 @@
+<!-- Modal -->
+<div id="newBoardModal" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content"><!--{{form_board.$valid}}-->
+            <form name="form_board"  ng-submit="form_board.$valid && addBoard()" novalidate>
+                <!-- <div class="modal-header">
+                    <button data-ng-if="boardLength!==0" type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">New Board</h4>
+                </div>-->
+                <div class="modal-body" >
+                    <button data-ng-if="boardLength!==0" type="button" class="close" data-dismiss="modal">&times;</button>
+                    <div style="padding:50px">
+                        
+                    <div data-ng-if="boardLength===0">There are no inital boards detected you must enter name of the board to continue.</div>
+                    <div class="login-title-holder">
+                        <span class="fa-stack fa-lg" style="color:#ccc">
+                            <i class="fa fa-square-o fa-stack-2x"></i>
+                            <i class="fa fa-info fa-stack-1x"></i>
+                        </span>
+                        
+                        <h2 class="login-title">Name your board</h2>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error': form_board.$submitted && form_board.board_name.$invalid }" >
+                        <label for="board_name" class="login-label">Enter the name of your new board (for example "France")</label>
+                        <input type="text" name="board_name" class="form-control" placeholder="Enter name..." ng-model="name" required />
+                        <div ng-messages="form_board.$submitted && form_board.board_name.$error" class="help-block">
+                            <div ng-message="required">Name is required</div>
+                        </div>
+                    </div>
+                    <button  class="btn  btn-primary login-btn" type="submit">New Board</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-ng-if="boardLength!==0" data-ng-click="resetvalue()">Close</button>
+                    <div ng-if="error" class="alert alert-danger">{{error}}</div>
+                    </div>
+                </div>
+                <!--<div class="modal-footer">
+                    
+                </div>-->
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+((modul)=>{
+    const fileUpload = ($http, $timeout)=>{
+        return{
+            restricted:'E',
+            controller($scope){
+                $scope.resetCount = 0;
+                $scope.fileUpload = ($event, form)=>{
+                    $event.preventDefault();
+                    var formData = new FormData();
+                    formData.append('file', $($event.target).find('input[type="file"]')[0].files[0]);
+                    formData.append('comment', $scope.file_comment);
+                    formData.append('user', $scope.user);
+                    $http({
+                        url: 'file_uploads/' + $scope.board.id + '/' + $scope.temporary_node.uid,
+                        method: "POST",
+                        data: formData,
+                        headers: {'Content-Type': undefined}
+                    })
+                    .then(
+                        (response)=>{
+                            if($scope.temporary_node.files){
+                                $scope.temporary_node.files.push(response.data);
+                            } else {
+                                $scope.temporary_node.files =[];
+                                $scope.temporary_node.files.push(response.data);
+                            }
+                           $($event.target)[0].reset();
+                           $scope.resetCount++;
+                            $scope.filename = null;
+                            form.$submitted = false;
+                            form.$pristine = false;
+                            form.filename.$error = {"required":true};
+                            form.$invalid = false;
+                            
+                        },
+                        (error)=>{
+                            console.log(error);
+                        }
+                    )
+                    console.log($scope.board.id);
+                    console.log($scope.temporary_node);
+                }
+                $scope.resetValue = (form)=>{
+                    
+                     $scope.resetCount++;
+                     $scope.filename = null;
+                     form.$submitted = false;
+                     form.$pristine = false;
+                     form.filename.$error = {"required":true};
+                      form.$invalid = false;
+
+                       
+                        console.log($scope.resetCount);
+                }
+            },
+            templateUrl:'public/templates/file-upload.html',
+            scope:true,
+            link(scope, element, attr, controller){
+                element.find('input[type="file"]').change(function(){
+                    let input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                    input.parents('label').next().val(label).change();
+
+                    input.trigger('fileselect', [numFiles, label]);
+                });
+            }
+        }
+    }
+    fileUpload.$inject = ['$http','$timeout'];
+    modul.directive('fileUpload', fileUpload);
+})(angular.module('sunzinet'));

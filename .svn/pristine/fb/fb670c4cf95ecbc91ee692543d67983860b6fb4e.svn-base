@@ -1,0 +1,27 @@
+<?php
+class File_Upload extends Base_Controller{
+    public function __construct(){
+        parent::__construct();
+    }
+
+    public function upload_files($id){
+        print_r(getcwd()); die;
+        $file = $_FILES["file"]["tmp_name"];
+        $only_name= explode(".", $filename);
+        $newfilename = $only_name[0].'_'.strtotime(date('Y-m-d H:i:s')) .".".end($only_name);
+
+        $dir = './uploads';
+        $board_dir = $dir.'/board_'.$id;
+        if(!is_dir($dir)){
+            mkdir($dir, 0755, true);
+        }
+        if(!is_dir($board_dir)){
+            mkdir($board_dir, 0755, true);
+        }
+        $filepath = $board_dir."/". $newfilename;
+        move_uploaded_file($file, $filepath);
+        header('Content-Type: application/json');
+        echo json_encode(array('path'=>$filepath));
+    }
+}
+?>

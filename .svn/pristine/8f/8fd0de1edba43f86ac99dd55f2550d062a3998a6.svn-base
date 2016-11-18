@@ -1,0 +1,46 @@
+<?php
+Flight::route('/', function(){
+    $index = Flight::index()->index();
+});
+
+//AUTH
+Flight::route('POST /authentificate', function(){
+    $index = Flight::auth()->login();
+});
+//MEBER
+Flight::route('GET /check_member', function(){
+    $index = Flight::index()->check_member();
+});
+
+Flight::route('GET /check_members/@id', function($id){
+    $index = Flight::index()->check_member($id);
+});
+
+Flight::route('POST /insert_member', function(){
+    $index = Flight::index()->insert();
+});
+
+Flight::route('PUT /update_member/@id', function($id){
+    $index = Flight::index()->insert($id);
+});
+
+Flight::route('DELETE /delete_member/@id', function($id){
+    // print_r(Flight::request());
+    $index = Flight::index()->delete_member($id);
+});
+Flight::route('DELETE /delete_members', function(){
+    $index = Flight::index()->delete_members();
+});
+
+//BOARDS
+Flight::route('GET /get_boards', function(){
+    $index = Flight::boards()->get_boards();
+});
+
+Flight::route('POST /insert_board', function(){
+    $index = Flight::boards()->insert_board();
+});
+
+
+
+?>

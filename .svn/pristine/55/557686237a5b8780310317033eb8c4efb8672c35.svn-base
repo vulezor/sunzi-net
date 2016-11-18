@@ -1,0 +1,35 @@
+<!-- Modal -->
+<div id="newBoardModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <form name="form_board" ng-submit="form.$valid && addNewBoard()" novalidate>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">New Board</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="login-title-holder">
+                        <span class="fa-stack fa-lg" style="color:#ccc">
+                            <i class="fa fa-square-o fa-stack-2x"></i>
+                            <i class="fa fa-info fa-stack-1x"></i>
+                        </span>
+                        <h2 class="login-title">Name your board</h2>
+                    </div> {{ board_name }}
+                    <div class="form-group" ng-class="{ 'has-error': form_board.$submitted && form_board.board_name.$invalid }" >
+                        <label for="board_name" class="login-label">Enter the name of your new board (for example "France")</label>
+                        <input type="text" name="board_name" class="form-control" placeholder="Enter name..." ng-model="board_name" required />
+                        <div ng-messages="form_board.$submitted && form_board.board_name.$error" class="help-block">
+                            <div ng-message="required">Name is required</div>
+                        </div>
+                    </div>
+                    <div ng-if="error" class="alert alert-danger">{{error}}</div>
+                </div>
+                <div class="modal-footer">
+                    <button ng-disabled="loading" class="btn  btn-primary login-btn" data-ng-click="test()">New Board</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-ng-click="resetvalue()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

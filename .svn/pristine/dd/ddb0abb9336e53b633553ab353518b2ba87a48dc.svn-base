@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="sunzinet">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing</title>
+    <link rel="stylesheet" href="../../public/assets/css/all.css" >
+</head>
+<body ng-controller="mainController">
+   <div ui-view></div>
+   <script src="../../public/bundle.js"></script>
+</body>
+</html>

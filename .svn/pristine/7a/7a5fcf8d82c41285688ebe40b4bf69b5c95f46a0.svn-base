@@ -1,0 +1,22 @@
+<?php 
+class Boards extends Base_Controller
+{
+
+    private $table = 'boards';
+    
+    public function __construct(){
+        parent::__construct();
+    }
+    public function get_boards(){
+        if($id){
+            $sql = "SELECT * FROM $this->table WHERE id= :id";
+           $result = Flight::db()->get($sql, [':id'=>$id]);
+        } else {
+           $sql = "SELECT * FROM $this->table";
+           $result = Flight::db()->get($sql);
+        }
+        header("Content-type: application/json");
+        echo json_encode($result);
+    }
+}
+?>

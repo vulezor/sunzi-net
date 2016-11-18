@@ -1,0 +1,45 @@
+((modul)=>{
+    const fileUpload = ($http)=>{
+        return{
+            restricted:'E',
+            controller($scope){
+                $scope.fileUpload = ($event)=>{
+                   console.log($('.fileinput')[0].files[0]);
+                    $event.preventDefault();
+                    var formData = new FormData();
+                    formData.append('file', $($event.target).find('input[type="file"]')[0].files[0]);
+                    formData.append('comment', $scope.file_comment);
+                    $http({
+                        url: 'file_uploads/'+$scope.board.id,
+                        method: "POST",
+                        data: formData,
+                        headers: {'Content-Type': undefined}
+                    })
+                    .then(
+                        (response)=>{
+                            console.log(response.data);
+                        },
+                        (error)=>{
+
+                        }
+                    )
+                    console.log($scope.board.id);
+                    console.log($scope.temporary_node);
+                }
+            },
+            templateUrl:'public/templates/file-upload.html',
+            scope:true,
+            link(scope, element, attr, controller){
+                element.find('input[type="file"]').change(function(){
+                    let input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                    input.parents('label').next().val(label);
+                    input.trigger('fileselect', [numFiles, label]);
+                });
+            }
+        }
+    }
+    fileUpload.$inject = ['$http'];
+    modul.directive('fileUpload', fileUpload);
+})(angular.module('sunzinet'));

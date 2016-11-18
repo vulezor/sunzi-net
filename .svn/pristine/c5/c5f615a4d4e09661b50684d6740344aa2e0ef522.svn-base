@@ -1,0 +1,33 @@
+
+<?php
+// Autoload; 
+require 'vendor/autoload.php';
+
+// SQLLite Database
+require 'www/lib/Database.php';
+// Register database
+Flight::register('db', 'MyDB'); 
+
+// Base Controller
+require 'www/lib/base-controller.php';
+
+//Include Controllers
+require 'www/controllers/auth.php'; 
+require 'www/controllers/index.php'; 
+
+// Register Controllers
+Flight::register('index', 'Index'); 
+Flight::register('auth', 'Auth'); 
+
+
+
+
+// Register Views Path
+Flight::set('flight.views.path', 'www/views');
+
+// Router
+require ('www/lib/Routes.php');
+
+//Framework start
+Flight::start();
+?>
