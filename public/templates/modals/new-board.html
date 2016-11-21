@@ -15,7 +15,7 @@
                         <i data-ng-if="boardLength!==0" class="fa fa-times fa-2x close-times"  aria-hidden="true" data-dismiss="modal"></i>
                         <!-- BOARD -->
                         <div ng-show="modalStatus==='board'">
-                            <form name="form_board"  ng-submit="form_board.$valid && addBoard()" novalidate>
+                            <form name="form_board"  ng-submit="form_board.$valid && addBoard($event)" novalidate>
                                 <div style="padding:80px 80px 80px 80px">
                                     <div data-ng-if="boardLength===0">There are no inital boards detected you must enter name of the board to continue.</div>
                                     <div class="login-title-holder">
@@ -45,7 +45,7 @@
                         <!-- TRANSFER -->
                         <div ng-show="modalStatus==='transfer'">
                              <div style="padding:80px 70px 80px 70px">
-                                 <form name="transfer_board"  ng-submit="addBoard()" novalidate>
+                                 <form name="transfer_board"  ng-submit="withoutSidemap()" novalidate>
                                     <div class="login-title-holder">
                                         <h2 class="login-title" ><strong>Pickup your board</strong></h2>
                                         <br/><br/>
@@ -82,20 +82,20 @@
                         <!-- SET_TRANSFER -->
                         <div ng-show="modalStatus==='set_transfer'">
                              <div style="padding:80px 70px 80px 70px">
-                                 <form name="form_board"  ng-submit="form_board.$valid && addBoard()" novalidate>
+                                 <form name="form_transfer"  ng-submit="form_transfer.$valid && transferBoard()" novalidate>
                                     <div class="login-title-holder">
                                         <h2 class="login-title" ><strong>Transfer data to board</strong></h2>
                                         <br/><br/>
                                     </div>
-                                    {{}}
+                                    {{ }}
                                     <div class="form-group">
                                         <label for="sel1">Select board:</label>
                                         <select class="form-control input-lg" ng-options="obj.id as obj.name for obj in board" ng-model="sel_board">
-                                           <option value="">Select board</option>
+                                           <option value="">Default board</option>
                                         </select>
                                     </div>
-                                    <button  class="btn  btn-primary login-btn color-btn" type="submit" data-ng-if="boardLength===0">CREATE NEW BOARD</button>
-                                    <pre>{{ board }}</pre>
+                                    <button  class="btn  btn-primary login-btn color-btn" type="submit" >CREATE NEW BOARD</button>
+                                   <!-- <pre>{{ board }}</pre> -->
                                 </form>
                             </div>
                         </div><!-- /SET_TRANSFER -->

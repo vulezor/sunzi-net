@@ -7,15 +7,24 @@ html, body{
     height:100% !important; 
     position:relative
 }
+* {
+  box-sizing: border-box;
+}
 h1{
     font-style:italic
 }
 
 body{
     font-family: "Ubuntu",Arial,Helvetica,sans-serif;
-    background: #ffffff;
-    overflow-x:hidden
+    background:url(public/assets/img/background.jpg) center no-repeat;
+    overflow-x:hidden;
+    background-size: cover
     
+}
+
+.navbar-default .navbar-nav>li>a, .navbar-default .navbar-text {
+    color: #000;
+    font-weight:bold
 }
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
     color: #555;
@@ -24,28 +33,32 @@ body{
 /*nav-bar*/
 .nav-bar-overiding{
     padding-top: 10px;
-    padding-left: 10px;
-    background-color: #E4E4E4;
+    padding-left: 0px;
+   /* background-color: #E4E4E4;*/
     border-bottom:0px solid transparent;
 }
 
 .navbar-nav>li{
-    margin-right:5px
+    margin-right:5px;
+    
 }
 .navbar-nav>li>a {
     padding-top: 10px;
     padding-bottom: 10px;
-    border-bottom:0px
+    border-bottom:0px;
+     
 }
 
  .navbar-nav .active{
      border:1px solid #ccc;
      border-bottom:none;
+     border-radius:3px 3px 0px 0px
      
  }
  .navbar-nav .active>a{
      color:#FF6633 !important;
      font-weight: bold !important;
+     border-radius:3px 3px 0px 0px
  }
 .navbar-right {
      margin-right: 0px; 
@@ -77,12 +90,18 @@ body{
 }
 .aside{
     width:60%;min-height:100%;
+    background-color: #fff
 }
 .aside h1:before{
-    font-style:italic
+    font-style:italic;
+   
 }    
 .bside{
-    width:40%;min-height:100%;position:relative
+    width:40%;
+    min-height:100%;
+    position:relative;
+    /*overflow-x:hidden;*/
+     background-color: #fff
 }
 
 /* angular-ui-tree css file */
@@ -191,27 +210,37 @@ body{
 
     .handle-content{
         border:1px solid #ccc;
-        height:46px;
+        height:44px;
         width:0px;
         line-height:1.8;
         border-radius:4px 0px 0px 4px;
+        padding-left:4px;
+        padding-right:4px
     }
     .list-body-content{
         padding:8px;
         /*border:1px solid #ccc;*/
         border-left:none;
-        line-height:2;
+        line-height:1.9;
         border-radius:0px 4px 4px 0px;
-
-        height:46px;
-        background: rgba(254,254,254,1);
+        color:#929292;
+        height:44px;
+      /*  background: rgba(254,254,254,1);
         background: -moz-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
         background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(254,254,254,1)), color-stop(100%, rgba(226,226,226,1)));
         background: -webkit-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
         background: -o-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
         background: -ms-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
         background: linear-gradient(to bottom, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#e2e2e2', GradientType=0 );
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#e2e2e2', GradientType=0 );*/
+        background: rgba(255,255,255,1);
+        background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
+        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(86%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
+        background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
+        background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
+        background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
+        background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
     }
 
     .list-body-content:hover{
@@ -263,7 +292,7 @@ body{
      margin: 0px;
  }
  .sidebar-content-wrapper{
-     margin: 40px;
+     margin: 40px;/*40px*/
  }
  .sidebar-content-wrapper h2{
      font-weight:bold;
@@ -282,10 +311,10 @@ body{
     border:1px solid #eee;
     border-right:none;
     margin-top:70px;
-    padding:0px 10px;
-    background-color:#fbfafa;
+    padding:5px 15px;
+    background-color:#efefef;
     position:absolute;
-    margin-left:-31px;
+    margin-left:-41px;
     cursor:pointer;
 }
  hr {
@@ -328,34 +357,19 @@ body{
 .btn-stretched{
     display:block;width:100%
 }
+
+
+
+
+
 </style>
-
-<!--<div style="min-width:50%;width:90%;min-height:90%;position:relative;overflow-x:hidden;position:absolute;" >-->
-<new-board modal-status="modal_status" change-status="changeModalStatus(status)" board-length="$parent.boards_names.length" board="$parent.boards_names" add-new-board="addNewBoard(name)"></new-board>
-
-
-
-<div style="height:100%;width:100%;position:absolute">
-<nav class="navbar navbar-default navbar-static-top nav-bar-overiding no-bottom-margin">
-    <ul class="nav navbar-nav"> 
-        <li ng-repeat="(index, board_name) in $parent.boards_names" ng-class="{'active': $index === selected_index}"  ng-if="$index<tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})">
-            <a href="#" >{{board_name.name}}</a>
-        </li> <!-- ng-click="setSelectedIndex($index)" -->
-        <li ng-show="$parent.boards_names.length > tab_limit">
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                More Boards <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" >
-                <li ng-repeat="(index, board_name) in $parent.boards_names" ng-if="$index>=tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})" ><a href="#" >{{ board_name.name }}</a></li>
-            </ul>
-        </li>
-        <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ng-click="changeModalStatus('board')" ><i class="fa fa-plus"></i></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
+<header style="width:100%">
+<nav class="clearfix" style="width:90%;margin:0 auto;padding:10px 0px">
+     <ul class="nav navbar-nav navbar-right">
         <li >
-            <div class="user_info">
+            <div class="user_info" style="font-size:14px">
             <div><small>Logged in as</small></div>
-            <div>{{ user }}</div>
+            <div><strong>{{ user }}</strong></div>
             <div>
         </li>
         <li style="margin-left:10px"><button class="btn btn-danger" ui-sref="login">Logout</button></li>
@@ -372,23 +386,93 @@ body{
       </ul>
     
 </nav>
+</nav>    
+</header>
+<div style="width:90%;min-height:70%;" >
+<new-board modal-status="modal_status" change-status="changeModalStatus(status)" board-length="$parent.boards_names.length" board="$parent.boards_names" transfering-board="transferBoard(name, index)" add-new-board="addNewBoard(name, index)"></new-board>
 
-<div class="content-tool-body clearfix">
+<!-- Modal -->
+<div id="deleteBoardPage" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content"><!--{{form_board.$valid}}-->
+            <div class="modal-body">
+                <i class="fa fa-times fa-2x close-times"  aria-hidden="true" data-dismiss="modal"></i>
+                <!-- BOARD -->
+                <div>
+                    <div style="padding:80px 80px 80px 80px">
+                        <div class="form-group login-title-holder">
+                            <h2 class="login-title" ><strong>Ooooops.<div>That will not work.</div></strong></h2>
+                        </div>
+                        <div class="form-group" style="margin-top:10px" >
+                            <p>This page contains sub-pages and therefore can not be deleted. Please delete the subpages first.</p>
+                        </div>
+                        <button type="button" class="btn btn-primary login-btn color-btn" data-dismiss="modal" data-ng-if="boardLength!==0">OKAY&nbsp;&nbsp;<i class="fa fa-check-square-o"></i> </button-->
+                    </div>
+                </div>
+            </div>     
+        </div>
+    </div>
+</div>
+
+
+<div style="min-height:100%;width:90%;margin:0 auto">
+<nav class="navbar navbar-default navbar-static-top nav-bar-overiding no-bottom-margin" >
+    <ul class="nav navbar-nav"> 
+        <li ng-repeat="(index, board_name) in $parent.boards_names" ng-class="{'active': $index === selected_index}"  ng-if="$index<tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})">
+            <a href="#" >{{board_name.name}}</a>
+        </li> <!-- ng-click="setSelectedIndex($index)" -->
+        <li ng-show="$parent.boards_names.length > tab_limit">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                More Boards <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" >
+                <li ng-repeat="(index, board_name) in $parent.boards_names" ng-if="$index>=tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})" ><a href="#" >{{ board_name.name }}</a></li>
+            </ul>
+        </li>
+        <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ng-click="changeModalStatus('board')" ><i class="fa fa-plus"></i></li>
+    </ul>
+    <!--<ul class="nav navbar-nav navbar-right">
+        <li >
+            <div class="user_info">
+            <div><small>Logged in as</small></div>
+            <div>{{ user }}</div>
+            <div>
+        </li>
+        <li style="margin-left:10px"><button class="btn btn-danger" ui-sref="login">Logout</button></li>
+        <li>
+            <div class="logout"  data-toggle="dropdown">
+                <i class="fa fa-bars fa-3x"></i>
+            </div>
+            <ul class="dropdown-menu">
+                
+                <li><a href="javascript:void(0)">Settings</a></li>
+                <li><a href="javascript:void(0)">Manual</a></li>
+            </ul>
+        </li>
+      </ul>-->
+    
+</nav>
+
+<div class="content-tool-body clearfix" style="border:1px solid #ccc;border-top:none">
     <!-- A SIDE -->
-    <div class="pull-left aside">
-        <div style="margin:0px 15px;position:relative">
-            <h1>{{ board.name}}</h1>
-            <button class="btn btn-default pull-right" style="position:absolute;z-index:3;right:0%;" ng-click="addNewPage()" >ADD NEW PAGE <i class="fa fa-file-text-o"></i></button>
+    
+    <div class="pull-left aside" style="max-height:100%;overflow-y:auto">
+
+        <div style="margin:25px 25px;position:relative">
+           <!-- <h1>{{ board.name}}</h1>-->
+            <button class="btn btn-primary login-btn color-btn pull-right" style="position:absolute;z-index:3;right:0%;" ng-click="addNewPage()" >ADD NEW PAGE <i class="fa fa-file-text-o"></i></button>
             <div ui-tree data-drag-enabled="tree.enabled" data-drag-delay="200" id="tree-root" ng-if="data.length>0">
                 <ol ui-tree-nodes="" ng-model="data" >
                     <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_render'" ></li>
                 </ol>
             </div>
         </div>
-    </div><!-- /A SIDE -->
+    </div>    
+    <!-- /A SIDE -->
 
     <!-- B SIDE -->
-    <div class="pull-left bside" >
+    <div class="pull-left bside" style="max-height:100%;position:relative;right:0%; background-color:#fff"><!--  -->
         <div class="bside-container">
                 <!-- B Side Close Button-->
                 <div class="close-handle" ng-click="closeSidebar($event)" >
@@ -492,13 +576,22 @@ body{
                     </div>
                    
                 </div>
-           <!-- <pre>{{temporary_node | json}}</pre> -->
+         
         </div>
+
+
+
     </div><!-- /B SIDE -->
 </div>
 </div>
-<!--</div>-->
-
+</div>
+<script>
+/*<!--$('.bside').click(function(){
+    var elem_width = $(this).outerWidth();
+    console.log(elem_width)
+    $(this).animate({"right":"-"+elem_width+"px"}, 200, "swing");
+})-->*/
+</script>
 
 
 

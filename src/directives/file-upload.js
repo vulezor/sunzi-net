@@ -31,7 +31,7 @@
                             form.$pristine = false;
                             form.filename.$error = {"required":true};
                             form.$invalid = false;
-                            
+                            $scope.$emit('save-model-data');
                         },
                         (error)=>{
                             console.log(error);

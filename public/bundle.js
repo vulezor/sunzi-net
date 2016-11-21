@@ -1160,14 +1160,14 @@
         };
 
         dragEnd = function dragEnd(e) {
-          scope.$emit('save-model-data');
+
           var dragEventArgs = dragInfo.eventArgs(elements, pos);
 
           e.preventDefault();
 
           //TODO(jcarter): Is dragStart need to be unbound?
           unbindDragMoveEvents();
-
+          scope.$emit('save-model-data');
           //This cancel the collapse/expand login running.
           $timeout.cancel(scope.expandTimeout);
 
@@ -1265,7 +1265,10 @@
          */
         //This is outside of bindDragMoveEvents because of the potential for a delay setting.
         bindDragStartEvents = function bindDragStartEvents() {
+
           element.bind('touchstart mousedown', function (e) {
+            console.log('drag');
+            $('.angular-ui-tree-handle').addClass('cursor-drag');
             //Don't call drag delay if no delay was specified.
             if (scope.dragDelay > 0) {
               dragDelay.exec(function () {
@@ -51986,6 +51989,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                         $(this).children().eq(0).addClass('bgColor-handle');
                     });
                 }
+                $scope.resizeContainers();
             }, function (error) {
                 console.log(error);
             });
@@ -52012,30 +52016,38 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
          * @param name string name of the new board
          * @description Save new board with name and template data 
          */
-        $scope.addNewBoard = function (name) {
-            var data = [{
-                "id": 1,
-                "uid": $scope.getUid(),
-                "title": "Homepage",
-                "status": 'open',
-                "edit": false,
-                "nodes": [{
-                    "id": 2,
+        $scope.addNewBoard = function (name, data) {
+            var obj = [];
+            console.log(name, data);
+
+            if (!data) {
+                obj = [{
+                    "id": 1,
                     "uid": $scope.getUid(),
-                    "title": "node1.1",
-                    "edit": false,
+                    "title": "Homepage",
                     "status": 'open',
-                    "nodes": []
-                }, {
-                    "id": 3,
-                    "uid": $scope.getUid(),
-                    "title": "node1.2",
                     "edit": false,
-                    "status": 'open',
-                    "nodes": []
-                }]
-            }];
-            $http.post('/insert_board', { "name": name, "data": data }).then(function (response) {
+                    "nodes": [{
+                        "id": 2,
+                        "uid": $scope.getUid(),
+                        "title": "node1.1",
+                        "edit": false,
+                        "status": 'open',
+                        "nodes": []
+                    }, {
+                        "id": 3,
+                        "uid": $scope.getUid(),
+                        "title": "node1.2",
+                        "edit": false,
+                        "status": 'open',
+                        "nodes": []
+                    }]
+                }];
+            } else {
+                obj = data;
+            }
+
+            $http.post('/insert_board', { "name": name, "data": obj }).then(function (response) {
                 $('#newBoardModal').modal('hide');
                 $timeout(function () {
                     $scope.$parent.boards_names.push(response.data[0]);
@@ -52044,6 +52056,36 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 }, 500);
             }, function (error) {
                 console.log('error');
+            });
+        };
+
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        $scope.transferBoard = function (name, index) {
+            if (index !== '') {
+                $http.get('/get_board/' + index).then(function (response) {
+                    var board = response.data[0];
+                    var data = angular.copy(JSON.parse(response.data[0].data));
+                    $scope.deleteFiles(data);
+                    $scope.addNewBoard(name, data);
+                }, function (error) {
+                    console.log(error);
+                });
+            } else {
+                $scope.addNewBoard(name);
+            }
+        };
+
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        /**
+         * @param data intiger
+         * @description calling same function to delete key files in nested arrays of each node  
+         * */
+        $scope.deleteFiles = function (data) {
+            data.forEach(function (dat) {
+                delete dat.files;
+                $scope.deleteFiles(dat.nodes);
             });
         };
 
@@ -52249,6 +52291,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             if ($scope.temporary_node.nodes) {
                 if ($scope.temporary_node.nodes.length > 0) {
                     console.log('cant delete file');
+                    $('#deleteBoardPage').modal();
                 } else {
                     $scope.deletePage();
                 }
@@ -52259,6 +52302,10 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
 
         $scope.changeModalStatus = function (status) {
             $scope.modal_status = status;
+            //reset new modal insert form
+            if (status == 'board') {
+                $scope.$broadcast('reset-values');
+            }
         };
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52272,6 +52319,17 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 console.log(error);
             });
         });
+
+        /* $scope.resizeContainers = function(){
+            console.log($('.bside-container'))
+            var elem_height = $('.bside-container').parents('div').outerHeight();
+            console.log("HEIGHT", elem_height);
+            $('.bside-container').css({"height":elem_height+"px"})
+        }*/
+
+        /* angular.element($window).bind('resize', function(){
+                $scope.resizeContainers();
+            });*/
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -52418,6 +52476,7 @@ module.export = angular.module('sunzinet').controller('mainController', mainCont
                         form.$pristine = false;
                         form.filename.$error = { "required": true };
                         form.$invalid = false;
+                        $scope.$emit('save-model-data');
                     }, function (error) {
                         console.log(error);
                     });
@@ -52462,18 +52521,38 @@ module.export = angular.module('sunzinet').controller('mainController', mainCont
     var newBoard = function newBoard() {
         return {
             restrict: 'E',
-            require: 'newBoard',
+            require: ['newBoard'],
             controller: ['$scope', function ($scope) {
                 $scope.name = "";
+                $scope.sel_board = "";
+
                 $scope.resetValue = function () {
+                    console.log('reset');
                     var original = "";
                     $scope.name = angular.copy(original);
+                    $scope.sel_board = angular.copy(original);;
                     $scope.form_board.$setPristine();
                 };
-                $scope.addBoard = function () {
-                    console.log($scope.name);
+
+                $scope.addBoard = function ($event) {
+                    // console.log('EVENT:', $event.key)
+                    if ($scope.board.length !== 0) {
+                        if ($event.key !== 13) {
+                            return false;
+                        };
+                    }
+
                     $scope.addNewBoard({ name: $scope.name });
                 };
+
+                $scope.withoutSidemap = function () {
+                    $scope.addNewBoard({ name: $scope.name });
+                };
+
+                $scope.transferBoard = function () {
+                    $scope.transferingBoard({ name: $scope.name, index: $scope.sel_board });
+                };
+
                 $scope.add_event = function (elem) {
                     $(elem).click(function () {
                         $scope.$apply(function () {
@@ -52482,19 +52561,30 @@ module.export = angular.module('sunzinet').controller('mainController', mainCont
                     });
                 };
                 $scope.change_status = function (status) {
-                    $scope.changeStatus({ status: status });
+
+                    if ($scope.name.length === 0) {
+                        $scope.form_board.$invalid = true;
+                        $scope.form_board.$submitted = true;
+                        console.log($scope.form_board);
+                    } else {
+                        $scope.changeStatus({ status: status });
+                    }
                 };
             }],
             templateUrl: 'public/templates/modals/new-board.html',
             scope: {
                 addNewBoard: '&',
                 changeStatus: '&',
+                transferingBoard: '&',
                 boardLength: '=',
                 modalStatus: '=',
                 board: "="
             },
-            link: function link(scope, elem, attribute, ctrl) {
-                console.log(ctrl);
+            link: function link(scope, elem, attribute, controller) {
+                console.log(controller);
+                scope.$on('reset-values', function () {
+                    scope.resetValue();
+                });
                 $('.modal-content').on('mouseenter', function () {
                     $(elem).unbind("click");
                 }).on('mouseleave', function () {
@@ -52630,6 +52720,7 @@ require('angular');
 //Bootstrap Components
 require('bootstrap');
 require('../src/js/jquery-nestable.js');
+require('../src/js/nano-scroler.js');
 //Angular Plugins
 require('angular-ui-router');
 require('angular-messages');
@@ -52663,7 +52754,7 @@ require('../src/filters/to-date.js');
 require('../src/filters/base64.js');
 require('../src/filters/file-extension.js');
 
-},{"../bower_components/angular-ui-tree/dist/angular-ui-tree.js":1,"../src/app.js":24,"../src/controllers/home-controller.js":25,"../src/controllers/login-controller.js":26,"../src/controllers/main-controller.js":27,"../src/directives/confirm-click.js":28,"../src/directives/file-upload.js":29,"../src/directives/modals/new-board.js":30,"../src/filters/base64.js":31,"../src/filters/file-extension.js":32,"../src/filters/is-empty.js":33,"../src/filters/to-date.js":34,"../src/js/jquery-nestable.js":36,"../src/services/angular-nestable.js":37,"../src/services/authentification-service.js":38,"../src/services/interceptor.js":39,"angular":8,"angular-messages":3,"angular-sessionstorage":5,"angular-ui-router":6,"bootstrap":9,"jquery":22,"ng-storage":23}],36:[function(require,module,exports){
+},{"../bower_components/angular-ui-tree/dist/angular-ui-tree.js":1,"../src/app.js":24,"../src/controllers/home-controller.js":25,"../src/controllers/login-controller.js":26,"../src/controllers/main-controller.js":27,"../src/directives/confirm-click.js":28,"../src/directives/file-upload.js":29,"../src/directives/modals/new-board.js":30,"../src/filters/base64.js":31,"../src/filters/file-extension.js":32,"../src/filters/is-empty.js":33,"../src/filters/to-date.js":34,"../src/js/jquery-nestable.js":36,"../src/js/nano-scroler.js":37,"../src/services/angular-nestable.js":38,"../src/services/authentification-service.js":39,"../src/services/interceptor.js":40,"angular":8,"angular-messages":3,"angular-sessionstorage":5,"angular-ui-router":6,"bootstrap":9,"jquery":22,"ng-storage":23}],36:[function(require,module,exports){
 'use strict';
 
 /*!
@@ -53154,6 +53245,119 @@ require('../src/filters/file-extension.js');
 })(window.jQuery || window.Zepto, window, document);
 
 },{}],37:[function(require,module,exports){
+"use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*! nanoScrollerJS - v0.8.7 - (c) 2015 James Florentino; Licensed MIT */
+
+!function (a) {
+  return "function" == typeof define && define.amd ? define(["jquery"], function (b) {
+    return a(b, window, document);
+  }) : "object" == (typeof exports === "undefined" ? "undefined" : _typeof(exports)) ? module.exports = a(require("jquery"), window, document) : a(jQuery, window, document);
+}(function (a, b, c) {
+  "use strict";
+  var d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H;z = { paneClass: "nano-pane", sliderClass: "nano-slider", contentClass: "nano-content", enabledClass: "has-scrollbar", flashedClass: "flashed", activeClass: "active", iOSNativeScrolling: !1, preventPageScrolling: !1, disableResize: !1, alwaysVisible: !1, flashDelay: 1500, sliderMinHeight: 20, sliderMaxHeight: null, documentContext: null, windowContext: null }, u = "scrollbar", t = "scroll", l = "mousedown", m = "mouseenter", n = "mousemove", p = "mousewheel", o = "mouseup", s = "resize", h = "drag", i = "enter", w = "up", r = "panedown", f = "DOMMouseScroll", g = "down", x = "wheel", j = "keydown", k = "keyup", v = "touchmove", d = "Microsoft Internet Explorer" === b.navigator.appName && /msie 7./i.test(b.navigator.appVersion) && b.ActiveXObject, e = null, D = b.requestAnimationFrame, y = b.cancelAnimationFrame, F = c.createElement("div").style, H = function () {
+    var a, b, c, d, e, f;for (d = ["t", "webkitT", "MozT", "msT", "OT"], a = e = 0, f = d.length; f > e; a = ++e) {
+      if (c = d[a], b = d[a] + "ransform", b in F) return d[a].substr(0, d[a].length - 1);
+    }return !1;
+  }(), G = function G(a) {
+    return H === !1 ? !1 : "" === H ? a : H + a.charAt(0).toUpperCase() + a.substr(1);
+  }, E = G("transform"), B = E !== !1, A = function A() {
+    var a, b, d;return a = c.createElement("div"), b = a.style, b.position = "absolute", b.width = "100px", b.height = "100px", b.overflow = t, b.top = "-9999px", c.body.appendChild(a), d = a.offsetWidth - a.clientWidth, c.body.removeChild(a), d;
+  }, C = function C() {
+    var a, c, d;return c = b.navigator.userAgent, (a = /(?=.+Mac OS X)(?=.+Firefox)/.test(c)) ? (d = /Firefox\/\d{2}\./.exec(c), d && (d = d[0].replace(/\D+/g, "")), a && +d > 23) : !1;
+  }, q = function () {
+    function j(d, f) {
+      this.el = d, this.options = f, e || (e = A()), this.$el = a(this.el), this.doc = a(this.options.documentContext || c), this.win = a(this.options.windowContext || b), this.body = this.doc.find("body"), this.$content = this.$el.children("." + this.options.contentClass), this.$content.attr("tabindex", this.options.tabIndex || 0), this.content = this.$content[0], this.previousPosition = 0, this.options.iOSNativeScrolling && null != this.el.style.WebkitOverflowScrolling ? this.nativeScrolling() : this.generate(), this.createEvents(), this.addEvents(), this.reset();
+    }return j.prototype.preventScrolling = function (a, b) {
+      if (this.isActive) if (a.type === f) (b === g && a.originalEvent.detail > 0 || b === w && a.originalEvent.detail < 0) && a.preventDefault();else if (a.type === p) {
+        if (!a.originalEvent || !a.originalEvent.wheelDelta) return;(b === g && a.originalEvent.wheelDelta < 0 || b === w && a.originalEvent.wheelDelta > 0) && a.preventDefault();
+      }
+    }, j.prototype.nativeScrolling = function () {
+      this.$content.css({ WebkitOverflowScrolling: "touch" }), this.iOSNativeScrolling = !0, this.isActive = !0;
+    }, j.prototype.updateScrollValues = function () {
+      var a, b;a = this.content, this.maxScrollTop = a.scrollHeight - a.clientHeight, this.prevScrollTop = this.contentScrollTop || 0, this.contentScrollTop = a.scrollTop, b = this.contentScrollTop > this.previousPosition ? "down" : this.contentScrollTop < this.previousPosition ? "up" : "same", this.previousPosition = this.contentScrollTop, "same" !== b && this.$el.trigger("update", { position: this.contentScrollTop, maximum: this.maxScrollTop, direction: b }), this.iOSNativeScrolling || (this.maxSliderTop = this.paneHeight - this.sliderHeight, this.sliderTop = 0 === this.maxScrollTop ? 0 : this.contentScrollTop * this.maxSliderTop / this.maxScrollTop);
+    }, j.prototype.setOnScrollStyles = function () {
+      var a;B ? (a = {}, a[E] = "translate(0, " + this.sliderTop + "px)") : a = { top: this.sliderTop }, D ? (y && this.scrollRAF && y(this.scrollRAF), this.scrollRAF = D(function (b) {
+        return function () {
+          return b.scrollRAF = null, b.slider.css(a);
+        };
+      }(this))) : this.slider.css(a);
+    }, j.prototype.createEvents = function () {
+      this.events = { down: function (a) {
+          return function (b) {
+            return a.isBeingDragged = !0, a.offsetY = b.pageY - a.slider.offset().top, a.slider.is(b.target) || (a.offsetY = 0), a.pane.addClass(a.options.activeClass), a.doc.bind(n, a.events[h]).bind(o, a.events[w]), a.body.bind(m, a.events[i]), !1;
+          };
+        }(this), drag: function (a) {
+          return function (b) {
+            return a.sliderY = b.pageY - a.$el.offset().top - a.paneTop - (a.offsetY || .5 * a.sliderHeight), a.scroll(), a.contentScrollTop >= a.maxScrollTop && a.prevScrollTop !== a.maxScrollTop ? a.$el.trigger("scrollend") : 0 === a.contentScrollTop && 0 !== a.prevScrollTop && a.$el.trigger("scrolltop"), !1;
+          };
+        }(this), up: function (a) {
+          return function (b) {
+            return a.isBeingDragged = !1, a.pane.removeClass(a.options.activeClass), a.doc.unbind(n, a.events[h]).unbind(o, a.events[w]), a.body.unbind(m, a.events[i]), !1;
+          };
+        }(this), resize: function (a) {
+          return function (b) {
+            a.reset();
+          };
+        }(this), panedown: function (a) {
+          return function (b) {
+            return a.sliderY = (b.offsetY || b.originalEvent.layerY) - .5 * a.sliderHeight, a.scroll(), a.events.down(b), !1;
+          };
+        }(this), scroll: function (a) {
+          return function (b) {
+            a.updateScrollValues(), a.isBeingDragged || (a.iOSNativeScrolling || (a.sliderY = a.sliderTop, a.setOnScrollStyles()), null != b && (a.contentScrollTop >= a.maxScrollTop ? (a.options.preventPageScrolling && a.preventScrolling(b, g), a.prevScrollTop !== a.maxScrollTop && a.$el.trigger("scrollend")) : 0 === a.contentScrollTop && (a.options.preventPageScrolling && a.preventScrolling(b, w), 0 !== a.prevScrollTop && a.$el.trigger("scrolltop"))));
+          };
+        }(this), wheel: function (a) {
+          return function (b) {
+            var c;if (null != b) return c = b.delta || b.wheelDelta || b.originalEvent && b.originalEvent.wheelDelta || -b.detail || b.originalEvent && -b.originalEvent.detail, c && (a.sliderY += -c / 3), a.scroll(), !1;
+          };
+        }(this), enter: function (a) {
+          return function (b) {
+            var c;if (a.isBeingDragged) return 1 !== (b.buttons || b.which) ? (c = a.events)[w].apply(c, arguments) : void 0;
+          };
+        }(this) };
+    }, j.prototype.addEvents = function () {
+      var a;this.removeEvents(), a = this.events, this.options.disableResize || this.win.bind(s, a[s]), this.iOSNativeScrolling || (this.slider.bind(l, a[g]), this.pane.bind(l, a[r]).bind("" + p + " " + f, a[x])), this.$content.bind("" + t + " " + p + " " + f + " " + v, a[t]);
+    }, j.prototype.removeEvents = function () {
+      var a;a = this.events, this.win.unbind(s, a[s]), this.iOSNativeScrolling || (this.slider.unbind(), this.pane.unbind()), this.$content.unbind("" + t + " " + p + " " + f + " " + v, a[t]);
+    }, j.prototype.generate = function () {
+      var a, c, d, f, g, h, i;return f = this.options, h = f.paneClass, i = f.sliderClass, a = f.contentClass, (g = this.$el.children("." + h)).length || g.children("." + i).length || this.$el.append('<div class="' + h + '"><div class="' + i + '" /></div>'), this.pane = this.$el.children("." + h), this.slider = this.pane.find("." + i), 0 === e && C() ? (d = b.getComputedStyle(this.content, null).getPropertyValue("padding-right").replace(/[^0-9.]+/g, ""), c = { right: -14, paddingRight: +d + 14 }) : e && (c = { right: -e }, this.$el.addClass(f.enabledClass)), null != c && this.$content.css(c), this;
+    }, j.prototype.restore = function () {
+      this.stopped = !1, this.iOSNativeScrolling || this.pane.show(), this.addEvents();
+    }, j.prototype.reset = function () {
+      var a, b, c, f, g, h, i, j, k, l, m, n;return this.iOSNativeScrolling ? void (this.contentHeight = this.content.scrollHeight) : (this.$el.find("." + this.options.paneClass).length || this.generate().stop(), this.stopped && this.restore(), a = this.content, f = a.style, g = f.overflowY, d && this.$content.css({ height: this.$content.height() }), b = a.scrollHeight + e, l = parseInt(this.$el.css("max-height"), 10), l > 0 && (this.$el.height(""), this.$el.height(a.scrollHeight > l ? l : a.scrollHeight)), i = this.pane.outerHeight(!1), k = parseInt(this.pane.css("top"), 10), h = parseInt(this.pane.css("bottom"), 10), j = i + k + h, n = Math.round(j / b * i), n < this.options.sliderMinHeight ? n = this.options.sliderMinHeight : null != this.options.sliderMaxHeight && n > this.options.sliderMaxHeight && (n = this.options.sliderMaxHeight), g === t && f.overflowX !== t && (n += e), this.maxSliderTop = j - n, this.contentHeight = b, this.paneHeight = i, this.paneOuterHeight = j, this.sliderHeight = n, this.paneTop = k, this.slider.height(n), this.events.scroll(), this.pane.show(), this.isActive = !0, a.scrollHeight === a.clientHeight || this.pane.outerHeight(!0) >= a.scrollHeight && g !== t ? (this.pane.hide(), this.isActive = !1) : this.el.clientHeight === a.scrollHeight && g === t ? this.slider.hide() : this.slider.show(), this.pane.css({ opacity: this.options.alwaysVisible ? 1 : "", visibility: this.options.alwaysVisible ? "visible" : "" }), c = this.$content.css("position"), ("static" === c || "relative" === c) && (m = parseInt(this.$content.css("right"), 10), m && this.$content.css({ right: "", marginRight: m })), this);
+    }, j.prototype.scroll = function () {
+      return this.isActive ? (this.sliderY = Math.max(0, this.sliderY), this.sliderY = Math.min(this.maxSliderTop, this.sliderY), this.$content.scrollTop(this.maxScrollTop * this.sliderY / this.maxSliderTop), this.iOSNativeScrolling || (this.updateScrollValues(), this.setOnScrollStyles()), this) : void 0;
+    }, j.prototype.scrollBottom = function (a) {
+      return this.isActive ? (this.$content.scrollTop(this.contentHeight - this.$content.height() - a).trigger(p), this.stop().restore(), this) : void 0;
+    }, j.prototype.scrollTop = function (a) {
+      return this.isActive ? (this.$content.scrollTop(+a).trigger(p), this.stop().restore(), this) : void 0;
+    }, j.prototype.scrollTo = function (a) {
+      return this.isActive ? (this.scrollTop(this.$el.find(a).get(0).offsetTop), this) : void 0;
+    }, j.prototype.stop = function () {
+      return y && this.scrollRAF && (y(this.scrollRAF), this.scrollRAF = null), this.stopped = !0, this.removeEvents(), this.iOSNativeScrolling || this.pane.hide(), this;
+    }, j.prototype.destroy = function () {
+      return this.stopped || this.stop(), !this.iOSNativeScrolling && this.pane.length && this.pane.remove(), d && this.$content.height(""), this.$content.removeAttr("tabindex"), this.$el.hasClass(this.options.enabledClass) && (this.$el.removeClass(this.options.enabledClass), this.$content.css({ right: "" })), this;
+    }, j.prototype.flash = function () {
+      return !this.iOSNativeScrolling && this.isActive ? (this.reset(), this.pane.addClass(this.options.flashedClass), setTimeout(function (a) {
+        return function () {
+          a.pane.removeClass(a.options.flashedClass);
+        };
+      }(this), this.options.flashDelay), this) : void 0;
+    }, j;
+  }(), a.fn.nanoScroller = function (b) {
+    return this.each(function () {
+      var c, d;if ((d = this.nanoscroller) || (c = a.extend({}, z, b), this.nanoscroller = d = new q(this, c)), b && "object" == (typeof b === "undefined" ? "undefined" : _typeof(b))) {
+        if (a.extend(d.options, b), null != b.scrollBottom) return d.scrollBottom(b.scrollBottom);if (null != b.scrollTop) return d.scrollTop(b.scrollTop);if (b.scrollTo) return d.scrollTo(b.scrollTo);if ("bottom" === b.scroll) return d.scrollBottom(0);if ("top" === b.scroll) return d.scrollTop(0);if (b.scroll && b.scroll instanceof a) return d.scrollTo(b.scroll);if (b.stop) return d.stop();if (b.destroy) return d.destroy();if (b.flash) return d.flash();
+      }return d.reset();
+    });
+  }, a.fn.nanoScroller.Constructor = q;
+});
+
+
+},{"jquery":22}],38:[function(require,module,exports){
 'use strict';
 
 /**
@@ -53378,7 +53582,7 @@ require('../src/filters/file-extension.js');
 	}]);
 })(window, document, window.angular);
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 (function () {
@@ -53414,7 +53618,7 @@ require('../src/filters/file-extension.js');
     angular.module('sunzinet').factory('AuthenticationService', Service);
 })();
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 var interceptor = function interceptor($q, $localStorage) {

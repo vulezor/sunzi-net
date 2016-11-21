@@ -11,6 +11,7 @@ require('angular');
 //Bootstrap Components
 require('bootstrap');
 require('../src/js/jquery-nestable.js');
+require('../src/js/nano-scroler.js');
 //Angular Plugins
 require('angular-ui-router');
 require('angular-messages');

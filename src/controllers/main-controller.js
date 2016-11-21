@@ -9,6 +9,7 @@ const mainController = ($scope, $window, $localStorage, $location, $sessionStora
     $scope.selected_index = 0;
     $scope.boards_names = [];
 
+   
     /* $scope.onExit = ()=>{
          var message = 'If you live your session will expire';
             if (!event) {

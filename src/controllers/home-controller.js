@@ -47,9 +47,12 @@
                     $(this).children().eq(0).addClass('bgColor-handle');
                 });
             }
+            $scope.resizeContainers();
         },(error)=>{
             console.log(error);
         });
+
+         
     }  
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -73,47 +76,84 @@
      * @param name string name of the new board
      * @description Save new board with name and template data 
      */
-    $scope.addNewBoard = (name)=>{
-        let data = [
-            {
-                "id": 1,
-                "uid":$scope.getUid(),
-                "title": "Homepage",
-                "status":'open',
-                "edit": false,
-                "nodes": [
-                    {
-                        "id": 2,
-                        "uid":$scope.getUid(),
-                        "title": "node1.1",
-                        "edit": false,
-                        "status":'open',
-                        "nodes": []
-                    },
-                    {
-                        "id": 3,
-                        "uid":$scope.getUid(),
-                        "title": "node1.2",
-                        "edit": false,
-                        "status":'open',
-                        "nodes": []
-                    }
-                ]
-            }
-        ];
-        $http.post('/insert_board', {"name":name,"data":data}).then((response)=>{
+    $scope.addNewBoard = (name, data)=>{
+        let obj = []
+        console.log(name, data);
+       
+        if(!data){
+             obj = [
+                {
+                    "id": 1,
+                    "uid":$scope.getUid(),
+                    "title": "Homepage",
+                    "status":'open',
+                    "edit": false,
+                    "nodes": [
+                        {
+                            "id": 2,
+                            "uid":$scope.getUid(),
+                            "title": "node1.1",
+                            "edit": false,
+                            "status":'open',
+                            "nodes": []
+                        },
+                        {
+                            "id": 3,
+                            "uid":$scope.getUid(),
+                            "title": "node1.2",
+                            "edit": false,
+                            "status":'open',
+                            "nodes": []
+                        }
+                    ]
+                }
+            ];
+        } else {
+            obj = data;
+        }
+
+        $http.post('/insert_board', {"name":name,"data":obj}).then((response)=>{
             $('#newBoardModal').modal('hide');
             $timeout(function(){
                 $scope.$parent.boards_names.push(response.data[0]);
                 $state.go("boardDetails",{"index":(parseInt($scope.$parent.boards_names.length)-1),"id":response.data[0].id});// redirecting
                 $scope.$parent.selected_index = parseInt($scope.$parent.boards_names.length)-1;     
-
             }, 500);
         },(error)=>{
             console.log('error');
         });
 
     };
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    $scope.transferBoard = (name, index)=>{
+        if(index!==''){
+            $http.get('/get_board/'+index).then((response)=>{
+                let board = response.data[0];
+                let data = angular.copy(JSON.parse(response.data[0].data)); 
+                $scope.deleteFiles(data);
+                $scope.addNewBoard(name, data);
+            },(error)=>{
+                console.log(error)
+            });
+        } else {
+            $scope.addNewBoard(name);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @param data intiger
+     * @description calling same function to delete key files in nested arrays of each node  
+     * */ 
+    $scope.deleteFiles = (data)=>{
+        data.forEach(function(dat){
+           delete dat.files;
+           $scope.deleteFiles(dat.nodes);
+        });
+    }
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -318,6 +358,7 @@
         if($scope.temporary_node.nodes){
             if($scope.temporary_node.nodes.length > 0){
                 console.log('cant delete file');
+                $('#deleteBoardPage').modal();
             } else {
                 $scope.deletePage();
             } 
@@ -329,6 +370,10 @@
 
     $scope.changeModalStatus = (status)=>{
         $scope.modal_status = status;
+        //reset new modal insert form
+        if(status=='board'){
+            $scope.$broadcast('reset-values');
+        }
     }
     
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -346,10 +391,25 @@
             );
     });
     
+
+    /* $scope.resizeContainers = function(){
+        console.log($('.bside-container'))
+        var elem_height = $('.bside-container').parents('div').outerHeight();
+        console.log("HEIGHT", elem_height);
+        $('.bside-container').css({"height":elem_height+"px"})
+    }*/
+
+   /* angular.element($window).bind('resize', function(){
+
+         $scope.resizeContainers();
+       });*/
+
+    
+   
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     $scope.init(); //start page Initialization
- 
+
 }
 homeController.$inject = ['$scope', '$http', '$localStorage', "$state", "$stateParams", "$timeout", "$sessionStorage", "$window"];
 modul.controller('homeController', homeController); 

@@ -2,18 +2,36 @@
     var newBoard = ()=>{
     return{
         restrict:'E',
-        require:'newBoard',
+        require:['newBoard'],
         controller:['$scope', ($scope)=>{
             $scope.name = "";
+            $scope.sel_board = "";
+
             $scope.resetValue = ()=>{
+                console.log('reset');
                 var original = "";
-                $scope.name = angular.copy(original)
+                $scope.name = angular.copy(original);
+                $scope.sel_board = angular.copy(original);;
                 $scope.form_board.$setPristine();
             }
-            $scope.addBoard = ()=>{
-                console.log($scope.name);
+
+            $scope.addBoard = ($event)=>{
+               // console.log('EVENT:', $event.key)
+                if($scope.board.length!==0){
+                    if($event.key!==13){ return false};
+                }
+                
                 $scope.addNewBoard({name:$scope.name});
             }
+
+            $scope.withoutSidemap = ()=>{
+                $scope.addNewBoard({name:$scope.name});
+            }
+
+             $scope.transferBoard = ()=>{
+                     $scope.transferingBoard({name:$scope.name, index:$scope.sel_board});
+            }
+
             $scope.add_event = (elem)=>{
                 $(elem).click(function(){
                     $scope.$apply(function(){
@@ -22,7 +40,15 @@
                 });
             }
             $scope.change_status = (status)=>{
-                $scope.changeStatus({status:status})
+               
+                if($scope.name.length===0){
+                    $scope.form_board.$invalid = true;
+                    $scope.form_board.$submitted = true;
+                   console.log($scope.form_board);
+                  
+                } else {
+                     $scope.changeStatus({status:status})
+                }
             }
             
 
@@ -31,12 +57,16 @@
         scope:{
             addNewBoard:'&',
             changeStatus:'&',
+            transferingBoard:'&',
             boardLength:'=',
             modalStatus:'=',
             board:"="
         },
-        link(scope, elem, attribute, ctrl){
-            console.log(ctrl);
+        link(scope, elem, attribute, controller){
+            console.log(controller);
+            scope.$on('reset-values', ()=>{
+                scope.resetValue()
+            });
             $('.modal-content').on('mouseenter', ()=>{
                 $(elem).unbind( "click" );
             }).on('mouseleave',function(){
