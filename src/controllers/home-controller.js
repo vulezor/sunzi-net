@@ -1,4 +1,5 @@
-const homeController = ($scope, $http, $localStorage, $state, $stateParams, $timeout, $sessionStorage, $window)=>{
+((modul)=>{
+    const homeController = ($scope, $http, $localStorage, $state, $stateParams, $timeout, $sessionStorage, $window)=>{
     
     //PARAMS 
     console.log($window.sessionStorage.logged_in);
@@ -326,7 +327,7 @@ const homeController = ($scope, $http, $localStorage, $state, $stateParams, $tim
         
     }
 
-    $scope.changeStatus = (status)=>{
+    $scope.changeModalStatus = (status)=>{
         $scope.modal_status = status;
     }
     
@@ -351,5 +352,7 @@ const homeController = ($scope, $http, $localStorage, $state, $stateParams, $tim
  
 }
 homeController.$inject = ['$scope', '$http', '$localStorage', "$state", "$stateParams", "$timeout", "$sessionStorage", "$window"];
-module.export = angular.module('sunzinet').controller('homeController', homeController); 
+modul.controller('homeController', homeController); 
 
+
+})(angular.module('sunzinet'));

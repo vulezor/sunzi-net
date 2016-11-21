@@ -48,7 +48,7 @@ class File_Upload extends Base_Controller{
         $ext  = str_replace(array('/', 'x-'), '', strstr($mime, '/'));
         $url  = base64_decode(filter_var($_GET['token']));
         $name = urldecode($_GET['title']). '.' .$ext; 
-       
+        $name =  substr($name, 0, -1);
         // Fetch and serve
         if ($url)
         {

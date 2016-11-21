@@ -331,7 +331,7 @@ body{
 </style>
 
 <!--<div style="min-width:50%;width:90%;min-height:90%;position:relative;overflow-x:hidden;position:absolute;" >-->
-<new-board modal-status="modal_status" change-status="changeStatus(status)" board-length="$parent.boards_names.length" board="$parent.boards_names" add-new-board="addNewBoard(name)"></new-board>
+<new-board modal-status="modal_status" change-status="changeModalStatus(status)" board-length="$parent.boards_names.length" board="$parent.boards_names" add-new-board="addNewBoard(name)"></new-board>
 
 
 
@@ -349,7 +349,7 @@ body{
                 <li ng-repeat="(index, board_name) in $parent.boards_names" ng-if="$index>=tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})" ><a href="#" >{{ board_name.name }}</a></li>
             </ul>
         </li>
-        <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ng-click="changeStatus('board')" ><i class="fa fa-plus"></i></li>
+        <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ng-click="changeModalStatus('board')" ><i class="fa fa-plus"></i></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
         <li >
