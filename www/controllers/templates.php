@@ -12,7 +12,7 @@ class Templates extends Base_Controller
             </div>
             <div ui-tree-handle  style="margin:5px 0px;max-width:80%" class="pull-left tree-node tree-node-content list-body-content" ng-click="setTemporaryNode($event, node)">
               <a class=" pull-right" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)">
-                 &nbsp;<i class="fa" ng-class="{\'fa-chevron-up\': collapsed, \'fa-chevron-down\': !collapsed}"></i>
+                 &nbsp;<i class="fa" ng-class="{\'fa-angle-up\': collapsed, \'fa-angle-down\': !collapsed}" style="font-size:18px;color:#929292;margin-top:3px"></i>
               </a>
               <span data-ng-if="!node.edit" data-ng-dblclick="editPage($event, node)" style="display:block;max-width:100%;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"> {{node.title}}  </span>
               <span data-ng-if="node.edit"> <input type="text" id="page_name" data-ng-model="page_name" autofocus ng-blur="node.edit = !node.edit" ng-keypress="setNewValue($event, node)"/> </span> 

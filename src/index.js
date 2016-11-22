@@ -12,6 +12,7 @@ require('angular');
 require('bootstrap');
 require('../src/js/jquery-nestable.js');
 require('../src/js/nano-scroler.js');
+
 //Angular Plugins
 require('angular-ui-router');
 require('angular-messages');
@@ -39,6 +40,9 @@ require('../src/services/angular-nestable.js');
 require('../src/directives/modals/new-board.js');
 require('../src/directives/file-upload.js');
 require('../src/directives/confirm-click.js');
+require('../src/directives/modals/delete-page-modal.js');
+require('../src/directives/modals/delete-page-confirmation.js');
+require('../src/directives/modals/settings.js');
 
 //filters
 require('../src/filters/is-empty.js');

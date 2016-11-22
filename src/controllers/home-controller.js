@@ -47,12 +47,12 @@
                     $(this).children().eq(0).addClass('bgColor-handle');
                 });
             }
-            $scope.resizeContainers();
+            $scope.close_sidebar = false; 
+            let elem_width = $('.bside-container').outerWidth();
+            $('.bside-container').css({"margin-right":"-"+elem_width+"px"});
         },(error)=>{
             console.log(error);
-        });
-
-         
+        }); 
     }  
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -298,6 +298,11 @@
         if($('#upload_files')[0]){
             $('#upload_files')[0].reset();
         }
+        if(!$scope.close_sidebar){
+            $timeout(()=>{
+                angular.element($('.close-handle')).triggerHandler('click');
+            },0);
+        }
         
         result = [];
         var obj = {
@@ -317,9 +322,7 @@
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     $scope.closeSidebar = ($event)=>{
-        console.log($event.target);
-        var elem_width = $('.bside-container').outerWidth();
-        console.log(elem_width);
+        let elem_width = $('.bside-container').outerWidth();
         if($scope.close_sidebar){
             $('.bside-container').animate({"margin-right":"-"+elem_width+"px"}, 200, 'swing');
         } else {
@@ -354,16 +357,17 @@
     }
 
     $scope.deleteSelectedPage = ()=>{
-        console.log($scope.temporary_node)
+    
         if($scope.temporary_node.nodes){
             if($scope.temporary_node.nodes.length > 0){
-                console.log('cant delete file');
                 $('#deleteBoardPage').modal();
             } else {
-                $scope.deletePage();
+                $('#deleteBoardPageConformation').modal();
+                //$scope.deletePage();
             } 
         } else {
-            $scope.deletePage();
+            $('#deleteBoardPageConformation').modal();
+            //$scope.deletePage();
         }
         
     }
@@ -374,6 +378,10 @@
         if(status=='board'){
             $scope.$broadcast('reset-values');
         }
+    };
+
+    $scope.settingsModal = ()=>{
+        $('#settingsModal').modal();
     }
     
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -390,20 +398,6 @@
                 }
             );
     });
-    
-
-    /* $scope.resizeContainers = function(){
-        console.log($('.bside-container'))
-        var elem_height = $('.bside-container').parents('div').outerHeight();
-        console.log("HEIGHT", elem_height);
-        $('.bside-container').css({"height":elem_height+"px"})
-    }*/
-
-   /* angular.element($window).bind('resize', function(){
-
-         $scope.resizeContainers();
-       });*/
-
     
    
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------

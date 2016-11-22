@@ -51989,7 +51989,9 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                         $(this).children().eq(0).addClass('bgColor-handle');
                     });
                 }
-                $scope.resizeContainers();
+                $scope.close_sidebar = false;
+                var elem_width = $('.bside-container').outerWidth();
+                $('.bside-container').css({ "margin-right": "-" + elem_width + "px" });
             }, function (error) {
                 console.log(error);
             });
@@ -52232,6 +52234,11 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             if ($('#upload_files')[0]) {
                 $('#upload_files')[0].reset();
             }
+            if (!$scope.close_sidebar) {
+                $timeout(function () {
+                    angular.element($('.close-handle')).triggerHandler('click');
+                }, 0);
+            }
 
             result = [];
             var obj = {
@@ -52251,9 +52258,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $scope.closeSidebar = function ($event) {
-            console.log($event.target);
             var elem_width = $('.bside-container').outerWidth();
-            console.log(elem_width);
             if ($scope.close_sidebar) {
                 $('.bside-container').animate({ "margin-right": "-" + elem_width + "px" }, 200, 'swing');
             } else {
@@ -52287,16 +52292,17 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
         };
 
         $scope.deleteSelectedPage = function () {
-            console.log($scope.temporary_node);
+
             if ($scope.temporary_node.nodes) {
                 if ($scope.temporary_node.nodes.length > 0) {
-                    console.log('cant delete file');
                     $('#deleteBoardPage').modal();
                 } else {
-                    $scope.deletePage();
+                    $('#deleteBoardPageConformation').modal();
+                    //$scope.deletePage();
                 }
             } else {
-                $scope.deletePage();
+                $('#deleteBoardPageConformation').modal();
+                //$scope.deletePage();
             }
         };
 
@@ -52306,6 +52312,10 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             if (status == 'board') {
                 $scope.$broadcast('reset-values');
             }
+        };
+
+        $scope.settingsModal = function () {
+            $('#settingsModal').modal();
         };
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52319,17 +52329,6 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 console.log(error);
             });
         });
-
-        /* $scope.resizeContainers = function(){
-            console.log($('.bside-container'))
-            var elem_height = $('.bside-container').parents('div').outerHeight();
-            console.log("HEIGHT", elem_height);
-            $('.bside-container').css({"height":elem_height+"px"})
-        }*/
-
-        /* angular.element($window).bind('resize', function(){
-                $scope.resizeContainers();
-            });*/
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -52518,6 +52517,34 @@ module.export = angular.module('sunzinet').controller('mainController', mainCont
 'use strict';
 
 (function (modul) {
+    var deletePageConfirmation = function deletePageConfirmation() {
+        return {
+            restrict: 'E',
+            templateUrl: './public/templates/modals/delete-page-confirmation.html',
+            scope: true
+        };
+    };
+    modul.directive('deletePageConfirmation', deletePageConfirmation);
+})(angular.module('sunzinet'));
+
+},{}],31:[function(require,module,exports){
+'use strict';
+
+(function (modul) {
+    var deletePageModal = function deletePageModal() {
+        return {
+            restrict: 'E',
+            //replace:true,
+            templateUrl: './public/templates/modals/delete-page-modal.html'
+        };
+    };
+    modul.directive('deletePageModal', deletePageModal);
+})(angular.module('sunzinet'));
+
+},{}],32:[function(require,module,exports){
+'use strict';
+
+(function (modul) {
     var newBoard = function newBoard() {
         return {
             restrict: 'E',
@@ -52599,7 +52626,30 @@ module.export = angular.module('sunzinet').controller('mainController', mainCont
     module.exports = modul.directive('newBoard', newBoard);
 })(angular.module('sunzinet'));
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
+'use strict';
+
+(function (modul) {
+    var settings = function settings() {
+        return {
+            restrict: 'E',
+            controller: function controller($scope) {
+                $scope.name = $scope.temporaryNode.title;
+                $scope.setNewName = function () {
+                    console.log(name);
+                };
+            },
+
+            templateUrl: './public/templates/modals/settings.html',
+            scope: {
+                temporaryNode: "="
+            }
+        };
+    };
+    modul.directive('settings', settings);
+})(angular.module('sunzinet'));
+
+},{}],34:[function(require,module,exports){
 "use strict";
 
 (function (modul) {
@@ -52656,7 +52706,7 @@ module.export = angular.module('sunzinet').controller('mainController', mainCont
     modul.filter('Base64decode', Base64decode);
 })(angular.module('sunzinet'));
 
-},{}],32:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -52668,7 +52718,7 @@ module.export = angular.module('sunzinet').controller('mainController', mainCont
     modul.filter('fileExtension', fileExtension);
 })(angular.module('sunzinet'));
 
-},{}],33:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 (function () {
@@ -52686,7 +52736,7 @@ module.export = angular.module('sunzinet').controller('mainController', mainCont
     angular.module('sunzinet').filter('isEmpty', isEmpty);
 })();
 
-},{}],34:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -52698,7 +52748,7 @@ module.export = angular.module('sunzinet').controller('mainController', mainCont
     modul.filter('toDate', toDate);
 })(angular.module('sunzinet'));
 
-},{}],35:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 var _jquery = require('jquery');
@@ -52721,6 +52771,7 @@ require('angular');
 require('bootstrap');
 require('../src/js/jquery-nestable.js');
 require('../src/js/nano-scroler.js');
+
 //Angular Plugins
 require('angular-ui-router');
 require('angular-messages');
@@ -52747,6 +52798,9 @@ require('../src/services/angular-nestable.js');
 require('../src/directives/modals/new-board.js');
 require('../src/directives/file-upload.js');
 require('../src/directives/confirm-click.js');
+require('../src/directives/modals/delete-page-modal.js');
+require('../src/directives/modals/delete-page-confirmation.js');
+require('../src/directives/modals/settings.js');
 
 //filters
 require('../src/filters/is-empty.js');
@@ -52754,7 +52808,7 @@ require('../src/filters/to-date.js');
 require('../src/filters/base64.js');
 require('../src/filters/file-extension.js');
 
-},{"../bower_components/angular-ui-tree/dist/angular-ui-tree.js":1,"../src/app.js":24,"../src/controllers/home-controller.js":25,"../src/controllers/login-controller.js":26,"../src/controllers/main-controller.js":27,"../src/directives/confirm-click.js":28,"../src/directives/file-upload.js":29,"../src/directives/modals/new-board.js":30,"../src/filters/base64.js":31,"../src/filters/file-extension.js":32,"../src/filters/is-empty.js":33,"../src/filters/to-date.js":34,"../src/js/jquery-nestable.js":36,"../src/js/nano-scroler.js":37,"../src/services/angular-nestable.js":38,"../src/services/authentification-service.js":39,"../src/services/interceptor.js":40,"angular":8,"angular-messages":3,"angular-sessionstorage":5,"angular-ui-router":6,"bootstrap":9,"jquery":22,"ng-storage":23}],36:[function(require,module,exports){
+},{"../bower_components/angular-ui-tree/dist/angular-ui-tree.js":1,"../src/app.js":24,"../src/controllers/home-controller.js":25,"../src/controllers/login-controller.js":26,"../src/controllers/main-controller.js":27,"../src/directives/confirm-click.js":28,"../src/directives/file-upload.js":29,"../src/directives/modals/delete-page-confirmation.js":30,"../src/directives/modals/delete-page-modal.js":31,"../src/directives/modals/new-board.js":32,"../src/directives/modals/settings.js":33,"../src/filters/base64.js":34,"../src/filters/file-extension.js":35,"../src/filters/is-empty.js":36,"../src/filters/to-date.js":37,"../src/js/jquery-nestable.js":39,"../src/js/nano-scroler.js":40,"../src/services/angular-nestable.js":41,"../src/services/authentification-service.js":42,"../src/services/interceptor.js":43,"angular":8,"angular-messages":3,"angular-sessionstorage":5,"angular-ui-router":6,"bootstrap":9,"jquery":22,"ng-storage":23}],39:[function(require,module,exports){
 'use strict';
 
 /*!
@@ -53244,7 +53298,7 @@ require('../src/filters/file-extension.js');
     };
 })(window.jQuery || window.Zepto, window, document);
 
-},{}],37:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -53357,7 +53411,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 
-},{"jquery":22}],38:[function(require,module,exports){
+},{"jquery":22}],41:[function(require,module,exports){
 'use strict';
 
 /**
@@ -53582,7 +53636,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	}]);
 })(window, document, window.angular);
 
-},{}],39:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict';
 
 (function () {
@@ -53618,7 +53672,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     angular.module('sunzinet').factory('AuthenticationService', Service);
 })();
 
-},{}],40:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 var interceptor = function interceptor($q, $localStorage) {
@@ -53650,4 +53704,4 @@ var interceptor = function interceptor($q, $localStorage) {
 interceptor.$inject = ['$q', '$localStorage'];
 module.exports = angular.module('sunzinet').factory('interceptor', interceptor);
 
-},{}]},{},[35]);
+},{}]},{},[38]);

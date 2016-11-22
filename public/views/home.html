@@ -1,495 +1,134 @@
-<style>
-html{
-    position: relative;
-    height: 100% !important;
-}
-html, body{
-    height:100% !important; 
-    position:relative
-}
-* {
-  box-sizing: border-box;
-}
-h1{
-    font-style:italic
-}
+<header>
+    <!-- Settings Logout section -->
+    <nav class="clearfix">
+        <ul class="nav navbar-nav navbar-right">
+            <li >
+                <div class="user_info" style="color:#777">
+                <div><small>Logged in as</small></div>
+                <div><strong>{{ user }}</strong></div>
+                <div>
+            </li>
+            <li><button class="btn btn-danger logout-button" ui-sref="login">Logout</button></li>
+            <li>
+                <div class="logout"  data-toggle="dropdown">
+                    <i class="fa fa-bars " style="font-size:30px;margin-top:3px;color:#777"></i>
+                </div>
+                <ul class="dropdown-menu">
+                    <!--<li ui-sref="login"><a href="#" >Logout</a></li>-->
+                    <li data-ng-click="settingsModal();"><a href="javascript:void(0)">Settings</a></li>
+                    <li><a href="javascript:void(0)">Manual</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav><!-- /Settings Logout section -->
 
-body{
-    font-family: "Ubuntu",Arial,Helvetica,sans-serif;
-    background:url(public/assets/img/background.jpg) center no-repeat;
-    overflow-x:hidden;
-    background-size: cover
-    
-}
-
-.navbar-default .navbar-nav>li>a, .navbar-default .navbar-text {
-    color: #000;
-    font-weight:bold
-}
-.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
-    color: #555;
-    background-color: #FFFFFF;
-}
-/*nav-bar*/
-.nav-bar-overiding{
-    padding-top: 10px;
-    padding-left: 0px;
-   /* background-color: #E4E4E4;*/
-    border-bottom:0px solid transparent;
-}
-
-.navbar-nav>li{
-    margin-right:5px;
-    
-}
-.navbar-nav>li>a {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-bottom:0px;
-     
-}
-
- .navbar-nav .active{
-     border:1px solid #ccc;
-     border-bottom:none;
-     border-radius:3px 3px 0px 0px
-     
- }
- .navbar-nav .active>a{
-     color:#FF6633 !important;
-     font-weight: bold !important;
-     border-radius:3px 3px 0px 0px
- }
-.navbar-right {
-     margin-right: 0px; 
-}
-.user_info{
-    margin-top:-5px
-}
-.user_info small{
-    width:100%;
-    text-align:right;
-    display:inline-block
-}
-.logout{
-    margin:0px 8px;
-}
-.logout i{
-  margin-top: -6px
-}
-.logout i:hover{
-    cursor:pointer;
-    color:#000;
-} 
-.no-bottom-margin{
-    margin-bottom:0px !important
-}
-
-.content-tool-body{
-    height:calc(100% - 51px);
-}
-.aside{
-    width:60%;min-height:100%;
-    background-color: #fff
-}
-.aside h1:before{
-    font-style:italic;
-   
-}    
-.bside{
-    width:40%;
-    min-height:100%;
-    position:relative;
-    /*overflow-x:hidden;*/
-     background-color: #fff
-}
-
-/* angular-ui-tree css file */
-.angular-ui-tree-empty{
-  border:1px dashed #bbb;
-  min-height:100px;
-  background-color:#e5e5e5;
-  background-image:-webkit-linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff),-webkit-linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff);
-  background-image:-moz-linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff),-moz-linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff);
-  background-image:linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff),linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%,#fff);
-  background-size:60px 60px;background-position:0 0,30px 30px
-  
-}
-.angular-ui-tree-nodes{
-  display:block;
-  position:relative;
-  margin:0;
-  padding:0;
-  list-style:none;
-}
-
-.angular-ui-tree-nodes 
-.angular-ui-tree-nodes{
-  padding-left:35px
-}
-
-.angular-ui-tree-node,
-.angular-ui-tree-placeholder{
-  display:block;
-  position:relative;
-  margin:0;
-  padding:0;
-  min-height:20px;
-  line-height:20px
-}
-
-.angular-ui-tree-hidden{
-  display:none
-  
-}
-.angular-ui-tree-placeholder{
-  margin:5px 0;
-  padding:0;
-  min-height:30px
-  
-}
-.angular-ui-tree-handle{
-  display:inline-block;
-  cursor:move;
-  text-decoration:none;
-  font-weight:700;
-  -webkit-box-sizing:border-box;
-  -moz-box-sizing:border-box;
-  box-sizing:border-box;
-  min-height:20px;
-  line-height:20px
-  
-}
-
-  .angular-ui-tree-drag{
-    position:absolute;
-    pointer-events:none;
-    cursor:move;
-    z-index:999;
-    opacity:.8
-    
-  }
-
-
-
-.btn
-/*angular ui styles*/
-/*angular ui custom*/
-.handle-content .btn {
-    margin-right: 8px;
-}
-
-.angular-ui-tree-handle {
-    background: #f8faff;
-    border: 1px solid #dae2ea;
-    color: #7c9eb2;
-    padding: 10px 6px;
-    margin:5px 0px;
-    line-height:1.2
-}
-
-.angular-ui-tree-handle:hover {
-    color: #438eb9;
-    background: #f4f6f7;
-    border-color: #dce2e8;
-}
-
-.angular-ui-tree-placeholder {
-    background: #f0f9ff;
-    border: 2px dashed #bed2db;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-
-.group-title {
-    background-color: #687074 !important;
-    color: #FFF !important;
-}
-
-    .handle-content{
-        border:1px solid #ccc;
-        height:44px;
-        width:0px;
-        line-height:1.8;
-        border-radius:4px 0px 0px 4px;
-        padding-left:4px;
-        padding-right:4px
-    }
-    .list-body-content{
-        padding:8px;
-        /*border:1px solid #ccc;*/
-        border-left:none;
-        line-height:1.9;
-        border-radius:0px 4px 4px 0px;
-        color:#929292;
-        height:44px;
-      /*  background: rgba(254,254,254,1);
-        background: -moz-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
-        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(254,254,254,1)), color-stop(100%, rgba(226,226,226,1)));
-        background: -webkit-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
-        background: -o-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
-        background: -ms-linear-gradient(top, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
-        background: linear-gradient(to bottom, rgba(254,254,254,1) 0%, rgba(226,226,226,1) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#e2e2e2', GradientType=0 );*/
-        background: rgba(255,255,255,1);
-        background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
-        background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(86%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
-        background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
-        background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
-        background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
-        background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 86%, rgba(237,237,237,1) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
-    }
-
-    .list-body-content:hover{
-
-    }
-
-    .list-body-content>span, .list-body-content>a{
-        cursor:pointer !important
-    }
-    
-
-    .list-body-content input{
-        line-height:normal;
-    }
- 
-.minus, .plus{
-    visibility:hidden;float:right
-}
- .bgColor, .bgColor:hover, .bgColor-handle, .bgColor-handle:hover{
-    color:#FF6633 !important;
-     background:#ffffff !important;
-     border:1px solid #FF6633 !important;
- }  
- .bgColor, .bgColor:hover{
-     
-     border-left:0px solid transparent !important;
- }  
-
-/* Handlebar status */
- .open_status{background-color:#c6c6c5 !important} 
- .delivered{background-color:#4b68ba !important} 
- .transferred{background-color:#95c8f8 !important} 
- .modified{background-color:#f9b123 !important} 
- .released{background-color:#c0db55 !important} 
-
-/*page content layout*/
-.bside-container{
-     position:absolute;
-     min-height:100%;
-     background-color:#fbfafa;
-     width:calc(100% - 41px);
-     border-left:1px solid #eee;
-     right:0px;
-     -webkit-box-shadow: -11px 1px 19px -15px rgba(0,0,0,0.75);
-    -moz-box-shadow: -11px 1px 19px -15px rgba(0,0,0,0.75);
-    box-shadow: -11px 1px 19px -15px rgba(0,0,0,0.75);
- }
- .page-content {
-     margin: 0px;
- }
- .sidebar-content-wrapper{
-     margin: 40px;/*40px*/
- }
- .sidebar-content-wrapper h2{
-     font-weight:bold;
- }
- .file-content-wrapper{
-     padding:10px 40px;
-     left:0px;
-     width:100%;
-     background-color:#f3f3f3
- }
-
-.close-handle{
-    -webkit-box-shadow: -2px 0px 1px 1px rgba(0,0,0,0.43);
-    -moz-box-shadow: -1px 0px 1px 0px rgba(0,0,0,0.20);
-    box-shadow: -1px 0px 1px 0px rgba(0,0,0,0.20);
-    border:1px solid #eee;
-    border-right:none;
-    margin-top:70px;
-    padding:5px 15px;
-    background-color:#efefef;
-    position:absolute;
-    margin-left:-41px;
-    cursor:pointer;
-}
- hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0; 
-}
-.file-statuses{
-    margin-top:12px
-}
-.file-status {
-    vertical-align:bottom;
-    display:inline-block;
-    border:1px solid #ccc;
-    border-radius:15px;
-    width:20px;
-    height:20px;
-    cursor:pointer;
-}
-.file-actions{
-    margin-top:12px
-} 
-.file-actions i {
-    font-size:18px;
-    cursor:pointer;
-}
-.file-comment{
-    margin-top:5px;
-    padding-left:15px;
-    border-left: 1px solid #ccc;
-}
-.file-actions a,
-.file-actions a:link,
-.file-actions a:active{
-    color:#444;
-}
-.btn-stretched{
-    display:block;width:100%
-}
-
-
-
-
-
-</style>
-<header style="width:100%">
-<nav class="clearfix" style="width:90%;margin:0 auto;padding:10px 0px">
-     <ul class="nav navbar-nav navbar-right">
-        <li >
-            <div class="user_info" style="font-size:14px">
-            <div><small>Logged in as</small></div>
-            <div><strong>{{ user }}</strong></div>
+    <!-- Logo Section -->
+    <div class="logo-area">
+        <div>
+            <img src="./public/assets/img/logo.png" /> <span> Content Tool</span>
+        </div>
+    </div><!-- /Logo Section -->
+    <style>
+        .board-legend{
+            height:20px;
+            text-align: center;
+        }
+        
+        .board-legend>div>label{
+            width:90px;
+            height:5px;
+            display:inline-block;
+            float:left;
+        }
+        .board-legend>div>div>label{
+            width:90px;
+            display:inline-block;
+            float:left;
+            font-weight:normal;
+            font-size:12px
+        }
+    </style>
+    <div class="board-legend">
+        <div class="pull-right" style="right:5%;position:relative">
+            <label class="open_status text"></label>
+            <label class="delivered text"></label>
+            <label class="transferred text"></label>
+            <label class="modified text"></label>
+            <label class="released text"></label>
             <div>
-        </li>
-        <li style="margin-left:10px"><button class="btn btn-danger" ui-sref="login">Logout</button></li>
-        <li>
-            <div class="logout"  data-toggle="dropdown">
-                <i class="fa fa-bars fa-3x"></i>
+                <label>Open</label>
+                <label>Delivered</label>
+                <label>Transferred</label>
+                <label>Modified</label>
+                <label>Released</label>
             </div>
-            <ul class="dropdown-menu">
-                <!--<li ui-sref="login"><a href="#" >Logout</a></li>-->
-                <li><a href="javascript:void(0)">Settings</a></li>
-                <li><a href="javascript:void(0)">Manual</a></li>
-            </ul>
-        </li>
-      </ul>
-    
-</nav>
-</nav>    
+        </div>
+        
+    </div>    
 </header>
-<div style="width:90%;min-height:70%;" >
+
+<settings temporary-node="temporary_node"></settings>
+
 <new-board modal-status="modal_status" change-status="changeModalStatus(status)" board-length="$parent.boards_names.length" board="$parent.boards_names" transfering-board="transferBoard(name, index)" add-new-board="addNewBoard(name, index)"></new-board>
 
-<!-- Modal -->
-<div id="deleteBoardPage" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content"><!--{{form_board.$valid}}-->
-            <div class="modal-body">
-                <i class="fa fa-times fa-2x close-times"  aria-hidden="true" data-dismiss="modal"></i>
-                <!-- BOARD -->
-                <div>
-                    <div style="padding:80px 80px 80px 80px">
-                        <div class="form-group login-title-holder">
-                            <h2 class="login-title" ><strong>Ooooops.<div>That will not work.</div></strong></h2>
-                        </div>
-                        <div class="form-group" style="margin-top:10px" >
-                            <p>This page contains sub-pages and therefore can not be deleted. Please delete the subpages first.</p>
-                        </div>
-                        <button type="button" class="btn btn-primary login-btn color-btn" data-dismiss="modal" data-ng-if="boardLength!==0">OKAY&nbsp;&nbsp;<i class="fa fa-check-square-o"></i> </button-->
-                    </div>
+<delete-page-modal></delete-page-modal>
+
+<delete-page-confirmation></delete-page-confirmation>
+
+<div class="body-app-container">
+    <!-- Board Navigation Menu -->
+    <nav class="navbar navbar-default navbar-static-top nav-bar-overiding no-bottom-margin" >
+        <ul class="nav navbar-nav"> 
+            <li ng-repeat="(index, board_name) in $parent.boards_names" ng-class="{'active': $index === selected_index}"  ng-if="$index<tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})">
+                <a href="#" >{{board_name.name}}</a>
+            </li> <!-- ng-click="setSelectedIndex($index)" -->
+            <li ng-show="$parent.boards_names.length > tab_limit">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More Boards <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" >
+                    <li ng-repeat="(index, board_name) in $parent.boards_names" ng-if="$index>=tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})" ><a href="#" >{{ board_name.name }}</a></li>
+                </ul>
+            </li>
+            <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ng-click="changeModalStatus('board')" ><i class="fa fa-plus"></i></li>
+        </ul>
+    </nav><!-- /Boardn Navigation Menu -->
+
+    <div class="content-tool-body clearfix">
+        <!-- A SIDE -->
+        <div class="pull-left aside">
+            <div class="nested-list-container">
+            <!-- <h1>{{ board.name}}</h1>-->
+                <button class="btn btn-primary login-btn color-btn pull-right new-page" ng-click="addNewPage()" >ADD NEW PAGE <i class="fa fa-file-text-o"></i></button>
+                <div ui-tree data-drag-enabled="tree.enabled" data-drag-delay="200" id="tree-root" ng-if="data.length>0">
+                    <ol ui-tree-nodes="" ng-model="data" >
+                        <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_render'" ></li>
+                    </ol>
                 </div>
-            </div>     
-        </div>
-    </div>
-</div>
-
-
-<div style="min-height:100%;width:90%;margin:0 auto">
-<nav class="navbar navbar-default navbar-static-top nav-bar-overiding no-bottom-margin" >
-    <ul class="nav navbar-nav"> 
-        <li ng-repeat="(index, board_name) in $parent.boards_names" ng-class="{'active': $index === selected_index}"  ng-if="$index<tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})">
-            <a href="#" >{{board_name.name}}</a>
-        </li> <!-- ng-click="setSelectedIndex($index)" -->
-        <li ng-show="$parent.boards_names.length > tab_limit">
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                More Boards <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" >
-                <li ng-repeat="(index, board_name) in $parent.boards_names" ng-if="$index>=tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})" ><a href="#" >{{ board_name.name }}</a></li>
-            </ul>
-        </li>
-        <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ng-click="changeModalStatus('board')" ><i class="fa fa-plus"></i></li>
-    </ul>
-    <!--<ul class="nav navbar-nav navbar-right">
-        <li >
-            <div class="user_info">
-            <div><small>Logged in as</small></div>
-            <div>{{ user }}</div>
-            <div>
-        </li>
-        <li style="margin-left:10px"><button class="btn btn-danger" ui-sref="login">Logout</button></li>
-        <li>
-            <div class="logout"  data-toggle="dropdown">
-                <i class="fa fa-bars fa-3x"></i>
             </div>
-            <ul class="dropdown-menu">
-                
-                <li><a href="javascript:void(0)">Settings</a></li>
-                <li><a href="javascript:void(0)">Manual</a></li>
-            </ul>
-        </li>
-      </ul>-->
-    
-</nav>
+        </div>    
+        <!-- /A SIDE -->
+        <!-- B SIDE -->
+        <div class="pull-left bside"><!--  -->
+            <div style="height:100%;position:relative;overflow-x:hidden">
+                <div class="bside-container">
 
-<div class="content-tool-body clearfix" style="border:1px solid #ccc;border-top:none">
-    <!-- A SIDE -->
-    
-    <div class="pull-left aside" style="max-height:100%;overflow-y:auto">
+                    <!-- B Side Close Button-->
+                    <div class="close-handle" ng-click="closeSidebar($event)" >
+                    <i class="fa fa-angle-left fa-2x" ng-class="{'fa-angle-right': close_sidebar, 'fa-angle-left': !close_sidebar}"></i> 
+                    </div><!-- /B Side Close Button-->
 
-        <div style="margin:25px 25px;position:relative">
-           <!-- <h1>{{ board.name}}</h1>-->
-            <button class="btn btn-primary login-btn color-btn pull-right" style="position:absolute;z-index:3;right:0%;" ng-click="addNewPage()" >ADD NEW PAGE <i class="fa fa-file-text-o"></i></button>
-            <div ui-tree data-drag-enabled="tree.enabled" data-drag-delay="200" id="tree-root" ng-if="data.length>0">
-                <ol ui-tree-nodes="" ng-model="data" >
-                    <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_render'" ></li>
-                </ol>
-            </div>
-        </div>
-    </div>    
-    <!-- /A SIDE -->
-
-    <!-- B SIDE -->
-    <div class="pull-left bside" style="max-height:100%;position:relative;right:0%; background-color:#fff"><!--  -->
-        <div class="bside-container">
-                <!-- B Side Close Button-->
-                <div class="close-handle" ng-click="closeSidebar($event)" >
-                <i class="fa fa-angle-left fa-2x" ng-class="{'fa-angle-right': close_sidebar, 'fa-angle-left': !close_sidebar}"></i> 
-                </div><!-- /B Side Close Button-->
-
-                <div ng-if="(temporary_node | isEmpty) !== true">
+                    
                     <!-- Upload file section-->
                     <div class="sidebar-content-wrapper">
                         <h2>{{temporary_node.title}}</h2>
-                        <p style="font-weight:bold">
-                            <span ng-repeat="($index, breadcrumb) in breadcrumbs track by $index">{{ breadcrumb }}  <i class="fa fa-chevron-right"></i> </span>
+                        <p class="breadcrumb">
+                            <span ng-repeat="($index, breadcrumb) in breadcrumbs track by $index">{{ breadcrumb }}  <i class="fa fa-angle-right"></i> </span>
                             <span>{{temporary_node.title}}</span>
                         </p>
                         <!--status of the site section -->
                         <div class="dropdown" style="display:inline-block">
-                            <button class="btn btn-default dropdown-toggle" type="button"  id="statuses" data-toggle="dropdown">Status of the page <i class="fa fa-angle-down"></i></button>
+                            <button class="btn btn-default dropdown-toggle btn-line-height" type="button"  id="statuses" data-toggle="dropdown">Status of the page <i class="fa fa-angle-down"></i></button>
                             <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
                                 <li ng-click="changeStatus('open')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'open', 'fa-check-square-o': temporary_node.status == 'open'}"></i> Open</a></li>
                                 <li ng-click="changeStatus('delivered')"><a href="javascript:void(0)" ><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'delivered', 'fa-check-square-o': temporary_node.status == 'delivered'}"></i> Delivered</a></li>
@@ -498,21 +137,31 @@ body{
                                 <li ng-click="changeStatus('released')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'released', 'fa-check-square-o': temporary_node.status == 'released'}"></i> Released</a></li>
                             </ul>
                         </div>
-                         <hr />
+                        <hr />
                         <!-- File Uplad Component -->
                         <file-upload></file-upload><!-- /File Uplad Component -->
                     </div><!-- Upload file section-->
 
                     <!-- File Table Header -->
-                    <div style="margin:0px 40px;font-weight:bold">
+                    <div class="file-table-header">
                         <div class="row">
                             <div class="col-md-3">Status</div>
                             <div class="col-md-6">Details</div>
                             <div class="col-md-3"><a ng-if="temporary_node.files" href="download_zip?url={{ setDownloadFolder(temporary_node.files[0].file_path) }}&page_name={{temporary_node.title.replace(' ', '_')}}">Download All (zip)</a></div>
                         </div>
                     </div><!-- /File Table Header -->
+
                     <!-- File Table Content Wrapper-->
                     <div class="file-content-wrapper">
+                        <div  ng-if="!temporary_node.files && temporary_node.files.length!==0">
+                             <div class="no-file">
+                                 <span class="fa-stack fa-lg">
+                                <i class="fa fa-file-text-o fa-stack-1x"></i>
+                                <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                            </span> 
+                            <span>There is no inserted files for this page</span>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <div ng-repeat="($index, file) in temporary_node.files track by $index">
                                 <div class="row">
@@ -520,7 +169,7 @@ body{
                                     <div class="col-md-2">
                                         <div  id="statuses" class="file-statuses" data-toggle="dropdown">
                                             <span class="file-status"  ng-class="{'open_status': file.file_status==='open', 'delivered': file.file_status==='delivered', 'transferred': file.file_status==='transferred', 'modified': file.file_status==='modified', 'released': file.file_status==='released'}"></span>
-                                            <span><i class="fa fa-angle-down" style="position:relative;margin-bottom:-10px; line-height:normal"></i></span>
+                                            <span><i class="fa fa-angle-down angle-down"></i></span>
                                     </div>
                                     <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
                                             <li ng-click="changeFileStatus($index, 'open')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'open', 'fa-check-square-o': file.file_status == 'open'}"></i> Open</a></li>
@@ -532,7 +181,7 @@ body{
                                     </div><!-- Status Column -->
                                     <!--file info column-->
                                     <div class="col-md-8">
-                                        <div class="" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"><strong>{{ file.file_name }}</strong></div>
+                                        <div class="file-name-container"><strong>{{ file.file_name }}</strong></div>
                                         <div>{{ file.file_date | toDate | date:"dd.MM.yy"}} | {{ file.user }}</div>
                                         <div class="file-comment">{{ file.file_comment}}</div>
                                         </div>
@@ -548,6 +197,8 @@ body{
                             </div>
                         </div>
                     </div><!-- /File Table Content Wrapper-->
+
+
                     <div class="sidebar-content-wrapper">
                         <div class="form-group input-group">
                             <input type="text" class="form-control" placeholder="Enter the URL of the old page..." ng-model="temporary_node.old_page_url"  >
@@ -565,33 +216,10 @@ body{
                             <button type="button" ng-click="deleteSelectedPage()"  class="btn btn-default btn-stretched" ><i class="fa fa-trash-o fa-2x"></i></button> <!--confirmed-click="deletePage()" confirm-click="Would you like to delete this page?"-->
                         </div>
                     </div>
-                </div>  
-                <div class="sidebar-content-wrapper" ng-if="(temporary_node | isEmpty) === true">
-                    <div class="clearfix" style="position:absolute;display:inline-block;margin:0px auto;top:40%; left:10%">
-                        <div class="fa-stack fa-lg fa-5x">
-                            <i class="fa fa-file-text-o fa-stack-1x" style="font-size: 73px;margin-top: 5px;"></i>
-                            <i class="fa fa-ban fa-stack-2x text-danger" style="font-size: 150px;"></i>
-                        </div>
-                         <div style="display:inline-block"><h2>There no selected page node</h2></div>
-                    </div>
-                   
+
                 </div>
-         
-        </div>
-
-
-
-    </div><!-- /B SIDE -->
+            <div>
+        </div><!-- /B SIDE -->
+    </div>
 </div>
-</div>
-</div>
-<script>
-/*<!--$('.bside').click(function(){
-    var elem_width = $(this).outerWidth();
-    console.log(elem_width)
-    $(this).animate({"right":"-"+elem_width+"px"}, 200, "swing");
-})-->*/
-</script>
-
-
-
+   

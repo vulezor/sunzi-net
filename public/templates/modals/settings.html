@@ -1,0 +1,33 @@
+<div id="settingsModal" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content"><!--{{form_board.$valid}}-->
+            <div class="modal-body">
+                <i class="fa fa-times fa-2x close-times"  aria-hidden="true" data-dismiss="modal"></i>
+                <!-- BOARD -->
+                <div>
+                    {{ temporaryNode | json }}
+                    <form name="rename_board"  ng-submit="rename_board.$valid && setNewName($event)" novalidate>
+                    <div style="padding:80px 80px 80px 80px">
+                        <div class="form-group login-title-holder">
+                            <h2 class="login-title" ><strong>Settings</strong></h2>
+                        </div>
+                        <div class="form-group" style="margin-top:10px" >
+                            <p>Change the name of your selected board.</p>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error': rename_board.$submitted && rename_board.board_name.$invalid }" >
+                                
+                                <input type="text" name="board_name" class="form-control input-lg" placeholder="Enter name..." autocomplete="off" ng-model="name" required />
+                                <div ng-messages="rename_board.$submitted && rename_board.board_name.$error" class="help-block">
+                                    <div ng-message="required">Name is required</div>
+                                </div>
+                            </div>
+                        <button type="submit" class="btn btn-primary login-btn color-btn">SAVE&nbsp;&nbsp;<i class="fa fa-check-home-o"></i> </button>
+                        <!--<button type="button" class="btn btn-default btn-line-height" , data-dismiss="modal" aria-label="Close">Cancel</button>-->
+                    </div>
+                    </form>
+                </div>
+            </div>     
+        </div>
+    </div>
+</div>
