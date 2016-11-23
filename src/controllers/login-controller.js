@@ -16,6 +16,8 @@
             vm.loading = true;
             AuthenticationService.Login(vm.username, function (result) {
                 if (result === true) {
+                    $scope.$parent.board_id =null;
+                    $scope.$parent.edit_board = null;
                     $window.sessionStorage.logged_in = true;
                     $location.path('/');
 

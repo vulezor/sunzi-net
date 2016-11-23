@@ -43,6 +43,7 @@ require('../src/directives/confirm-click.js');
 require('../src/directives/modals/delete-page-modal.js');
 require('../src/directives/modals/delete-page-confirmation.js');
 require('../src/directives/modals/settings.js');
+require('../src/directives/modals/delete-board-modal-error.js');
 
 //filters
 require('../src/filters/is-empty.js');

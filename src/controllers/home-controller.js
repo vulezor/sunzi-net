@@ -1,6 +1,6 @@
 ((modul)=>{
-    const homeController = ($scope, $http, $localStorage, $state, $stateParams, $timeout, $sessionStorage, $window)=>{
-    
+    const homeController = ($scope, $http, $localStorage, $state, $stateParams, $timeout, $sessionStorage, $window, $interval)=>{
+    let promise;
     //PARAMS 
     console.log($window.sessionStorage.logged_in);
     $scope.user = $localStorage.currentUser.user;  // set user from localstorage
@@ -50,10 +50,16 @@
             $scope.close_sidebar = false; 
             let elem_width = $('.bside-container').outerWidth();
             $('.bside-container').css({"margin-right":"-"+elem_width+"px"});
+            $scope.$parent.refreshBoardNames();
         },(error)=>{
             console.log(error);
         }); 
     }  
+    
+    
+    
+    
+  
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -62,9 +68,16 @@
      * @description ajax call to set board based and data on board id
      */
     $scope.getBoard = (index)=>{
-        $http.get('/get_board/'+index).then((response)=>{
-            $scope.board = response.data[0];
+        let data={}
+        
+        data.leaving_board_id = $scope.$parent.board_id;
+        data.edit_board = $scope.$parent.edit_board;
+       //console.log('PARAM',data);return false;
+        $http.get('/get_board/'+index, {params:data}).then((response)=>{
+            $scope.board = response.data[0]; 
             $scope.data = angular.copy(JSON.parse(response.data[0].data)); 
+            $scope.$parent.board_id = response.data[0].id;
+            $scope.$parent.edit_board = response.data[0].edit_board;
         },(error)=>{
             console.log(error)
         });
@@ -192,9 +205,11 @@
      * @description angular emulate triger click on hidden selector $('.bgColor').find('.minus') to add new node on tree (hidden button)
      */
     $scope.addNewPage = ()=>{
-        $timeout(()=>{
-            angular.element($('.bgColor').find('.minus')).triggerHandler('click');
-        }, 0);
+        if($scope.board.edit_board==="edit"){
+            $timeout(()=>{
+                angular.element($('.bgColor').find('.minus')).triggerHandler('click');
+            }, 0);
+        }
     }
 
      $scope.deletePage = ()=>{
@@ -217,12 +232,15 @@
      * @description On clicking text in tree element set input with that model title value and focus on it.
      */
     $scope.editPage = ($event, node)=>{
-        $scope.page_name = angular.copy(node.title);
-        node.edit = !node.edit;
-        var parent = $($event.target).parent();
-        $timeout(function(){
-                $('#page_name').focus().select();
-        }, 200);
+        if($scope.board.edit_board==="edit"){
+            $scope.page_name = angular.copy(node.title);
+            node.edit = !node.edit;
+            var parent = $($event.target).parent();
+            $timeout(function(){
+                    $('#page_name').focus().select();
+            }, 200);
+        }
+        
     }
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -383,29 +401,63 @@
     $scope.settingsModal = ()=>{
         $('#settingsModal').modal();
     }
+
+    $scope.changeBoardTitle = (title)=>{
+        $http.put("/update_board/"+$scope.board.id, {"name":title}).then((response)=>{
+            console.log(response.data);
+            $scope.$parent.boards_names[$scope.$parent.selected_index].name = title;
+            $scope.board.name = title;
+            $('#settingsModal').modal('hide');
+        },(error)=>{
+            console.log()
+        })
+    }
+
+    $scope.boardDelete = ()=>{
+       console.log(JSON.parse($scope.board.data).length);
+       console.log(JSON.parse($scope.board.data));
+        if(JSON.parse($scope.board.data).length === 0){
+            $http.delete("/delete_board/"+$scope.board.id).then((response)=>{
+                $('#settingsModal').modal('hide');
+                $timeout(()=>{
+                    $scope.$parent.boards_names.splice($scope.$parent.selected_index, 1);
+                    $scope.board = {};
+                    $state.go("boardDetails",{"index":0,"id":$scope.$parent.boards_names[0].id}); 
+                }, 300);
+            },(error)=>{
+                console.log()
+            });
+        } else {
+            console.log('modal')
+            $('#deleteBoard').modal();
+        }
+        
+    }
     
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
     //EVENTS
     $scope.$on('save-model-data', ()=>{
             console.log($scope.board.id);
             console.log($scope.data);
-            $http.put("/update_board/"+$scope.board.id, {"data":$scope.data}).then(
-                (response)=>{
-                    console.log(response.data);
-                },
-                (error)=>{
-                    console.log(error)
-                }
-            );
+            if($scope.board.edit_board === 'edit'){
+                $http.put("/update_board/"+$scope.board.id, {"data":$scope.data}).then(
+                    (response)=>{
+                    $scope.board.data = response.data[0].data;
+                    },
+                    (error)=>{
+                        console.log(error)
+                    }
+                );
+            }
     });
     
-   
+    
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+    $scope.$parent.stop();
     $scope.init(); //start page Initialization
 
 }
-homeController.$inject = ['$scope', '$http', '$localStorage', "$state", "$stateParams", "$timeout", "$sessionStorage", "$window"];
+homeController.$inject = ['$scope', '$http', '$localStorage', "$state", "$stateParams", "$timeout", "$sessionStorage", "$window", "$interval"];
 modul.controller('homeController', homeController); 
 
 

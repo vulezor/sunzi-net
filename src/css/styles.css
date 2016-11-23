@@ -493,3 +493,8 @@ html{
         padding-left:0px
 
     }
+    .badge-absolute{
+        margin-top:-5px;
+        margin-left:-10px;
+        position:absolute;
+    }

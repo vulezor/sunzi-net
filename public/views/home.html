@@ -67,7 +67,7 @@
     </div>    
 </header>
 
-<settings temporary-node="temporary_node"></settings>
+<settings change-title="changeBoardTitle(title)" del-board="boardDelete()" board-name="{{board.name}}"></settings>
 
 <new-board modal-status="modal_status" change-status="changeModalStatus(status)" board-length="$parent.boards_names.length" board="$parent.boards_names" transfering-board="transferBoard(name, index)" add-new-board="addNewBoard(name, index)"></new-board>
 
@@ -80,7 +80,7 @@
     <nav class="navbar navbar-default navbar-static-top nav-bar-overiding no-bottom-margin" >
         <ul class="nav navbar-nav"> 
             <li ng-repeat="(index, board_name) in $parent.boards_names" ng-class="{'active': $index === selected_index}"  ng-if="$index<tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})">
-                <a href="#" >{{board_name.name}}</a>
+                <a href="#" >{{board_name.name}}<span ng-if="board_name.user.length != 0 && board_name.user != user" class="badge progress-bar-danger badge-absolute"><i class="fa fa-lock"></i></span></a>
             </li> <!-- ng-click="setSelectedIndex($index)" -->
             <li ng-show="$parent.boards_names.length > tab_limit">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -128,7 +128,8 @@
                         </p>
                         <!--status of the site section -->
                         <div class="dropdown" style="display:inline-block">
-                            <button class="btn btn-default dropdown-toggle btn-line-height" type="button"  id="statuses" data-toggle="dropdown">Status of the page <i class="fa fa-angle-down"></i></button>
+                            <button class="btn btn-default dropdown-toggle btn-line-height" type="button"  id="statuses" ng-if="board.edit_board==='edit'" data-toggle="dropdown">Status of the page <i class="fa fa-angle-down"></i></button>
+                             <button class="btn btn-default dropdown-toggle btn-line-height" type="button" disabled ng-if="board.edit_board==='no_edit'"  id="statuses">Status of the page <i class="fa fa-angle-down"></i></button>
                             <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
                                 <li ng-click="changeStatus('open')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'open', 'fa-check-square-o': temporary_node.status == 'open'}"></i> Open</a></li>
                                 <li ng-click="changeStatus('delivered')"><a href="javascript:void(0)" ><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'delivered', 'fa-check-square-o': temporary_node.status == 'delivered'}"></i> Delivered</a></li>
@@ -167,11 +168,15 @@
                                 <div class="row">
                                     <!-- Status Column -->
                                     <div class="col-md-2">
-                                        <div  id="statuses" class="file-statuses" data-toggle="dropdown">
+                                        <div  id="statuses" class="file-statuses" data-toggle="dropdown" ng-if="board.edit_board==='edit'">
                                             <span class="file-status"  ng-class="{'open_status': file.file_status==='open', 'delivered': file.file_status==='delivered', 'transferred': file.file_status==='transferred', 'modified': file.file_status==='modified', 'released': file.file_status==='released'}"></span>
                                             <span><i class="fa fa-angle-down angle-down"></i></span>
-                                    </div>
-                                    <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
+                                        </div>
+                                         <div  id="statuses" class="file-statuses" ng-if="board.edit_board==='no_edit'">
+                                            <span class="file-status"  ng-class="{'open_status': file.file_status==='open', 'delivered': file.file_status==='delivered', 'transferred': file.file_status==='transferred', 'modified': file.file_status==='modified', 'released': file.file_status==='released'}"></span>
+                                            <span><i class="fa fa-angle-down angle-down"></i></span>
+                                        </div>
+                                        <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
                                             <li ng-click="changeFileStatus($index, 'open')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'open', 'fa-check-square-o': file.file_status == 'open'}"></i> Open</a></li>
                                             <li ng-click="changeFileStatus($index, 'delivered')"><a href="javascript:void(0)" ><i class="fa" ng-class="{'fa-square-o': file.file_status != 'delivered', 'fa-check-square-o': file.file_status == 'delivered'}"></i> Delivered</a></li>
                                             <li ng-click="changeFileStatus($index, 'transferred')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'transferred', 'fa-check-square-o': file.file_status == 'transferred'}"></i> Transfered</a></li>
@@ -201,19 +206,25 @@
 
                     <div class="sidebar-content-wrapper">
                         <div class="form-group input-group">
-                            <input type="text" class="form-control" placeholder="Enter the URL of the old page..." ng-model="temporary_node.old_page_url"  >
+                            <input type="text"  ng-if="board.edit_board==='edit'" class="form-control" placeholder="Enter the URL of the old page..." ng-model="temporary_node.old_page_url"  >
+                            <input type="text"  ng-if="board.edit_board==='no_edit'" class="form-control" disabled placeholder="Enter the URL of the old page..." ng-model="temporary_node.old_page_url"  >
                             <label class="input-group-btn">
-                                <span class="btn btn-default" ng-click="saveData()">
+                                <span class="btn btn-default" ng-if="board.edit_board==='edit'" ng-click="saveData()">
+                                    Save <i class="fa fa-lock "></i> 
+                                </span>
+                                <span class="btn btn-default" ng-if="board.edit_board==='no_edit'" >
                                     Save <i class="fa fa-lock "></i> 
                                 </span>
                             </label>
                         </div>
                         <label class="form-group">
-                            <input type="checkbox" ng-model="temporary_node.transfer" ng-true-value="'YES'" ng-false-value="'NO'"  value="temporary_node.transfer" /> Transfer the content completely from the old page
+                            <input type="checkbox" ng-if="board.edit_board==='edit'" ng-model="temporary_node.transfer" ng-true-value="'YES'" ng-false-value="'NO'"  value="temporary_node.transfer" />
+                            <input type="checkbox" ng-if="board.edit_board==='no_edit'" disabled ng-model="temporary_node.transfer" ng-true-value="'YES'" ng-false-value="'NO'"  value="temporary_node.transfer" /> Transfer the content completely from the old page
                         </label>
 
                         <div class="form-group"> 
-                            <button type="button" ng-click="deleteSelectedPage()"  class="btn btn-default btn-stretched" ><i class="fa fa-trash-o fa-2x"></i></button> <!--confirmed-click="deletePage()" confirm-click="Would you like to delete this page?"-->
+                            <button ng-if="board.edit_board==='edit'" type="button" ng-click="deleteSelectedPage()"  class="btn btn-default btn-stretched" ><i class="fa fa-trash-o fa-2x"></i></button>
+                            <button ng-if="board.edit_board==='no_edit'" type="button"  class="btn btn-default btn-stretched" ><i class="fa fa-trash-o fa-2x"></i></button> <!--confirmed-click="deletePage()" confirm-click="Would you like to delete this page?"-->
                         </div>
                     </div>
 

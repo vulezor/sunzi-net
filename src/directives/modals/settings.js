@@ -3,14 +3,18 @@
         return {
             restrict:'E',
             controller($scope){
-                $scope.name = $scope.temporaryNode.title;
                 $scope.setNewName = ()=>{
-                    console.log(name);
+                    $scope.changeTitle({title:$scope.boardName});
                 };
+                $scope.deleteBoard = ()=>{
+                    $scope.delBoard()
+                }
             },
             templateUrl:'./public/templates/modals/settings.html',
             scope:{
-                temporaryNode:"="
+                changeTitle:"&",
+                delBoard:"&",
+                boardName:"@"
             }
         }
     };

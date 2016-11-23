@@ -3,10 +3,14 @@ const interceptor = ($q, $localStorage)=>{
         request(request){
            /* console.log('request is done');*/
             request.params = request.params || {};
-            $('#loadicon').css({'display':'block'})
+            console.log(request);
+            if(request.url!=='/get_boards'){
+                $('#loadicon').css({'display':'block'})
+            }
             if ($localStorage.currentUser) {
                 console.log('TOKEN', $localStorage.currentUser.token);
-                request.params.access_token = $localStorage.currentUser.token;                        
+                request.params.access_token = $localStorage.currentUser.token; 
+                request.params.user = $localStorage.currentUser.user;                        
               //  request.headers.Authorization = 'Bearer ' + $localStorage.currentUser.token;
             }
            // console.log(request);

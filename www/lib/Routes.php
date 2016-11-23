@@ -49,6 +49,10 @@ Flight::route('PUT /update_board/@id', function($id){
     $index = Flight::boards()->insert_board($id);
 });
 
+Flight::route('DELETE /delete_board/@id', function($id){
+    $index = Flight::boards()->delete_board($id);
+});
+
 //file upload, download
 flight::route('POST /file_uploads/@id/@uid', function($id, $uid){
     $index = Flight::fileupload()->upload_files($id, $uid);

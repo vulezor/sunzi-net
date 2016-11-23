@@ -182,6 +182,7 @@
 			};
 
 			function buildNestableHtml(model, tpl){
+				
 				var root = $('<div class="dd"></div>');
 				var rootList = $('<ol class="dd-list"></ol>').appendTo(root);
 				model.forEach(function f(item){
