@@ -53,6 +53,17 @@ Flight::route('DELETE /delete_board/@id', function($id){
     $index = Flight::boards()->delete_board($id);
 });
 
+Flight::route('PUT /unlockboard/@id', function($id){
+   // print_r($id);die();
+    $index = Flight::boards()->unlock_board( (int) $id);
+});
+
+Flight::route('PUT /lockboard/@id/@user', function($id, $user){
+    //print_r($id);print_r($user);die();
+    $index = Flight::boards()->lock_board( (int) $id, $user);
+});
+
+
 //file upload, download
 flight::route('POST /file_uploads/@id/@uid', function($id, $uid){
     $index = Flight::fileupload()->upload_files($id, $uid);

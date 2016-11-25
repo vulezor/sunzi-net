@@ -13,9 +13,6 @@ class Boards extends Base_Controller
            $sql = "SELECT * FROM $this->table WHERE id= :id";
            $result = Flight::db()->get($sql, [':id'=>$id]);
            
-
-            
-
             if(isset($_GET['edit_board'])){
 
                 if($result[0]['lock']==1 && $result[0]['user'] == $_GET['user']){
@@ -71,8 +68,6 @@ class Boards extends Base_Controller
                 } 
             }
             
-           
-
         } else {
            $sql = "SELECT * FROM $this->table";
            $result = Flight::db()->get($sql);
@@ -81,7 +76,7 @@ class Boards extends Base_Controller
         echo json_encode($result);
     }
 
-    private function unlock_board($id=null){
+    public function unlock_board($id=null){
         //print_r($id);die();
          $where = 'id = "' . $id . '"';
             $data = array(
@@ -91,7 +86,7 @@ class Boards extends Base_Controller
             $result = Flight::db()->update($this->table, $data, $where);
     }
 
-    private function lock_board($id=null, $user=""){
+    public function lock_board($id=null, $user=""){
         //print_r($id);die();
          $where = 'id = "' . $id . '"';
             $data = array(

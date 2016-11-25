@@ -8,7 +8,7 @@
                 <div><strong>{{ user }}</strong></div>
                 <div>
             </li>
-            <li><button class="btn btn-danger logout-button" ui-sref="login">Logout</button></li>
+            <li><button class="btn btn-danger logout-button" data-ng-click="logOut()">Logout</button></li>
             <li>
                 <div class="logout"  data-toggle="dropdown">
                     <i class="fa fa-bars " style="font-size:30px;margin-top:3px;color:#777"></i>
@@ -66,17 +66,23 @@
         
     </div>    
 </header>
+<!-- Settings Modal Component -->
+<settings change-title="changeBoardTitle(title)" del-board="boardDelete()" board-name="{{board.name}}"></settings><!-- /Settings Modal Component -->
+<!-- New Board Modal -->
+<new-board modal-status="modal_status" change-status="changeModalStatus(status)" board-length="$parent.boards_names.length" board="$parent.boards_names" transfering-board="transferBoard(name, index)" add-new-board="addNewBoard(name, index)"></new-board><!-- /New Board Modal -->
+<!-- Delete Page Modal Component -->
+<delete-page-modal></delete-page-modal><!-- /Delete Page Modal Component -->
+<!-- Delete Page Conformation Component -->
+<delete-page-confirmation></delete-page-confirmation><!-- /Delete Page Conformation Component -->
+<!--<pre>{{temporary_node | json}}</pre>-->
+<confirm-delete-file confirm-delete-action="confirmDeleteFile(index)" delete-file-index="fileIndex"></confirm-delete-file>
 
-<settings change-title="changeBoardTitle(title)" del-board="boardDelete()" board-name="{{board.name}}"></settings>
+<stay-lock-modal confirm-delete-action="confirmDeleteFile(index)" delete-file-index="fileIndex"></stay-lock-modal>
 
-<new-board modal-status="modal_status" change-status="changeModalStatus(status)" board-length="$parent.boards_names.length" board="$parent.boards_names" transfering-board="transferBoard(name, index)" add-new-board="addNewBoard(name, index)"></new-board>
-
-<delete-page-modal></delete-page-modal>
-
-<delete-page-confirmation></delete-page-confirmation>
-
+<lock-board-modal></lock-board-modal>
 <div class="body-app-container">
     <!-- Board Navigation Menu -->
+    <!--<button data-ng-click="unlockboard()">Unlock</button>-->
     <nav class="navbar navbar-default navbar-static-top nav-bar-overiding no-bottom-margin" >
         <ul class="nav navbar-nav"> 
             <li ng-repeat="(index, board_name) in $parent.boards_names" ng-class="{'active': $index === selected_index}"  ng-if="$index<tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})">
@@ -93,7 +99,7 @@
             <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ng-click="changeModalStatus('board')" ><i class="fa fa-plus"></i></li>
         </ul>
     </nav><!-- /Boardn Navigation Menu -->
-
+        <!--<pre>{{ board | json }}</pre>-->
     <div class="content-tool-body clearfix">
         <!-- A SIDE -->
         <div class="pull-left aside">
@@ -148,7 +154,7 @@
                         <div class="row">
                             <div class="col-md-3">Status</div>
                             <div class="col-md-6">Details</div>
-                            <div class="col-md-3"><a ng-if="temporary_node.files" href="download_zip?url={{ setDownloadFolder(temporary_node.files[0].file_path) }}&page_name={{temporary_node.title.replace(' ', '_')}}">Download All (zip)</a></div>
+                            <div class="col-md-3"><a ng-if="temporary_node.files || temporary_node.files.length===0" href="download_zip?url={{ setDownloadFolder(temporary_node.files[0].file_path) }}&page_name={{temporary_node.title.replace(' ', '_')}}">Download All (zip)</a></div>
                         </div>
                     </div><!-- /File Table Header -->
 
@@ -193,7 +199,7 @@
                                     <div class="col-md-2"><!--file info column-->
                                         <!-- file Actions-->
                                         <div class="file-actions">
-                                            <a href="javascript:void(0)" ng-click="delete_file($index)" confirm-click="Would you like to delete this file?"><i class="fa fa-trash-o"></i></a>&nbsp;&nbsp;
+                                            <a href="javascript:void(0)" ng-click="delete_file($index)" ><i class="fa fa-trash-o"></i></a>&nbsp;&nbsp; <!--confirm-click="Would you like to delete this file?"-->
                                             <a href="file_download?mime={{ file.file_name | fileExtension }}&title={{ file.file_name }}&token={{file.file_path | Base64encode}}"><i class="fa  fa-download " ng-click="file_delete($index)"></i></a>
                                         </div><!-- file Actions-->
                                     </div>

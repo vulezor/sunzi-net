@@ -1,5 +1,5 @@
 
-module.exports = angular.module('sunzinet', ['ui.router','ngMessages', 'ngStorage', 'ui.tree', 'ngSessionStorage'])//'ui.tree'
+module.exports = angular.module('sunzinet', ['ui.router','ngMessages', 'ngStorage', 'ui.tree', 'ngSessionStorage','angular-beforeunload'])//'ui.tree'
 .config(['$httpProvider', '$stateProvider','$urlRouterProvider', ($httpProvider, $stateProvider, $urlRouterProvider)=>{
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
     $httpProvider.interceptors.push('interceptor');

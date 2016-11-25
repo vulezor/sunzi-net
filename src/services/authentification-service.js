@@ -1,6 +1,7 @@
 (()=>{
     var Service = ($http, $localStorage) => {
         var service = {
+
             Login(username, callback){
                 $http.post('/authentificate', { username: username }).then((response)=>{
                  //   console.log(response.data.length)
@@ -20,10 +21,11 @@
             },
 
             Logout(){
-            // remove user from local storage and clear http auth header
+                //remove user from local storage and clear http auth header
                 delete $localStorage.currentUser;
-             //   $http.defaults.headers.common.Authorization = '';*/
+                //$http.defaults.headers.common.Authorization = '';*/
             }
+
         };
 
         return service;

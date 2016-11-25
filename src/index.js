@@ -19,8 +19,7 @@ require('angular-messages');
 require('ng-storage');
 require('angular-sessionstorage');
 require('../bower_components/angular-ui-tree/dist/angular-ui-tree.js');
-
-
+require('angular-beforeunload');
 //App Configuration
 require('../src/app.js');
 
@@ -44,6 +43,9 @@ require('../src/directives/modals/delete-page-modal.js');
 require('../src/directives/modals/delete-page-confirmation.js');
 require('../src/directives/modals/settings.js');
 require('../src/directives/modals/delete-board-modal-error.js');
+require('../src/directives/modals/confirm-delete-file.js');
+require('../src/directives/modals/lock-board-modal.js');
+require('../src/directives/modals/stay-lock-modal.js');
 
 //filters
 require('../src/filters/is-empty.js');
