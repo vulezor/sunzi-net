@@ -80,6 +80,7 @@
 <stay-lock-modal confirm-delete-action="confirmDeleteFile(index)" delete-file-index="fileIndex"></stay-lock-modal>
 
 <lock-board-modal></lock-board-modal>
+
 <div class="body-app-container">
     <!-- Board Navigation Menu -->
     <!--<button data-ng-click="unlockboard()">Unlock</button>-->
@@ -154,7 +155,10 @@
                         <div class="row">
                             <div class="col-md-3">Status</div>
                             <div class="col-md-6">Details</div>
-                            <div class="col-md-3"><a ng-if="temporary_node.files || temporary_node.files.length===0" href="download_zip?url={{ setDownloadFolder(temporary_node.files[0].file_path) }}&page_name={{temporary_node.title.replace(' ', '_')}}">Download All (zip)</a></div>
+                            <div class="col-md-3">
+                                <!--<a ng-if="temporary_node.files || temporary_node.files.length===0" href="download_zip?url={{ setDownloadFolder(temporary_node.files[0].file_path) }}&page_name={{temporary_node.title.replace(' ', '_')}}">Download All (zip)</a>-->
+                                <a href="javascript:void(0)" ng-click="downloadZip()"><i class="fa  fa-download "></i> Download All (zip)</a>
+                            </div>
                         </div>
                     </div><!-- /File Table Header -->
 
@@ -200,7 +204,11 @@
                                         <!-- file Actions-->
                                         <div class="file-actions">
                                             <a href="javascript:void(0)" ng-click="delete_file($index)" ><i class="fa fa-trash-o"></i></a>&nbsp;&nbsp; <!--confirm-click="Would you like to delete this file?"-->
-                                            <a href="file_download?mime={{ file.file_name | fileExtension }}&title={{ file.file_name }}&token={{file.file_path | Base64encode}}"><i class="fa  fa-download " ng-click="file_delete($index)"></i></a>
+                                            <!--<a href="file_download?mime={{ file.file_name | fileExtension }}&title={{ file.file_name }}&token={{file.file_path | Base64encode}}"><i class="fa  fa-download "></i></a>-->
+                                    
+                                            <a download="{{file.file_name}}" href="{{file.file_path}}">
+                                                <i class="fa  fa-download "></i>
+                                            </a>
                                         </div><!-- file Actions-->
                                     </div>
                                 </div>
@@ -239,4 +247,10 @@
         </div><!-- /B SIDE -->
     </div>
 </div>
-   
+<script>
+$(document).ready(function(){
+   // $('body').append('<iframe style="display:none;" src="Board_name33.zip"></iframe>');
+    
+});
+ 
+</script>

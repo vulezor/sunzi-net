@@ -51978,7 +51978,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
 'use strict';
 
 (function (modul) {
-    var homeController = function homeController($scope, $http, $localStorage, $state, $stateParams, $timeout, $sessionStorage, $window, $interval, BeforeUnload, $location) {
+    var homeController = function homeController($scope, $http, $localStorage, $state, $stateParams, $timeout, $sessionStorage, $window, $interval, BeforeUnload, $location, $filter) {
         var promise = void 0;
         var logout_timeout = void 0;
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52039,7 +52039,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
         $scope.logoutTimeOut = function () {
             logout_timeout = $timeout(function () {
                 $scope.logOut();
-            }, 300000);
+            }, 300000); //300000
         };
 
         $scope.resetLogoutTime = function () {
@@ -52275,6 +52275,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
          * @description On clicking text in tree element set input with that model title value and focus on it.
          */
         $scope.editPage = function ($event, node) {
+            console.log("EVENT: ", $event);
             if ($scope.board.edit_board === "edit") {
                 $scope.page_name = angular.copy(node.title);
                 node.edit = !node.edit;
@@ -52506,6 +52507,50 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             }
         };
 
+        $scope.downloadZip = function () {
+
+            var path = void 0,
+                file_names = [];
+            path = $scope.temporary_node.files[0].file_path.split("/");
+            path.splice(path.length - 1, 1);
+            path = path.join("/");
+
+            $scope.temporary_node.files.forEach(function ($file) {
+                file_names.push($file.file_name);
+            });
+
+            var obj = {
+                board_name: $scope.temporary_node.title, //$scope.board.name.replace(" ", "_")+"-"
+                path: path,
+                file_names: file_names
+            };
+            console.log(obj);
+            $http.get('download_zip', { params: { zip_details: obj } }).then(function (response) {
+
+                $('body').append('<iframe style="display:none;" src="' + response.data.zip_name + '"></iframe>');
+            }, function (error) {
+                console.log(error);
+            });
+        };
+
+        $scope.downloadFile = function (title, token) {
+            var mime_type = void 0,
+                obj = void 0;
+            mime_type = $filter('fileExtension')(title);
+            token = $filter('Base64encode')(token);
+            obj = {
+                mime: mime_type,
+                title: title,
+                token: token
+            };
+            // $http.post('/file_download', obj).then((response)=>{
+            $('body').append('<iframe style="display:none;" src="' + title + '"></iframe>');
+            // },(error)=>{
+            console.log(error);
+            // });
+
+        };
+
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         //EVENTS
         $scope.$on('save-model-data', function () {
@@ -52526,7 +52571,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
         $scope.$parent.stop(); //stop ajax interval to check board lock
         $scope.init(); //start page Initialization
     };
-    homeController.$inject = ['$scope', '$http', '$localStorage', "$state", "$stateParams", "$timeout", "$sessionStorage", "$window", "$interval", "BeforeUnload", "$location"];
+    homeController.$inject = ['$scope', '$http', '$localStorage', "$state", "$stateParams", "$timeout", "$sessionStorage", "$window", "$interval", "BeforeUnload", "$location", "$filter"];
     modul.controller('homeController', homeController);
 })(angular.module('sunzinet'));
 

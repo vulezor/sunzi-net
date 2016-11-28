@@ -39,6 +39,8 @@ class File_Upload extends Base_Controller{
     }
 
     public function download_file(){
+
+        return false;
         if (empty($_GET['mime']) OR empty($_GET['token']))
         {
             exit('Invalid download token 8{');
@@ -84,49 +86,25 @@ class File_Upload extends Base_Controller{
     }
 
     public function download_zip(){
-        $dir = $_GET['url'];
-        $zip_file = str_replace(" ", "_", $_GET['page_name']);
-        $zip_file = $zip_file.'.zip';
-        $rootPath = realpath($dir);
-
-        // Initialize archive object
+        $data  = json_decode($_GET['zip_details']);
+      //  print_r($data->path); die();
         $zip = new ZipArchive();
-        $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-        // Create recursive directory iterator
-        /** @var SplFileInfo[] $files */
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($rootPath),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        foreach ($files as $name => $file)
-        {
-            // Skip directories (they would be added automatically)
-            if (!$file->isDir())
-            {
-                // Get real and relative path for current file
-                $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                // Add current file to archive
-                $zip->addFile($filePath, $relativePath);
-            }
+        $zip_name = $data->board_name."_all_files.zip"; // Zip name
+        if(file_exists($zip_name)) {
+            unlink($zip_name);
         }
-
-        // Zip archive will be created only after closing object
+        $zip->open($zip_name,  ZipArchive::CREATE);
+        $files = $data->file_names;
+        $path = $data->path.'/';
+        foreach ($files as $file) {
+            $p = $path.$file;
+            if(file_exists($p)){
+                $zip->addFromString(basename($p),  file_get_contents($p));  
+            } 
+        }
         $zip->close();
-
-
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename='.basename($zip_file));
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($zip_file));
-        readfile($zip_file);
+        
+        echo json_encode(array("zip_name"=>$zip_name));
     }
 }
 ?>
