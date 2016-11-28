@@ -15,9 +15,9 @@ class Templates extends Base_Controller
                  &nbsp;<i class="fa" ng-class="{\'fa-angle-down\': collapsed, \'fa-angle-up\': !collapsed}" style="font-size:18px;color:#929292;margin-top:3px;margin-left:20px;"></i>
               </a>
               <span data-ng-if="!node.edit" id="{{node.uid}}" data-ng-dblclick="editPage($event, node)" style="display:block;max-width:100%;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"> {{node.title}}  </span>
-              <span data-ng-if="node.edit"> <input type="text" id="page_name" data-ng-model="page_name" autofocus ng-blur="node.edit = !node.edit" ng-keypress="setNewValue($event, node)"/> </span> 
+              <span data-ng-if="node.edit"> <input type="text" id="page_name" data-ng-model="page_name" autofocus ng-blur="node.edit = !node.edit" esc-key="resetFilter()" ng-keypress="setNewValue($event, node)"/> </span> 
                <a class="pull-right btn btn-danger btn-xs plus" data-nodrag  ng-click="remove(this)"><i class="fa fa-plus"></i></a>
-              <a class="pull-right btn btn-primary btn-xs minus"  data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;">&nbsp;<i class="fa fa-minus"></i></a>
+               <a class="pull-right btn btn-primary btn-xs minus"  data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;">&nbsp;<i class="fa fa-minus"></i></a>
             </div>
   	       </div>
   	          <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">

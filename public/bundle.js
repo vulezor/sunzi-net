@@ -52295,6 +52295,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
          *              set node.edit to false tor remove input field and show node.title value instead.
          */
         $scope.setNewValue = function ($event, node) {
+            console.log($event.which);
             if ($event.which === 13) {
                 node.title = $($event.target).val();
                 node.edit = !node.edit;
@@ -52645,6 +52646,24 @@ var mainController = function mainController($scope, $http, $window, $localStora
 
     $scope.stop = function () {
         $interval.cancel(promise);
+    };
+
+    document.onkeydown = function (evt) {
+        evt = evt || window.event;
+        var isEscape = false;
+        if ("key" in evt) {
+            isEscape = evt.key == "Escape" || evt.key == "Esc";
+        } else {
+            isEscape = evt.keyCode == 27;
+        }
+        if (isEscape) {
+            console.log($('.nested-list-container').find("input[type='text']").length);
+            var input_field = $('.nested-list-container').find("input[type='text']");
+            if (input_field.length > 0) {
+                console.log($('.nested-list-container').find("input[type='text']").length);
+                input_field.trigger('blur');
+            };
+        }
     };
 
     /* $scope.onExit = ()=>{

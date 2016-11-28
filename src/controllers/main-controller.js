@@ -28,6 +28,24 @@ const mainController = ($scope, $http, $window, $localStorage, $location, $sessi
       $interval.cancel(promise);
     };
 
+    document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    var isEscape = false;
+    if ("key" in evt) {
+        isEscape = (evt.key == "Escape" || evt.key == "Esc");
+    } else {
+        isEscape = (evt.keyCode == 27);
+    }
+    if (isEscape) {
+        console.log($('.nested-list-container').find("input[type='text']").length);
+        var input_field = $('.nested-list-container').find("input[type='text']");
+        if(input_field.length>0){
+            console.log($('.nested-list-container').find("input[type='text']").length);
+            input_field.trigger('blur');
+        };
+    }
+};
+
     /* $scope.onExit = ()=>{
          var message = 'If you live your session will expire';
             if (!event) {

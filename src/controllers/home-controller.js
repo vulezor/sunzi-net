@@ -324,6 +324,7 @@
          *              set node.edit to false tor remove input field and show node.title value instead.
          */
         $scope.setNewValue= function($event, node){
+            console.log($event.which)
             if($event.which === 13){
                 node.title = $($event.target).val();
                 node.edit = !node.edit;
