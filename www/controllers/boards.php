@@ -7,91 +7,73 @@ class Boards extends Base_Controller
     public function __construct(){
         parent::__construct();
     }
-    public function get_boards($id=null){
+    public function get_boards($id=null, $user=null){
+        
         
         if($id){
-           $sql = "SELECT * FROM $this->table WHERE id= :id";
-           $result = Flight::db()->get($sql, [':id'=>$id]);
-           
-            if(isset($_GET['edit_board'])){
-
-                if($result[0]['lock']==1 && $result[0]['user'] == $_GET['user']){
-                    $this->unlock_board( (int) $_GET['leaving_board_id'] );
-                    $this->lock_board( (int) $id, $_GET['user'] );
-                    $result[0]['edit_board'] = 'edit';
-                } 
-
-                if($result[0]['lock']==1 && $result[0]['user'] != $_GET['user'] &&  $_GET['edit_board']=='edit'){
-                    $this->unlock_board( (int) $_GET['leaving_board_id'] );
-                    $result[0]['edit_board'] = 'no_edit';
-                } 
-                if($result[0]['lock']==1 && $result[0]['user'] != $_GET['user'] &&  $_GET['edit_board']=='no_edit'){
-                     $result[0]['edit_board'] = 'no_edit';
-                }
-
-                if($result[0]['lock']==0 &&  $_GET['edit_board']=='edit') {
-                    if(isset($_GET['leaving_board_id'])){
-                        $this->unlock_board( (int) $_GET['leaving_board_id'] );
-                    }
-                    $result[0]['edit_board'] = 'edit';
-                    $this->lock_board( (int) $id, $_GET['user'] );
-                } 
-
-                if($result[0]['lock']==0 &&  $_GET['edit_board']=='no_edit') {
-                    $result[0]['edit_board'] = 'edit';
-                    $this->lock_board( (int) $id, $_GET['user'] );
-                } 
-
-            } else {
-
-                if($result[0]['lock']==0) {
-                    $result[0]['edit_board'] = 'edit';
-                    if(isset($_GET['leaving_board_id'])){
-                        $this->unlock_board( (int) $_GET['leaving_board_id'] );
-                    }
-                    $this->lock_board( (int) $id, $_GET['user'] );
-                }
-
-                if($result[0]['lock']==1 && $result[0]['user'] != $_GET['user']){
-                    if(isset($_GET['leaving_board_id'])){
-                        $this->unlock_board((int) $_GET['leaving_board_id']);
-                    }
-                    $result[0]['edit_board'] = 'no_edit';
-                }
-
-                 if($result[0]['lock']==1 && $result[0]['user'] == $_GET['user']){
-                     if(isset($_GET['leaving_board_id'])){
-                    $this->unlock_board( (int) $_GET['leaving_board_id'] );
-                     }
-                    $this->lock_board( (int) $id, $_GET['user'] );
-                    $result[0]['edit_board'] = 'edit';
-                } 
-            }
             
+            $sql = "SELECT * FROM $this->table WHERE id= :id";
+            $result = Flight::db()->get($sql, [':id'=>$id]);
+            //unlocking/locking board
+            if($id && $user){
+                $sql = "SELECT * FROM $this->table WHERE user= :user";
+                $check = Flight::db()->get($sql, [':user'=>$user]);
+                foreach($check as $key=>$value){
+                    if($value['user'] == $user){
+                        $this->unlock_board( (int) $value['id'] );
+                    }
+                }
+                if($result[0]['lock']==0 && $result[0]['user'] == ""){
+                    $this->lock_board( (int) $id, $user);
+                    $result[0]['edit_board'] = 'edit';
+                } else {
+                    $result[0]['edit_board'] = 'no_edit';
+                }
+            }
+
         } else {
            $sql = "SELECT * FROM $this->table";
            $result = Flight::db()->get($sql);
+        }
+
+        if(isset($_GET["temp_board_id"])){
+           
+            $temp_board_id = (int) $_GET["temp_board_id"];
+            $user = $_GET["user"];
+            $sql = "SELECT * FROM $this->table WHERE id= :id";
+            $check_result = Flight::db()->get($sql, [':id'=>$temp_board_id]);
+           
+            if($check_result[0]['lock']==0 && $check_result[0]['user']==""){
+                $this->lock_board($temp_board_id, $user);
+                $check_result[0]['edit_board'] = 'edit';
+                $check_result[0]['lock'] = 1;
+                $check_result[0]['user'] = $user;
+                $result[] = $check_result[0];
+            } else {
+                $check_result[0]['edit_board'] = 'no_edit';
+                $result[] = $check_result[0];
+            }
         }
         header("Content-type: application/json");
         echo json_encode($result);
     }
 
     public function unlock_board($id=null){
-        //print_r($id);die();
          $where = 'id = "' . $id . '"';
             $data = array(
                 "lock"=>0,
-                "user"=>""
+                "user"=>"",
+                "modified" => date('Y-m-d H:i:s')
             );
             $result = Flight::db()->update($this->table, $data, $where);
     }
-
+  
     public function lock_board($id=null, $user=""){
-        //print_r($id);die();
          $where = 'id = "' . $id . '"';
             $data = array(
                 "lock"=>1,
-                "user"=>$user
+                "user"=>$user,
+                "modified" => date('Y-m-d H:i:s')
             );
             $result = Flight::db()->update($this->table, $data, $where);
     }
@@ -103,6 +85,7 @@ class Boards extends Base_Controller
             $where = 'id = "' . $id . '"';
             if(isset($data['data'])){
                  $data['data'] = json_encode($data['data']);
+                 $data['modified'] = date('Y-m-d H:i:s');
             }
             $result = Flight::db()->update($this->table, $data, $where);
         }else {

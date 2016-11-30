@@ -12,6 +12,7 @@ require('angular');
 require('bootstrap');
 require('../src/js/jquery-nestable.js');
 require('../src/js/nano-scroler.js');
+require('../src/js/custom.js');
 
 //Angular Plugins
 require('angular-ui-router');

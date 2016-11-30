@@ -4,9 +4,9 @@
         let logout_timeout;
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         //ANGULAR PARAMS 
-        console.log($window.sessionStorage.logged_in);
+       // console.log($window.sessionStorage.logged_in);
         $scope.user = $localStorage.currentUser.user;  // set user from localstorage
-        $scope.tab_limit = 5;                          // tab limit to show more boards button
+                                  // tab limit to show more boards button
         $scope.board = [];                             // represent current board 
         $scope.page_name ='';                          // temporary string in input field on edit title in tree item before save to node.title
         $scope.data = [];                              // represent tree list data.
@@ -15,6 +15,8 @@
         $scope.breadcrumbs = [];
         $scope.modal_status = 'board';
         $scope.fileIndex = null;
+        $scope.focus_screen = true;
+        $scope.tab_limit = 7;
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         //METHODS
         /**
@@ -25,27 +27,36 @@
                 $scope.resetLogoutTime();
             });
         });
+        
+        window.addEventListener('focus', function() {
+            $scope.focus_screen = true;
+        });
+
+        window.addEventListener('blur', function() {
+            $scope.focus_screen = false;
+        });
 
         window.onbeforeunload = function() {
-            console.log($scope.board);
             $scope.$apply(function(){
                 $scope.unlockboard();
             });
             $('#stayLockdModal').modal();
-            
-            return 'sfsd';
+            return false;
         };
+        
         
        
        $scope.logOut=()=>{
-            $location.path('/login');
             $scope.unlockboard();
-          
+            $scope.$parent.stop();  
+            $location.path('/login');
+            
        }
 
         $scope.unlockboard = ()=>{
             $http.put('unlockboard/'+$scope.board.id).then((response)=>{
-                console.log(response.data);
+              //  console.log('unlock');
+               // console.log(response.data);
             },(error)=>{
                 console.log(error)
             });
@@ -53,29 +64,31 @@
 
         $scope.lockboard=()=>{
             $http.put('lockboard/'+$scope.board.id+'/'+$scope.user).then((response)=>{
-                console.log(response.data);
+             //   console.log(response.data);
             },(error)=>{
                 console.log(error);
             });
         };
 
         
-        $scope.logoutTimeOut = ()=>{
+        $scope.logoutTimeOut=()=>{
             logout_timeout = $timeout(()=>{
                 $scope.logOut();
-            }, 300000);//300000
+            }, 300000);//5min
         };
             
      
-        $scope.resetLogoutTime = ()=>{
-            console.log('reset');
-            $timeout.cancel(logout_timeout);
-            $scope.logoutTimeOut();
+        $scope.resetLogoutTime=()=>{
+            if($scope.focus_screen){
+                $timeout.cancel(logout_timeout);
+                $scope.logoutTimeOut();
+            }
         };
        
         
-        $scope.init = ()=>{
+        $scope.init=()=>{
             //console.log("LOGEDIN: ",sessionStorage.logged_in);
+            $scope.$parent.stop(); 
             $http.get('/get_boards').then((response)=>{
                 $scope.$parent.boards_names = response.data;
                 if($scope.$parent.boards_names.length === 0){
@@ -120,12 +133,12 @@
             let data={};
             data.leaving_board_id = $scope.$parent.board_id;
             data.edit_board = $scope.$parent.edit_board;
-            $http.get('/get_board/'+index, {params:data}).then((response)=>{
+            $http.get('/get_board/'+index+'/'+$scope.user, {params:data}).then((response)=>{
                 $scope.board = response.data[0]; 
                 $scope.data = angular.copy(JSON.parse(response.data[0].data)); 
                 $scope.$parent.board_id = response.data[0].id;
                 $scope.$parent.edit_board = response.data[0].edit_board;
-                console.log($localStorage.currentUser.user);
+               // console.log($localStorage.currentUser.user);
                 if($scope.board.user != $localStorage.currentUser.user && $scope.board.user !="" ){
                     $('#lockBoardModal').modal();
                 }
@@ -165,6 +178,7 @@
         }
         
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         /**
          * @param name string name of the new board
          * @description Save new board with name and template data 
@@ -192,7 +206,7 @@
 
         $scope.transferBoard = (name, index)=>{
             if(index!==''){
-                $http.get('/get_board/'+index).then((response)=>{
+                $http.get('/get_board_transfer/'+index).then((response)=>{
                     let board = response.data[0];
                     let data = angular.copy(JSON.parse(response.data[0].data)); 
                     $scope.deleteFiles(data);
@@ -268,7 +282,7 @@
                   $scope.data= obj; 
                   $scope.saveData();
                   $timeout(()=>{
-                      console.log('edit')
+                     // console.log('edit')
                         angular.element('#'+obj[0].uid).triggerHandler('dblclick');
                   }, 200);
                 } else {
@@ -290,7 +304,16 @@
         }
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+        $scope.saveOldLink = ()=>{
+            let old_page_url = $('#old_page_url').val();
+            if($("#transfer_oldcontent").is(":checked")){
+                $scope.temporary_node.transfer = "YES";
+            } else {
+                $scope.temporary_node.transfer = "NO"
+            }
+            $scope.temporary_node.old_page_url = old_page_url;
+            $scope.$emit('save-model-data');
+        }
         $scope.saveData = ()=>{
             $scope.$emit('save-model-data');
         }
@@ -303,7 +326,7 @@
          * @description On clicking text in tree element set input with that model title value and focus on it.
          */
         $scope.editPage = ($event, node)=>{
-            console.log("EVENT: ", $event);
+           // console.log("EVENT: ", $event);
             if($scope.board.edit_board==="edit"){
                 $scope.page_name = angular.copy(node.title);
                 node.edit = !node.edit;
@@ -324,7 +347,7 @@
          *              set node.edit to false tor remove input field and show node.title value instead.
          */
         $scope.setNewValue= function($event, node){
-            console.log($event.which)
+          //  console.log($event.which)
             if($event.which === 13){
                 node.title = $($event.target).val();
                 node.edit = !node.edit;
@@ -420,7 +443,32 @@
             result.splice(result.length-1, 1);
             result.splice(0, 1);   
             $scope.breadcrumbs = result.reverse();
+        
+           
+            
+          
             $scope.temporary_node = node;
+
+            if($scope.temporary_node.old_page_url){
+                //console.log($scope.temporary_node.old_page_url);
+                if($scope.temporary_node.old_page_url.length===0){
+                    $('#old_page_url').val("");
+                } else {
+                    $('#old_page_url').val($scope.temporary_node.old_page_url); 
+                } 
+            } else {
+                $('#old_page_url').val("");
+            }
+
+            if($scope.temporary_node.transfer){
+                if($scope.temporary_node.transfer==="YES"){
+                    $("#transfer_oldcontent").prop( "checked", true );
+                } else {
+                    $("#transfer_oldcontent").prop( "checked", false );
+                }
+            } else {
+                $("#transfer_oldcontent").prop( "checked", false );
+            }
         }
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -445,7 +493,6 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $scope.changeFileStatus = ($index, status)=>{
-            console.log($scope.temporary_node.files[$index].file_status);
             $scope.temporary_node.files[$index].file_status = status;
             $scope.$emit('save-model-data');
         };
@@ -459,13 +506,11 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $scope.delete_file = ($index)=>{
-            console.log($index);
             $scope.fileIndex = $index;
             $('#deleteBoardPageFileConformation').modal();
         };
 
         $scope.confirmDeleteFile = (index)=>{
-            console.log(index);
             var files = angular.copy($scope.temporary_node.files);
             files.splice(index, 1)
             if(files.length===0){
@@ -512,12 +557,12 @@
 
         $scope.changeBoardTitle = (title)=>{
             $http.put("/update_board/"+$scope.board.id, {"name":title}).then((response)=>{
-                console.log(response.data);
+                //console.log(response.data);
                 $scope.$parent.boards_names[$scope.$parent.selected_index].name = title;
                 $scope.board.name = title;
                 $('#settingsModal').modal('hide');
             },(error)=>{
-                console.log()
+                console.log(error)
             })
         }
 
@@ -541,7 +586,6 @@
         }
 
         $scope.downloadZip = ()=>{
-           
             let path, file_names= [];
                 path = $scope.temporary_node.files[0].file_path.split("/");
                 path.splice(path.length-1, 1);
@@ -556,42 +600,23 @@
                 path:path,
                 file_names:file_names
             };
-            console.log(obj);
             $http.get('download_zip', {params:{zip_details:obj}}).then((response)=>{
-            
-
-                    $('body').append('<iframe style="display:none;" src="'+response.data.zip_name+'"></iframe>');
-
-    
+                $('body').append('<iframe style="display:none;" src="'+response.data.zip_name+'"></iframe>');
             },(error)=>{
                 console.log(error);
-            })
+            });
         }
 
-        $scope.downloadFile = (title, token)=>{
-            let mime_type, obj;
-            mime_type =  $filter('fileExtension')(title);
-            token = $filter('Base64encode')(token);
-            obj={
-                mime:mime_type,
-                title: title,
-                token:token
-            };
-           // $http.post('/file_download', obj).then((response)=>{
-                $('body').append('<iframe style="display:none;" src="'+title+'"></iframe>');
-           // },(error)=>{
-                console.log(error);
-           // });
-            
-           
+        $scope.downloadFile = (title)=>{
+            $('body').append('<iframe style="display:none;" src="'+title+'"></iframe>');
         }
         
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         //EVENTS
         $scope.$on('save-model-data', ()=>{
-                console.log($scope.board.id);
+               /*console.log($scope.board.id);
                 console.log($scope.data);
-                console.log('snimaj');
+                console.log('snimaj');*/
                 if($scope.board.edit_board==='edit'){
                     $http.put("/update_board/"+$scope.board.id, {"data":$scope.data}).then(
                         (response)=>{
@@ -603,12 +628,37 @@
                     );
                 }
         });
+
+        $scope.$on('get-temp-board', ()=>{
+            //console.log($scope.board.id);
+            $scope.$parent.temp_board_id = $scope.board.id;
+            $scope.$parent.board_user = $scope.user;
+        });
+
+        $scope.$on('check-locked-board', (event, board_data)=>{
+            if($scope.edit_board=="no_edit"){
+                if(board_data.edit_board=="edit"){
+                    $scope.board = board_data; 
+                    $scope.data = angular.copy(JSON.parse(board_data.data)); 
+                    $scope.$parent.board_id = board_data.id;
+                    $scope.$parent.edit_board = response.data[0].edit_board;
+                    $scope.edit_board = "edit";
+                }
+
+            }
+        });
         
+        $scope.$on('$stateChangeStart',(event, toState, toParams, fromState, fromParams)=>{
+                $timeout.cancel(logout_timeout);
+                //$timeout.cancel(promise_value);
+                $scope.$parent.stop(); 
+        });
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        $scope.$parent.stop(); //stop ajax interval to check board lock
+       //stop ajax interval to check board lock
         $scope.init(); //start page Initialization
     };
     homeController.$inject = ['$scope', '$http', '$localStorage', "$state", "$stateParams", "$timeout", "$sessionStorage", "$window", "$interval", "BeforeUnload", "$location", "$filter"];
     modul.controller('homeController', homeController); 
 })(angular.module('sunzinet'));
+ 

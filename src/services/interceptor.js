@@ -5,7 +5,7 @@ const interceptor = ($q, $localStorage)=>{
             request.params = request.params || {};
             //console.log(request);
             if(request.url!=='/get_boards'){
-                $('#loadicon').css({'display':'block'})
+                $('#loadicon').stop().fadeIn()
             }
             if ($localStorage.currentUser) {
                // console.log('TOKEN', $localStorage.currentUser.token);
@@ -14,16 +14,17 @@ const interceptor = ($q, $localStorage)=>{
               //  request.headers.Authorization = 'Bearer ' + $localStorage.currentUser.token;
             }
            // console.log(request);
-                return request;
+                return request; 
         },
         response(response){
           /*  console.log('RESPONSE', response)
             console.log('response is done');*/
-            $('#loadicon').css({'display':'none'})
+            $('#loadicon').stop().fadeOut()
             return response;
         },
         responseError(rejection){
             /*console.log('Failed with', rejection.status, 'status');*/
+            $('#loadicon').stop().fadeOut() 
             return $q.reject(rejection); 
         }
     }

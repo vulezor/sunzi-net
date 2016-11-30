@@ -37,7 +37,11 @@ Flight::route('GET /get_boards', function(){
     $index = Flight::boards()->get_boards();
 });
 
-Flight::route('GET /get_board/@id', function($id){
+Flight::route('GET /get_board/@id/@user', function($id, $user){
+    $index = Flight::boards()->get_boards($id, $user);
+});
+
+Flight::route('GET /get_board_transfer/@id', function($id){
     $index = Flight::boards()->get_boards($id);
 });
 
