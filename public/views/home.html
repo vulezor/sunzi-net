@@ -85,7 +85,7 @@
             </div>    
             <!-- /A SIDE -->
             <!-- B SIDE -->
-            <div class="pull-left bside"><!--  -->
+            <div class="pull-left bside">
                 <div style="height:100%;position:relative;overflow-x:hidden">
                     <div class="bside-container">
         
@@ -181,7 +181,12 @@
                                                 </a>
                                             </div><!-- file Actions-->
                                         </div>
+                                        <div class="">
+                                         <file-upload></file-upload><!-- /File Uplad Component -->
                                     </div>
+                                    </div>
+                                    
+                                   
                                     <hr ng-if="$index !== temporary_node.files.length - 1" />
                                 </div>
                             </div>
@@ -217,15 +222,19 @@
         </div>
     </div>
 </div>
+
 <!-- Settings Modal Component -->
 <settings change-title="changeBoardTitle(title)" del-board="boardDelete()" board-name="{{board.name}}"></settings><!-- /Settings Modal Component -->
+
 <!-- New Board Modal -->
 <new-board modal-status="modal_status" change-status="changeModalStatus(status)" board-length="$parent.boards_names.length" board="$parent.boards_names" transfering-board="transferBoard(name, index)" add-new-board="addNewBoard(name, index)"></new-board><!-- /New Board Modal -->
+
 <!-- Delete Page Modal Component -->
 <delete-page-modal></delete-page-modal><!-- /Delete Page Modal Component -->
+
 <!-- Delete Page Conformation Component -->
 <delete-page-confirmation></delete-page-confirmation><!-- /Delete Page Conformation Component -->
-<!--<pre>{{temporary_node | json}}</pre>-->
+
 <confirm-delete-file confirm-delete-action="confirmDeleteFile(index)" delete-file-index="fileIndex"></confirm-delete-file>
 
 <stay-lock-modal confirm-delete-action="confirmDeleteFile(index)" delete-file-index="fileIndex"></stay-lock-modal>
