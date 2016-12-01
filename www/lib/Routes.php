@@ -73,6 +73,7 @@ flight::route('POST /file_uploads/@id/@uid', function($id, $uid){
     $index = Flight::fileupload()->upload_files($id, $uid);
 });
 
+
 flight::route('GET /file_download', function(){
     $index = Flight::fileupload()->download_file();
 });

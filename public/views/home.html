@@ -1,3 +1,11 @@
+<style>
+    .dropdown-menu>li>a.fake-status{
+        clear: both;
+        font-weight: 400;
+        color: #ccc;
+    }
+</style>
+
 <header>
     <!-- Settings Logout section -->
     <nav>
@@ -32,22 +40,26 @@
             </div>
         </div>
     </div><!-- /Logo Section -->
-    <div class="container board-legend">
-        <div class="pull-right" style="right:5%;position:relative">
-            <label class="open_status text"></label>
-            <label class="delivered text"></label>
-            <label class="transferred text"></label>
-            <label class="modified text"></label>
-            <label class="released text"></label>
-            <div>
-                <label>Open</label>
-                <label>Delivered</label>
-                <label>Transferred</label>
-                <label>Modified</label>
-                <label>Released</label>
+    <div class="board-legend">
+        <div class="container">
+            <div class="board-legend-inner">
+                <div>
+                    <span class="open_status legend-narrow"></span>
+                    <span class="delivered"></span>
+                    <span class="transferred"></span>
+                    <span class="modified"></span>
+                    <span class="released"></span>
+                </div>
+                <div>
+                    <label class="legend-narrow">Open</label>
+                    <label>Delivered</label>
+                    <label>Transferred</label>
+                    <label>Modified</label>
+                    <label>Released</label>
+                </div>
             </div>
         </div>
-    </div> 
+    </div>
 </header>
 <div class="body-app-container">
     <div class="container">
@@ -66,10 +78,11 @@
                         <li ng-repeat="(index, board_name) in $parent.boards_names" ng-if="$index>=tab_limit" ui-sref="boardDetails({index:index ,id: board_name.id})" ><a href="#" >{{ board_name.name }}</a></li>
                     </ul>
                 </li>
-                <li><button class="btn btn-default dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ng-click="changeModalStatus('board')" ><i class="fa fa-plus"></i></li>
+                <li><button class="btn btn-transparent btn-new dropdown-toggle" type="button" data-toggle="modal" data-target="#newBoardModal" ng-click="changeModalStatus('board')" >+</li>
             </ul>
         </nav><!-- /Boardn Navigation Menu -->
-            <!--<pre>{{ board | json }}</pre>-->
+
+        <!--<pre>{{ board | json }}</pre>-->
         <div class="content-tool-body clearfix">
             <!-- A SIDE -->
             <div class="pull-left aside">
@@ -109,9 +122,17 @@
                                 <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
                                     <li ng-click="changeStatus('open')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'open', 'fa-check-square-o': temporary_node.status == 'open'}"></i> Open</a></li>
                                     <li ng-click="changeStatus('delivered')"><a href="javascript:void(0)" ><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'delivered', 'fa-check-square-o': temporary_node.status == 'delivered'}"></i> Delivered</a></li>
-                                    <li ng-click="changeStatus('transferred')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'transferred', 'fa-check-square-o': temporary_node.status == 'transferred'}"></i> Transfered</a></li>
-                                    <li ng-click="changeStatus('modified')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'modified', 'fa-check-square-o': temporary_node.status == 'modified'}"></i> Modified</a></li>
-                                    <li ng-click="changeStatus('released')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'released', 'fa-check-square-o': temporary_node.status == 'released'}"></i> Released</a></li>
+                                    
+                                    <li  ng-click="changeStatus('transferred')" ng-if="pageStatusLimit==='transferred' || pageStatusLimit==='modified' || pageStatusLimit==='released'"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'transferred', 'fa-check-square-o': temporary_node.status == 'transferred'}"></i> Transfered</a></li>
+                                    <li style="color:#ccc" ng-if="pageStatusLimit!='transferred' && pageStatusLimit!='modified' && pageStatusLimit!='released'" ><a href="javascript:void(0)" class="fake-status"><i class="fa fa-square-o"></i> Transfered</a></li>
+                                    
+                                    
+                                    <li ng-click="changeStatus('modified')" ng-if="pageStatusLimit==='modified' || pageStatusLimit==='released'"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'modified', 'fa-check-square-o': temporary_node.status == 'modified'}"></i> Modified</a></li>
+                                    <li ng-if="pageStatusLimit!=='modified' && pageStatusLimit!=='released'"><a href="javascript:void(0)" class="fake-status"><i class="fa fa-square-o"></i> Modified</a></li>
+                                    
+                                    <li ng-click="changeStatus('released')" ng-if="pageStatusLimit==='released'"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'released', 'fa-check-square-o': temporary_node.status == 'released'}"></i> Released</a></li>
+                                    <li ng-if="pageStatusLimit!=='released'"><a href="javascript:void(0)" class="fake-status"><i class="fa fa-square-o"></i> Released</a></li>
+                                
                                 </ul>
                             </div>
                             <hr />
@@ -144,6 +165,7 @@
                             </div>
                             <div class="form-group">
                                 <div ng-repeat="($index, file) in temporary_node.files track by $index">
+                                   
                                     <div class="row">
                                         <!-- Status Column -->
                                         <div class="col-md-2">
@@ -164,29 +186,26 @@
                                             </ul>
                                         </div><!-- Status Column -->
                                         <!--file info column-->
-                                        <div class="col-md-8">
+                                        <div class="col-md-7">
                                             <div class="file-name-container"><strong>{{ file.file_name }}</strong></div>
                                             <div>{{ file.file_date | toDate | date:"dd.MM.yy"}} | {{ file.user }}</div>
                                             <div class="file-comment">{{ file.file_comment}}</div>
                                             </div>
-                                        <div class="col-md-2"><!--file info column-->
+                                        <div class="col-md-3 action-links"><!--file info column-->
                                             <!-- file Actions-->
                                             <div class="file-actions">
                                                 <a href="javascript:void(0)" ng-click="delete_file($index)" ng-if="board.edit_board==='edit'" ><i class="fa fa-trash-o"></i></a> <!---->
                                                 <a href="javascript:void(0)"  ng-if="board.edit_board==='no_edit'" ><i class="fa fa-trash-o"></i></a>&nbsp;&nbsp; <!--confirm-click="Would you like to delete this file?"-->
                                                 <!--<a href="file_download?mime={{ file.file_name | fileExtension }}&title={{ file.file_name }}&token={{file.file_path | Base64encode}}"><i class="fa  fa-download "></i></a>-->
                                         
-                                                <a download="{{file.file_name}}" href="{{file.file_path}}">
-                                                    <i class="fa  fa-download "></i>
-                                                </a>
+                                                <a download="{{file.file_name}}" href="{{file.file_path}}" title="Download file"><i class="fa  fa-download "></i></a>&nbsp;&nbsp;
+                                                <a href="javascript:void(0)" data-ng-if="board.edit_board==='edit'" data-ng-click="expandForm($event, $index+'d')"><i class="fa  fa-upload" title="Upload new version of the file"></i></a>
                                             </div><!-- file Actions-->
                                         </div>
-                                        <div class="">
-                                         <file-upload></file-upload><!-- /File Uplad Component -->
+                                        <div class="col-md-12 form-class">
+                                            <file-replace user="user" index="$index" comment="file.file_comment" change-file-data="fileDataChange(index, data)" board-id="board.id" board-uid="temporary_node.uid"></file-replace><!-- /File Uplad Component -->
+                                        </div>
                                     </div>
-                                    </div>
-                                    
-                                   
                                     <hr ng-if="$index !== temporary_node.files.length - 1" />
                                 </div>
                             </div>

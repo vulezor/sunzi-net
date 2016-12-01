@@ -51996,6 +51996,8 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
         $scope.fileIndex = null;
         $scope.focus_screen = true;
         $scope.tab_limit = 7;
+        $scope.previous_target = null;
+        $scope.pageStatusLimit = "delivered";
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         //METHODS
         /**
@@ -52023,12 +52025,15 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             return false;
         };
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         $scope.logOut = function () {
             $scope.unlockboard();
             $scope.$parent.stop();
             $location.path('/login');
         };
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         $scope.unlockboard = function () {
             $http.put('unlockboard/' + $scope.board.id).then(function (response) {
                 //  console.log('unlock');
@@ -52038,6 +52043,8 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             });
         };
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         $scope.lockboard = function () {
             $http.put('lockboard/' + $scope.board.id + '/' + $scope.user).then(function (response) {
                 //   console.log(response.data);
@@ -52046,11 +52053,15 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             });
         };
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         $scope.logoutTimeOut = function () {
             logout_timeout = $timeout(function () {
                 $scope.logOut();
             }, 300000); //5min
         };
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------   
 
         $scope.resetLogoutTime = function () {
             if ($scope.focus_screen) {
@@ -52058,6 +52069,8 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 $scope.logoutTimeOut();
             }
         };
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $scope.init = function () {
             //console.log("LOGEDIN: ",sessionStorage.logged_in);
@@ -52120,6 +52133,8 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 console.log(error);
             });
         };
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $scope.defaultObj = function () {
             return [{
@@ -52413,8 +52428,14 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
 
             $scope.temporary_node = node;
 
+            if ($scope.temporary_node.files) {
+                $scope.pageStatusLimit = $scope.setPageStatusItem($scope.temporary_node.files);
+            } else {
+                $scope.pageStatusLimit = "delivered";
+            }
+            console.log($scope.pageStatusLimit);
+            //old url page 
             if ($scope.temporary_node.old_page_url) {
-                //console.log($scope.temporary_node.old_page_url);
                 if ($scope.temporary_node.old_page_url.length === 0) {
                     $('#old_page_url').val("");
                 } else {
@@ -52424,6 +52445,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 $('#old_page_url').val("");
             }
 
+            //transfer content checkbox
             if ($scope.temporary_node.transfer) {
                 if ($scope.temporary_node.transfer === "YES") {
                     $("#transfer_oldcontent").prop("checked", true);
@@ -52433,6 +52455,83 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             } else {
                 $("#transfer_oldcontent").prop("checked", false);
             }
+        };
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        /**
+         * @param files array of object
+         * @return str status
+         * @description set status of the page. If files have same status, for that page we can confirm same status as those files
+         */
+        $scope.setPageStatusItem = function (files) {
+            var obj = {
+                open: 0,
+                transferred: 0,
+                modified: 0,
+                released: 0
+            };
+            if (files) {
+                files.forEach(function (file) {
+                    switch (file.file_status) {
+                        case 'open':
+                            obj.open++;
+                            break;
+                        case 'transferred':
+                            obj.transferred++;
+                            break;
+                        case 'modified':
+                            obj.modified++;
+                            break;
+                        case 'released':
+                            obj.released++;
+                            break;
+                    }
+                });
+            }
+            console.log(obj);
+            var status = void 0;
+            $.each(obj, function (i, item) {
+                if (files.length === item) {
+                    console.log(files.length);
+                    console.log(item);
+                    status = i;
+                }
+            });
+
+            if (!status) {
+
+                $.each(obj, function (i, item) {
+                    if (i === 'released') {
+                        if (item >= 1) {
+                            status = 'released';
+                        }
+                    }
+                });
+                $.each(obj, function (i, item) {
+                    if (i === 'modified') {
+                        if (item >= 1) {
+                            status = 'modified';
+                        }
+                    }
+                });
+                $.each(obj, function (i, item) {
+                    if (i === 'transferred') {
+                        if (item >= 1) {
+                            status = 'transferred';
+                        }
+                    }
+                });
+                $.each(obj, function (i, item) {
+                    if (i === 'open') {
+                        if (item >= 1) {
+                            status = 'delivered';
+                        }
+                    }
+                });
+                $scope.temporary_node.status = status;
+            }
+            return status;
         };
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52459,6 +52558,12 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
         $scope.changeFileStatus = function ($index, status) {
             $scope.temporary_node.files[$index].file_status = status;
             $scope.$emit('save-model-data');
+
+            if ($scope.temporary_node.files) {
+                $scope.pageStatusLimit = $scope.setPageStatusItem($scope.temporary_node.files);
+            } else {
+                $scope.pageStatusLimit = "delivered";
+            }
         };
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52473,6 +52578,8 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             $scope.fileIndex = $index;
             $('#deleteBoardPageFileConformation').modal();
         };
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $scope.confirmDeleteFile = function (index) {
             var files = angular.copy($scope.temporary_node.files);
@@ -52494,10 +52601,10 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 if ($scope.temporary_node.nodes.length > 0) {
                     $('#deleteBoardPage').modal();
                 } else {
-                    $('#deleteBoardPageConformation').modal(); //$scope.deletePage();
+                    $('#deleteBoardPageConformation').modal();
                 }
             } else {
-                $('#deleteBoardPageConformation').modal(); //$scope.deletePage();
+                $('#deleteBoardPageConformation').modal();
             }
         };
 
@@ -52549,6 +52656,8 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             }
         };
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         $scope.downloadZip = function () {
             var path = void 0,
                 file_names = [];
@@ -52572,8 +52681,39 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             });
         };
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         $scope.downloadFile = function (title) {
             $('body').append('<iframe style="display:none;" src="' + title + '"></iframe>');
+        };
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        $scope.expandForm = function ($event, index) {
+            if ($('body').find('.expand-form').length > 0) {
+                $('body').find('.expand-form').removeClass('expand-form');
+            }
+            if (index != $scope.previous_target || !$scope.previous_target) {
+                $($event.target).parents('.action-links').next().addClass('expand-form');
+                $scope.previous_target = index;
+            } else {
+                $($event.target).parents('.action-links').next().removeClass('expand-form');
+                $scope.previous_target = null;
+            }
+        };
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        $scope.fileDataChange = function (index, data) {
+            console.log(data);
+            $scope.temporary_node.files[index].file_comment = data.file_comment;
+            $scope.temporary_node.files[index].file_date = data.file_date;
+            $scope.temporary_node.files[index].file_name = data.file_name;
+            $scope.temporary_node.files[index].file_path = data.file_path;
+            $scope.temporary_node.files[index].file_status = data.file_status;
+            $scope.temporary_node.files[index].user = data.user;
+            $scope.temporary_node.files[index].file_status = 'modified';
+            $scope.$emit('save-model-data');
         };
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52615,7 +52755,10 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             $scope.$parent.stop();
         });
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+        //WATCHERS
+        $scope.$watch('pageStatusLimit', function (newValue, oldValue, scope) {
+            console.log(newValue);
+        });
         //stop ajax interval to check board lock
         $scope.init(); //start page Initialization
     };
@@ -52782,6 +52925,81 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
 'use strict';
 
 (function (modul) {
+    var fileReplace = function fileReplace($http, $timeout) {
+        return {
+            restricted: 'E',
+            controller: function controller($scope) {
+                $scope.resetCount = 0;
+                $scope.fileReplace = function ($event, form) {
+                    $event.preventDefault();
+
+                    var formData = new FormData();
+                    formData.append('file', $($event.target).find('input[type="file"]')[0].files[0]);
+                    formData.append('comment', $scope.isolated_comment);
+                    formData.append('user', $scope.user);
+                    $http({
+                        url: 'file_uploads/' + $scope.boardId + '/' + $scope.boardUid,
+                        method: "POST",
+                        data: formData,
+                        headers: { 'Content-Type': undefined }
+                    }).then(function (response) {
+                        $scope.changeFileData({ index: $scope.index, data: response.data });
+                        $($event.target)[0].reset();
+                        $scope.resetCount++;
+                        $scope.filename = null;
+                        form.$submitted = false;
+                        form.$pristine = false;
+                        form.filename.$error = { "required": true };
+                        form.$invalid = false;
+                        $scope.$broadcast('return-comment', response.data.file_comment);
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+                $scope.resetValue = function (form) {
+                    $scope.resetCount++;
+                    $scope.filename = null;
+                    form.$submitted = false;
+                    form.$pristine = false;
+                    form.filename.$error = { "required": true };
+                    form.$invalid = false;
+                    //console.log($scope.resetCount);
+                };
+            },
+
+            templateUrl: 'public/templates/file-replace.html',
+            scope: {
+                index: '=',
+                changeFileData: '&',
+                comment: '=',
+                boardId: '=',
+                boardUid: '=',
+                user: '='
+            },
+            link: function link(scope, element, attr, controller) {
+                scope.isolated_comment = scope.comment;
+                scope.$on('return-comment', function (event, return_comment) {
+                    //console.log("Return",return_comment);
+                    scope.isolated_comment = return_comment;
+                });
+                element.find('input[type="file"]').change(function () {
+                    var input = $(this),
+                        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                    input.parents('label').next().val(label).change();
+                    input.trigger('fileselect', [numFiles, label]);
+                });
+            }
+        };
+    };
+    fileReplace.$inject = ['$http', '$timeout'];
+    modul.directive('fileReplace', fileReplace);
+})(angular.module('sunzinet'));
+
+},{}],31:[function(require,module,exports){
+'use strict';
+
+(function (modul) {
     var fileUpload = function fileUpload($http, $timeout) {
         return {
             restricted: 'E',
@@ -52835,6 +53053,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             templateUrl: 'public/templates/file-upload.html',
             scope: true,
             link: function link(scope, element, attr, controller) {
+
                 element.find('input[type="file"]').change(function () {
                     var input = $(this),
                         numFiles = input.get(0).files ? input.get(0).files.length : 1,
@@ -52850,7 +53069,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.directive('fileUpload', fileUpload);
 })(angular.module('sunzinet'));
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -52874,7 +53093,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.directive('confirmDeleteFile', confirmDeleteFile);
 })(angular.module('sunzinet'));
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -52888,7 +53107,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.directive('deleteBoardModalError', deleteBoardModalError);
 })(angular.module('sunzinet'));
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -52902,7 +53121,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.directive('deletePageConfirmation', deletePageConfirmation);
 })(angular.module('sunzinet'));
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -52916,7 +53135,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.directive('deletePageModal', deletePageModal);
 })(angular.module('sunzinet'));
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -52930,7 +53149,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.directive('lockBoardModal', lockBoardModal);
 })(angular.module('sunzinet'));
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -53004,7 +53223,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     module.exports = modul.directive('newBoard', newBoard);
 })(angular.module('sunzinet'));
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -53031,7 +53250,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.directive('settings', settings);
 })(angular.module('sunzinet'));
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -53046,7 +53265,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.directive('stayLockModal', stayLockModal);
 })(angular.module('sunzinet'));
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
 
 (function (modul) {
@@ -53103,7 +53322,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.filter('Base64decode', Base64decode);
 })(angular.module('sunzinet'));
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -53115,7 +53334,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.filter('fileExtension', fileExtension);
 })(angular.module('sunzinet'));
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict';
 
 (function () {
@@ -53133,7 +53352,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     angular.module('sunzinet').filter('isEmpty', isEmpty);
 })();
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 (function (modul) {
@@ -53145,7 +53364,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
     modul.filter('toDate', toDate);
 })(angular.module('sunzinet'));
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict';
 
 var _jquery = require('jquery');
@@ -53195,6 +53414,7 @@ require('../src/services/angular-nestable.js');
 //directives
 require('../src/directives/modals/new-board.js');
 require('../src/directives/file-upload.js');
+require('../src/directives/file-replace.js');
 require('../src/directives/confirm-click.js');
 require('../src/directives/modals/delete-page-modal.js');
 require('../src/directives/modals/delete-page-confirmation.js');
@@ -53210,10 +53430,10 @@ require('../src/filters/to-date.js');
 require('../src/filters/base64.js');
 require('../src/filters/file-extension.js');
 
-},{"../bower_components/angular-ui-tree/dist/angular-ui-tree.js":1,"../src/app.js":25,"../src/controllers/home-controller.js":26,"../src/controllers/login-controller.js":27,"../src/controllers/main-controller.js":28,"../src/directives/confirm-click.js":29,"../src/directives/file-upload.js":30,"../src/directives/modals/confirm-delete-file.js":31,"../src/directives/modals/delete-board-modal-error.js":32,"../src/directives/modals/delete-page-confirmation.js":33,"../src/directives/modals/delete-page-modal.js":34,"../src/directives/modals/lock-board-modal.js":35,"../src/directives/modals/new-board.js":36,"../src/directives/modals/settings.js":37,"../src/directives/modals/stay-lock-modal.js":38,"../src/filters/base64.js":39,"../src/filters/file-extension.js":40,"../src/filters/is-empty.js":41,"../src/filters/to-date.js":42,"../src/js/custom.js":44,"../src/js/jquery-nestable.js":45,"../src/js/nano-scroler.js":46,"../src/services/angular-nestable.js":47,"../src/services/authentification-service.js":48,"../src/services/interceptor.js":49,"angular":9,"angular-beforeunload":2,"angular-messages":4,"angular-sessionstorage":6,"angular-ui-router":7,"bootstrap":10,"jquery":23,"ng-storage":24}],44:[function(require,module,exports){
+},{"../bower_components/angular-ui-tree/dist/angular-ui-tree.js":1,"../src/app.js":25,"../src/controllers/home-controller.js":26,"../src/controllers/login-controller.js":27,"../src/controllers/main-controller.js":28,"../src/directives/confirm-click.js":29,"../src/directives/file-replace.js":30,"../src/directives/file-upload.js":31,"../src/directives/modals/confirm-delete-file.js":32,"../src/directives/modals/delete-board-modal-error.js":33,"../src/directives/modals/delete-page-confirmation.js":34,"../src/directives/modals/delete-page-modal.js":35,"../src/directives/modals/lock-board-modal.js":36,"../src/directives/modals/new-board.js":37,"../src/directives/modals/settings.js":38,"../src/directives/modals/stay-lock-modal.js":39,"../src/filters/base64.js":40,"../src/filters/file-extension.js":41,"../src/filters/is-empty.js":42,"../src/filters/to-date.js":43,"../src/js/custom.js":45,"../src/js/jquery-nestable.js":46,"../src/js/nano-scroler.js":47,"../src/services/angular-nestable.js":48,"../src/services/authentification-service.js":49,"../src/services/interceptor.js":50,"angular":9,"angular-beforeunload":2,"angular-messages":4,"angular-sessionstorage":6,"angular-ui-router":7,"bootstrap":10,"jquery":23,"ng-storage":24}],45:[function(require,module,exports){
 "use strict";
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 
 /*!
@@ -53703,7 +53923,7 @@ require('../src/filters/file-extension.js');
     };
 })(window.jQuery || window.Zepto, window, document);
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -53816,7 +54036,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 
-},{"jquery":23}],47:[function(require,module,exports){
+},{"jquery":23}],48:[function(require,module,exports){
 'use strict';
 
 /**
@@ -54042,7 +54262,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	}]);
 })(window, document, window.angular);
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 (function () {
@@ -54078,7 +54298,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     angular.module('sunzinet').factory('AuthenticationService', Service);
 })();
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 
 var interceptor = function interceptor($q, $localStorage) {
@@ -54115,4 +54335,4 @@ var interceptor = function interceptor($q, $localStorage) {
 interceptor.$inject = ['$q', '$localStorage'];
 module.exports = angular.module('sunzinet').factory('interceptor', interceptor);
 
-},{}]},{},[43]);
+},{}]},{},[44]);

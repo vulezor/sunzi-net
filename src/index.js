@@ -39,6 +39,7 @@ require('../src/services/angular-nestable.js');
 //directives
 require('../src/directives/modals/new-board.js');
 require('../src/directives/file-upload.js');
+require('../src/directives/file-replace.js');
 require('../src/directives/confirm-click.js');
 require('../src/directives/modals/delete-page-modal.js');
 require('../src/directives/modals/delete-page-confirmation.js');

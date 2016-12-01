@@ -17,6 +17,8 @@
         $scope.fileIndex = null;
         $scope.focus_screen = true;
         $scope.tab_limit = 7;
+        $scope.previous_target = null;
+        $scope.pageStatusLimit = "delivered";
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         //METHODS
         /**
@@ -44,23 +46,26 @@
             return false;
         };
         
-        
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
        
-       $scope.logOut=()=>{
-            $scope.unlockboard();
-            $scope.$parent.stop();  
-            $location.path('/login');
-            
-       }
+        $scope.logOut=()=>{
+                $scope.unlockboard();
+                $scope.$parent.stop();  
+                $location.path('/login');
+                
+        }
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         $scope.unlockboard = ()=>{
             $http.put('unlockboard/'+$scope.board.id).then((response)=>{
-              //  console.log('unlock');
-               // console.log(response.data);
+                //  console.log('unlock');
+                // console.log(response.data);
             },(error)=>{
                 console.log(error)
             });
         };
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $scope.lockboard=()=>{
             $http.put('lockboard/'+$scope.board.id+'/'+$scope.user).then((response)=>{
@@ -70,13 +75,15 @@
             });
         };
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         
         $scope.logoutTimeOut=()=>{
             logout_timeout = $timeout(()=>{
                 $scope.logOut();
             }, 300000);//5min
         };
-            
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------   
      
         $scope.resetLogoutTime=()=>{
             if($scope.focus_screen){
@@ -85,7 +92,8 @@
             }
         };
        
-        
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         $scope.init=()=>{
             //console.log("LOGEDIN: ",sessionStorage.logged_in);
             $scope.$parent.stop(); 
@@ -146,6 +154,8 @@
                 console.log(error);
             });
         }
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $scope.defaultObj = ()=>{
             return [
@@ -443,23 +453,27 @@
             result.splice(result.length-1, 1);
             result.splice(0, 1);   
             $scope.breadcrumbs = result.reverse();
-        
-           
-            
-          
+
             $scope.temporary_node = node;
 
+            if($scope.temporary_node.files){
+                $scope.pageStatusLimit = $scope.setPageStatusItem($scope.temporary_node.files);
+            } else {
+                $scope.pageStatusLimit = "delivered"
+            }
+            console.log($scope.pageStatusLimit);
+            //old url page 
             if($scope.temporary_node.old_page_url){
-                //console.log($scope.temporary_node.old_page_url);
                 if($scope.temporary_node.old_page_url.length===0){
                     $('#old_page_url').val("");
                 } else {
                     $('#old_page_url').val($scope.temporary_node.old_page_url); 
-                } 
+                }
             } else {
                 $('#old_page_url').val("");
             }
 
+            //transfer content checkbox
             if($scope.temporary_node.transfer){
                 if($scope.temporary_node.transfer==="YES"){
                     $("#transfer_oldcontent").prop( "checked", true );
@@ -469,6 +483,83 @@
             } else {
                 $("#transfer_oldcontent").prop( "checked", false );
             }
+        }
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        /**
+         * @param files array of object
+         * @return str status
+         * @description set status of the page. If files have same status, for that page we can confirm same status as those files
+         */
+        $scope.setPageStatusItem = (files)=>{
+            let obj = {
+                open:0,
+                transferred:0, 
+                modified:0, 
+                released:0
+            }
+            if(files){
+                files.forEach((file)=>{
+                    switch(file.file_status){
+                    case 'open':
+                        obj.open++
+                        break;
+                    case 'transferred':
+                        obj.transferred++
+                        break;
+                    case 'modified':
+                        obj.modified++
+                        break;
+                    case 'released':
+                        obj.released++
+                        break;    
+                    }
+                });
+            }
+            console.log(obj);
+            let status;
+            $.each(obj, (i, item)=>{
+                if(files.length === item){
+                    console.log(files.length);
+                    console.log(item)
+                   status = i;
+                } 
+            });
+
+            if(!status){
+                
+                $.each(obj, (i, item)=>{
+                    if(i==='released'){
+                        if(item >= 1){
+                             status = 'released';
+                        }
+                    }
+                });
+                 $.each(obj, (i, item)=>{
+                    if(i==='modified'){
+                        if(item >= 1){
+                             status = 'modified';
+                        }
+                    }
+                });
+                 $.each(obj, (i, item)=>{
+                    if(i==='transferred'){
+                        if(item >= 1){
+                             status = 'transferred';
+                        }
+                    }
+                });     
+                $.each(obj, (i, item)=>{
+                    if(i==='open'){
+                        if(item >= 1){
+                             status = 'delivered';
+                        }
+                    }
+                });
+                $scope.temporary_node.status = status;
+            }
+            return status;
         }
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -495,6 +586,12 @@
         $scope.changeFileStatus = ($index, status)=>{
             $scope.temporary_node.files[$index].file_status = status;
             $scope.$emit('save-model-data');
+
+            if($scope.temporary_node.files){
+                $scope.pageStatusLimit = $scope.setPageStatusItem($scope.temporary_node.files);
+            } else {
+                $scope.pageStatusLimit = "delivered"
+            }
         };
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -509,6 +606,8 @@
             $scope.fileIndex = $index;
             $('#deleteBoardPageFileConformation').modal();
         };
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $scope.confirmDeleteFile = (index)=>{
             var files = angular.copy($scope.temporary_node.files);
@@ -530,10 +629,10 @@
                 if($scope.temporary_node.nodes.length > 0){
                     $('#deleteBoardPage').modal();
                 } else {
-                    $('#deleteBoardPageConformation').modal();//$scope.deletePage();
+                    $('#deleteBoardPageConformation').modal();
                 } 
             } else {
-                $('#deleteBoardPageConformation').modal();//$scope.deletePage();
+                $('#deleteBoardPageConformation').modal();
             } 
         };
 
@@ -585,6 +684,8 @@
             }
         }
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         $scope.downloadZip = ()=>{
             let path, file_names= [];
                 path = $scope.temporary_node.files[0].file_path.split("/");
@@ -607,8 +708,39 @@
             });
         }
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         $scope.downloadFile = (title)=>{
             $('body').append('<iframe style="display:none;" src="'+title+'"></iframe>');
+        }
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        $scope.expandForm = ($event, index)=>{
+            if($('body').find('.expand-form').length>0){
+                $('body').find('.expand-form').removeClass('expand-form');
+            }
+            if((index != $scope.previous_target) || !$scope.previous_target){
+                $($event.target).parents('.action-links').next().addClass('expand-form');
+                $scope.previous_target = index;
+            } else {
+                $($event.target).parents('.action-links').next().removeClass('expand-form');
+                $scope.previous_target = null;
+            } 
+        }
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        $scope.fileDataChange = (index, data)=>{
+            console.log(data);
+              $scope.temporary_node.files[index].file_comment = data.file_comment;
+              $scope.temporary_node.files[index].file_date = data.file_date;
+              $scope.temporary_node.files[index].file_name = data.file_name;
+              $scope.temporary_node.files[index].file_path = data.file_path;
+              $scope.temporary_node.files[index].file_status = data.file_status;
+              $scope.temporary_node.files[index].user = data.user;
+              $scope.temporary_node.files[index].file_status = 'modified';
+            $scope.$emit('save-model-data');
         }
         
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -654,7 +786,10 @@
                 $scope.$parent.stop(); 
         });
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+        //WATCHERS
+        $scope.$watch('pageStatusLimit', (newValue, oldValue, scope)=>{
+            console.log(newValue);
+        });
        //stop ajax interval to check board lock
         $scope.init(); //start page Initialization
     };

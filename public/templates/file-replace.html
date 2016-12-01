@@ -1,0 +1,25 @@
+<form name="filereplace" id="upload_files"   ng-submit="filereplace.$valid && fileReplace($event, filereplace)" novalidate>
+    <!--pristine = {{filereplace.$pristine}} invalid ={{filereplace.filename.$invalid}} submited = {{fileupload.$submitted}} error={{fileupload.filename.$error}}-->
+    <div class="form-group"  ng-class="{ 'has-error': filereplace.$submitted && filereplace.filename.$invalid }">
+        
+            <div class="input-group" >
+                <label class="input-group-btn">
+                    <span class="btn btn-default">
+                        Choose a file <i class="fa fa-folder-open-o"></i> <input type="file" name="file" class="fileinput" style="display: none;">
+                    </span>
+                </label>
+                <input type="text" class="form-control" name="filename" ng-model="filename" required readonly>
+                 
+            </div>
+            <div ng-messages="filereplace.$submitted && filereplace.filename.$error" class="help-block" >
+                <div ng-message="required">You must insert file to submit form</div>
+            </div>
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" data-ng-model="isolated_comment" placeholder="Comment your file...">
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-default login-btn color-btn" style="color:#fff">UPLOAD</button>
+        <button type="reset" class="btn btn-default reset btn-line-height" ng-click="resetValue(filereplace)">Reset</button>
+    </div>
+</form>
