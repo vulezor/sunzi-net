@@ -7,25 +7,10 @@ class Auth extends Base_Controller {
     }
 
     public function login(){
+       /* print_r($_POST);
+        die();*/
         $data = json_decode(file_get_contents('php://input'), true);
-        /*$sql = "SELECT * FROM $this->table WHERE email= :email";
-        $result = Flight::db()->get($sql, [':email'=>$data['username']]);
-       
-        if($result){
-            $result = $result[0];
-            $token = hash('sha256', $result['id'].$result['email'].$this->randomString());
-            $data = ['token'=>$token];
-            $where = 'id="' . $result['id'] . '"';
-            Flight::db()->update($this->table, $data, $where);
-            unset($result['password']);
-            unset($result['created']);
-            unset($result['modified']);
-            unset($result['is_active']);
-            $result['token'] = $token;
-            
-        } */
-        
-        //check if inactivity of all users higher than 30 min and set it board unlock if it is
+        $username = $data['username'];
         $sql = "SELECT * FROM boards";
         $result = Flight::db()->get($sql);
         $datetime = date('Y-m-d H:i:s');
@@ -45,15 +30,11 @@ class Auth extends Base_Controller {
             }
         
         //create user token
-        $token = hash('sha256', $data['username'].$this->randomString());
-        $data = ['token'=>$token, 'user'=>$data['username']];
+        $token = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 1).substr(md5(time()),1);
+        $return_data = array('token'=>$token, 'user'=>$username);
 
         header("Content-type: application/json");
-        echo json_encode($data);//$result
-    }
-
-    private function randomString(){
-        return substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 1).substr(md5(time()),1);
+        echo json_encode($return_data);
     }
 }
 ?>

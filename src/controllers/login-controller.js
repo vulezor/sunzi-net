@@ -6,7 +6,6 @@
       
        // $scope.login = false
         initController();
-
         function initController() {
             // reset login status
                 AuthenticationService.Logout();
@@ -20,7 +19,6 @@
                     $scope.$parent.edit_board = null;
                     $window.sessionStorage.logged_in = true;
                     $location.path('/');
-
                 } else {
                     vm.error = 'Username or password is incorrect';
                     vm.loading = false;

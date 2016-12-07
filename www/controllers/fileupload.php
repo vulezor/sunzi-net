@@ -5,37 +5,41 @@ class File_Upload extends Base_Controller{
     }
 
     public function upload_files($id, $uid){
-       
         $file = $_FILES["file"]["tmp_name"];
         $filename = $_FILES["file"]["name"];
-        $only_name= explode(".", $filename);
-        $newfilename = $only_name[0].'_'.strtotime(date('Y-m-d H:i:s')) .".".end($only_name);
+        
+        if($_FILES['file']['size'] > 3932160){
+            echo json_encode(array('error'=>1));
+        } else {
+            $only_name= explode(".", $filename);
+            $newfilename = $only_name[0].'_'.strtotime(date('Y-m-d H:i:s')) .".".end($only_name);
 
-        $dir = './uploads';
-        $board_dir = $dir.'/board_'.$id;
-        $page_dir = $board_dir.'/'.$uid;
-        if(!is_dir($dir)){
-            mkdir($dir, 0755, true);
+            $dir = './uploads';
+            $board_dir = $dir.'/board_'.$id;
+            $page_dir = $board_dir.'/'.$uid;
+            if(!is_dir($dir)){
+                mkdir($dir, 0755, true);
+            }
+            if(!is_dir($board_dir)){
+                mkdir($board_dir, 0755, true);
+            }
+            if(!is_dir($page_dir)){
+                mkdir($page_dir, 0755, true);
+            }
+            $filepath = $page_dir."/". $newfilename;
+            move_uploaded_file($file, $filepath);
+            header('Content-Type: application/json');
+            echo json_encode(
+                array(
+                'file_path'=>$filepath, 
+                'file_name'=>$newfilename, 
+                'file_status'=>'open',
+                'file_comment'=> isset($_POST['comment']) && $_POST['comment']!="undefined" ? strip_tags($_POST['comment']) : '',
+                'file_date'=> date('Y-m-d H:i:s'),
+                'user'=> isset($_POST['user']) && $_POST['user']!="undefined" ? strip_tags($_POST['user']) : '',
+                )
+            );
         }
-        if(!is_dir($board_dir)){
-            mkdir($board_dir, 0755, true);
-        }
-        if(!is_dir($page_dir)){
-            mkdir($page_dir, 0755, true);
-        }
-        $filepath = $page_dir."/". $newfilename;
-        move_uploaded_file($file, $filepath);
-        header('Content-Type: application/json');
-        echo json_encode(
-            array(
-            'file_path'=>$filepath, 
-            'file_name'=>$newfilename, 
-            'file_status'=>'open',
-            'file_comment'=> isset($_POST['comment']) && $_POST['comment']!="undefined" ? strip_tags($_POST['comment']) : '',
-            'file_date'=> date('Y-m-d H:i:s'),
-            'user'=> isset($_POST['user']) && $_POST['user']!="undefined" ? strip_tags($_POST['user']) : '',
-            )
-        );
     }
 
     public function download_file(){

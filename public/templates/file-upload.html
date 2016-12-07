@@ -8,7 +8,7 @@
                         Choose a file <i class="fa fa-folder-open-o"></i> <input type="file" name="file" class="fileinput" style="display: none;">
                     </span>
                 </label>
-                <input type="text" class="form-control" name="filename" ng-model="filename" required readonly>
+                <input type="text" class="form-control fake-fileinput" name="filename" ng-model="filename" required readonly>
                  
             </div>
             <div ng-messages="fileupload.$submitted && fileupload.filename.$error" class="help-block" >

@@ -8,6 +8,7 @@ grunt.initConfig({
             'node_modules/bootstrap/dist/css/bootstrap.css',
             'node_modules/font-awesome/css/font-awesome.css',
             'bower_components/angular-ui-tree/dist/angular-ui-tree.min.css',
+            'src/css/alertify.min.css',
             'src/css/styles.css',
             ]
       }

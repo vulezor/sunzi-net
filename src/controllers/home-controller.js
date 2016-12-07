@@ -37,7 +37,7 @@
         window.addEventListener('blur', function() {
             $scope.focus_screen = false;
         });
-
+        
         window.onbeforeunload = function() {
             $scope.$apply(function(){
                 $scope.unlockboard();
@@ -45,6 +45,7 @@
             $('#stayLockdModal').modal();
             return false;
         };
+        
         
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
        
@@ -125,8 +126,7 @@
                 }
                 $scope.close_sidebar = false; 
                 let elem_width = $('.bside-container').outerWidth();
-                $('.bside-container').css({"margin-right":"-"+elem_width+"px"});
-                $scope.$parent.refreshBoardNames(); //start ajax interval to check board lock
+                //$scope.$parent.refreshBoardNames(); //start ajax interval to check board lock
             },(error)=>{
                 console.log(error);
             }); 
@@ -146,6 +146,10 @@
                 $scope.data = angular.copy(JSON.parse(response.data[0].data)); 
                 $scope.$parent.board_id = response.data[0].id;
                 $scope.$parent.edit_board = response.data[0].edit_board;
+                alertify
+                .alert("This is an alert dialog.", function(){
+                    alertify.message('OK');
+                });
                // console.log($localStorage.currentUser.user);
                 if($scope.board.user != $localStorage.currentUser.user && $scope.board.user !="" ){
                     $('#lockBoardModal').modal();
@@ -517,48 +521,33 @@
                     }
                 });
             }
-            console.log(obj);
+            
             let status;
+            //if all files has same status unlock that status for page status selection 
             $.each(obj, (i, item)=>{
                 if(files.length === item){
-                    console.log(files.length);
-                    console.log(item)
                    status = i;
                 } 
             });
-
-            if(!status){
-                
-                $.each(obj, (i, item)=>{
-                    if(i==='released'){
-                        if(item >= 1){
-                             status = 'released';
-                        }
-                    }
-                });
-                 $.each(obj, (i, item)=>{
-                    if(i==='modified'){
-                        if(item >= 1){
-                             status = 'modified';
-                        }
-                    }
-                });
-                 $.each(obj, (i, item)=>{
-                    if(i==='transferred'){
-                        if(item >= 1){
-                             status = 'transferred';
-                        }
-                    }
-                });     
-                $.each(obj, (i, item)=>{
-                    if(i==='open'){
-                        if(item >= 1){
-                             status = 'delivered';
-                        }
-                    }
-                });
+            console.log("STATUS:", status);
+            //if status of files has lower status delivered to page status
+            if(typeof status === 'undefined' || !status){
+                if(obj.released >= 1){
+                        status = 'released';
+                }
+                if(obj.modified >= 1){
+                        status = 'modified';
+                }
+                if(obj.transferred >= 1){
+                        status = 'transferred';
+                }
+                if(obj.open >= 1){
+                        status = 'delivered';
+                }
                 $scope.temporary_node.status = status;
             }
+
+            //  console.log(status);
             return status;
         }
 
@@ -566,11 +555,6 @@
 
         $scope.closeSidebar = ($event)=>{
             let elem_width = $('.bside-container').outerWidth();
-            if($scope.close_sidebar){
-                $('.bside-container').animate({"margin-right":"-"+elem_width+"px"}, 200, 'swing');
-            } else {
-                $('.bside-container').animate({"margin-right":"0px"}, 200, 'swing');
-            }
             $scope.close_sidebar = !$scope.close_sidebar;
         } 
 

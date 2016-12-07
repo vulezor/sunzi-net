@@ -7,12 +7,15 @@ window.$ = $;
 window.jQuery = jQuery;
 
 //Angular Framework
+
 require('angular');
 //Bootstrap Components
 require('bootstrap');
 require('../src/js/jquery-nestable.js');
 require('../src/js/nano-scroler.js');
 require('../src/js/custom.js');
+//require('alertify');
+
 
 //Angular Plugins
 require('angular-ui-router');
@@ -21,6 +24,7 @@ require('ng-storage');
 require('angular-sessionstorage');
 require('../bower_components/angular-ui-tree/dist/angular-ui-tree.js');
 require('angular-beforeunload');
+
 //App Configuration
 require('../src/app.js');
 
@@ -48,9 +52,14 @@ require('../src/directives/modals/delete-board-modal-error.js');
 require('../src/directives/modals/confirm-delete-file.js');
 require('../src/directives/modals/lock-board-modal.js');
 require('../src/directives/modals/stay-lock-modal.js');
+require('../src/directives/modals/file-restriction.js');
+require('../src/directives/modals/file-limitation.js');
 
 //filters
 require('../src/filters/is-empty.js');
 require('../src/filters/to-date.js');
 require('../src/filters/base64.js');
 require('../src/filters/file-extension.js');
+
+
+require('../src/js/alertify.min.js');

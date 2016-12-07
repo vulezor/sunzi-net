@@ -31,7 +31,7 @@ $production = true;
    <?php
   
        echo'<script src="/public/bundle.js"></script>';
-  
+       echo'<script src="/public/bundle.js"></script>';
    ?>
 </body>
 </html>

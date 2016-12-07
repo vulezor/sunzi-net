@@ -4,8 +4,22 @@
             restricted:'E',
             controller($scope){
                 $scope.resetCount = 0;
+                let alowed_extension, file_name, extension;
                 $scope.fileUpload = ($event, form)=>{
                     $event.preventDefault();
+                    alowed_extension = ['png', 'PNG', 'doc', 'DOC', 'docx', 'DOCX', 'xlsx', 'XLSX', 'xls', 'XLS', 'TIFF', 'tiff', 'JPG', 'jpg', 'JPEG', 'jpeg', 'PPT', 'ppt', 'PPTX', 'pptx', 'PDF', 'pdf', 'MP3', 'mp3', 'MP4','mp4']
+                    file_name = $($event.target).find('input[type="file"]')[0].files[0].name;
+                    extension = file_name.split('.').pop();
+                    extension = alowed_extension.indexOf(extension);
+                    if(extension === -1){
+                        $($event.target).find('input[type="file"]').val("").trigger('change');
+                        $('#fileRestriction').modal();
+                        return false;
+                    }
+                    if($($event.target).find('input[type="file"]')[0].files[0].size/1024/1024 > 30){
+                        $('#fileLimitation').modal();
+                        return false;
+                    }
                     var formData = new FormData();
                     formData.append('file', $($event.target).find('input[type="file"]')[0].files[0]);
                     formData.append('comment', $scope.file_comment);
@@ -18,20 +32,24 @@
                     })
                     .then(
                         (response)=>{
-                            if($scope.temporary_node.files){
-                                $scope.temporary_node.files.push(response.data);
-                            } else {
-                                $scope.temporary_node.files =[];
-                                $scope.temporary_node.files.push(response.data);
-                            }
-                           $($event.target)[0].reset();
-                           $scope.resetCount++;
-                            $scope.filename = null;
-                            form.$submitted = false;
-                            form.$pristine = false;
-                            form.filename.$error = {"required":true};
-                            form.$invalid = false;
-                            $scope.$emit('save-model-data');
+                            if(response.data.hasOwnProperty("error")){
+                                $('#fileLimitation').modal();
+                            }else {
+                                if($scope.temporary_node.files){
+                                    $scope.temporary_node.files.push(response.data);
+                                } else {
+                                    $scope.temporary_node.files =[];
+                                    $scope.temporary_node.files.push(response.data);
+                                }
+                                $($event.target)[0].reset();
+                                $scope.resetCount++;
+                                $scope.filename = null;
+                                form.$submitted = false;
+                                form.$pristine = false;
+                                form.filename.$error = {"required":true};
+                                form.$invalid = false;
+                                $scope.$emit('save-model-data');
+                            }    
                         },
                         (error)=>{
                             console.log(error);
@@ -41,16 +59,13 @@
                     console.log($scope.temporary_node);
                 }
                 $scope.resetValue = (form)=>{
-                    
                      $scope.resetCount++;
                      $scope.filename = null;
                      form.$submitted = false;
                      form.$pristine = false;
                      form.filename.$error = {"required":true};
-                      form.$invalid = false;
-
-                       
-                        console.log($scope.resetCount);
+                     form.$invalid = false;
+                     console.log($scope.resetCount);
                 }
             },
             templateUrl:'public/templates/file-upload.html',
