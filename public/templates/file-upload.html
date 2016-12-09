@@ -1,26 +1,20 @@
-<form name="fileupload" id="upload_files"   ng-submit="fileupload.$valid && fileUpload($event, fileupload)" novalidate>
+<form name="fileupload" id="upload_files" ng-submit="fileupload.$valid && fileUpload($event, fileupload)" novalidate>
     <!--pristine = {{fileupload.$pristine}} invalid ={{fileupload.filename.$invalid}} submited = {{fileupload.$submitted}} error={{fileupload.filename.$error}}-->
-    <div class="form-group"  ng-class="{ 'has-error': fileupload.$submitted && fileupload.filename.$invalid }">
-        
-            <div class="input-group" >
-                <label class="input-group-btn">
-                    <span class="btn btn-default">
-                        Choose a file <i class="fa fa-folder-open-o"></i> <input type="file" name="file" class="fileinput" style="display: none;">
-                    </span>
-                </label>
-                <input type="text" class="form-control fake-fileinput" name="filename" ng-model="filename" required readonly>
-                 
-            </div>
-            <div ng-messages="fileupload.$submitted && fileupload.filename.$error" class="help-block" >
-                    <div ng-message="required">You must insert file to submit form</div>
-                </div>
+    <div class="form-group fileupload-btn-group" ng-class="{ 'has-error': fileupload.$submitted && fileupload.filename.$invalid }">
+        <div class="file-input-group">
+            <label class="btn btn-default">Choose a file <i class="fa fa-folder-open-o"></i><input type="file" name="file" class="fileinput" style="display: none;"></label>
+            <input type="text" class="form-control fake-fileinput" name="filename" ng-model="filename" required readonly>  
+        </div>
+        <div ng-messages="fileupload.$submitted && fileupload.filename.$error" class="help-block">
+            <div ng-message="required">You must insert file to submit form</div>
+        </div>
     </div>
-    <div class="form-group">
+    <div class="form-group comment-group">
         <input type="text" class="form-control" data-ng-model="file_comment" placeholder="Comment your file...">
     </div>
     <div class="form-group">
-        <button type="button" disabled ng-if="board.edit_board==='no_edit'"  class="btn btn-default login-btn color-btn" style="color:#fff">UPLOAD</button>
-        <button type="submit"  ng-if="board.edit_board==='edit'" ng-if="board.edit_board==='no_edit'"  class="btn btn-default login-btn color-btn" style="color:#fff">UPLOAD</button>
-        <button type="reset" class="btn btn-default reset btn-line-height" ng-click="resetValue(fileupload)">Reset</button>
+        <button type="button" disabled ng-if="board.edit_board==='no_edit'" class="btn btn-primary login-btn">UPLOAD</button>
+        <button type="submit" ng-if="board.edit_board==='edit'" ng-if="board.edit_board==='no_edit'" class="btn btn-primary login-btn">UPLOAD</button>
+        <button type="reset" class="btn btn-transparent reset" ng-click="resetValue(fileupload)">Cancel <span class="ico ico-reset">×</span></button>
     </div>
 </form>

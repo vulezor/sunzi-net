@@ -62,4 +62,4 @@ require('../src/filters/base64.js');
 require('../src/filters/file-extension.js');
 
 
-require('../src/js/alertify.min.js');
+//require('../src/js/alertify.min.js');

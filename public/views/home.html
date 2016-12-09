@@ -93,7 +93,7 @@
             <div class="aside">
                 <div class="nested-list-container">
                 <!-- <h1>{{ board.name}}</h1>-->
-                    <button class="btn btn-primary login-btn color-btn pull-right new-page" ng-click="addNewPage()" >ADD NEW PAGE <i class="fa fa-file-text-o"></i></button>
+                    <button class="btn btn-primary login-btn btn-primary new-page" ng-click="addNewPage()" >Add new page<span class="ico ico-new"></span></button>
                     <div ui-tree data-drag-enabled="tree.enabled" data-drag-delay="200" id="tree-root" ng-if="data.length>0">
                         <ol ui-tree-nodes="" ng-model="data" >
                             <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_render'" ></li>
@@ -104,126 +104,121 @@
             <!-- /A SIDE -->
             <!-- B SIDE -->
             <div class="bside">
-                    <!-- B Side Close Button-->
-                    <div class="close-handle" ng-click="closeSidebar($event)" >
-                        <i class="fa fa-angle-left fa-2x" ng-class="{'fa-angle-right': close_sidebar, 'fa-angle-left': !close_sidebar}"></i> 
-                    </div><!-- /B Side Close Button-->
-                    <div class="bside-container">
-
-                        <!-- Upload file section-->
-                        <div class="sidebar-content-wrapper">
-                            <h2>{{temporary_node.title}}</h2>
-                            <p class="breadcrumb">
-                                <span ng-repeat="($index, breadcrumb) in breadcrumbs track by $index">{{ breadcrumb }}  <i class="fa fa-angle-right"></i> </span>
-                                <span>{{temporary_node.title}}</span>
-                            </p>
-                            <!--status of the site section -->
-                            <div class="dropdown" style="display:inline-block">
-                                <button class="btn btn-default dropdown-toggle btn-line-height" type="button"  id="statuses" ng-if="board.edit_board==='edit'" data-toggle="dropdown">Status of the page <i class="fa fa-angle-down"></i></button>
-                                 <button class="btn btn-default dropdown-toggle btn-line-height" type="button" disabled ng-if="board.edit_board==='no_edit'"  id="statuses">Status of the page <i class="fa fa-angle-down"></i></button>
-                                <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
-                                    <li ng-click="changeStatus('open')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'open', 'fa-check-square-o': temporary_node.status == 'open'}"></i> Open</a></li>
-                                    <li ng-click="changeStatus('delivered')"><a href="javascript:void(0)" ><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'delivered', 'fa-check-square-o': temporary_node.status == 'delivered'}"></i> Delivered</a></li>
-                                    
-                                    <li  ng-click="changeStatus('transferred')" ng-if="pageStatusLimit==='transferred' || pageStatusLimit==='modified' || pageStatusLimit==='released'"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'transferred', 'fa-check-square-o': temporary_node.status == 'transferred'}"></i> Transfered</a></li>
-                                    <li style="color:#ccc" ng-if="pageStatusLimit!='transferred' && pageStatusLimit!='modified' && pageStatusLimit!='released'" ><a href="javascript:void(0)" class="fake-status"><i class="fa fa-square-o"></i> Transfered</a></li>
-                                    
-                                    
-                                    <li ng-click="changeStatus('modified')" ng-if="pageStatusLimit==='modified' || pageStatusLimit==='released'"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'modified', 'fa-check-square-o': temporary_node.status == 'modified'}"></i> Modified</a></li>
-                                    <li ng-if="pageStatusLimit!=='modified' && pageStatusLimit!=='released'"><a href="javascript:void(0)" class="fake-status"><i class="fa fa-square-o"></i> Modified</a></li>
-                                    
-                                    <li ng-click="changeStatus('released')" ng-if="pageStatusLimit==='released'"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': temporary_node.status != 'released', 'fa-check-square-o': temporary_node.status == 'released'}"></i> Released</a></li>
-                                    <li ng-if="pageStatusLimit!=='released'"><a href="javascript:void(0)" class="fake-status"><i class="fa fa-square-o"></i> Released</a></li>
+                <!-- B Side Close Button-->
+                <div class="close-handle" ng-click="closeSidebar($event)" >
+                    <i class="fa fa-angle-left fa-2x" ng-class="{'fa-angle-right': close_sidebar, 'fa-angle-left': !close_sidebar}"></i> 
+                </div><!-- /B Side Close Button-->
+                <div class="bside-container">
+                    <!-- Upload file section-->
+                    <div class="sidebar-content-wrapper">
+                        <h2>{{temporary_node.title}}</h2>
+                        <p class="breadcrumb">
+                            <span ng-repeat="($index, breadcrumb) in breadcrumbs track by $index">{{ breadcrumb }}<i class="fa fa-angle-right"></i></span>
+                            <span>{{temporary_node.title}}</span>
+                        </p>
+                        <!--status of the site section -->
+                        <div class="dropdown change-status">
+                            <button class="btn btn-default dropdown-toggle" type="button"  id="statuses" ng-if="board.edit_board==='edit'" data-toggle="dropdown">Status of the page <i class="fa fa-angle-down"></i></button>
+                             <button class="btn btn-default dropdown-toggle btn-line-height" type="button" disabled ng-if="board.edit_board==='no_edit'"  id="statuses">Status of the page <i class="fa fa-angle-down"></i></button>
+                            <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
+                                <li ng-click="changeStatus('open')"><a href="javascript:void(0)"><span class="open_status"></span>Open</a></li>
+                                <li ng-click="changeStatus('delivered')"><a href="javascript:void(0)"><span class="delivered"></span>Delivered</a></li>
                                 
-                                </ul>
-                            </div>
-                            <hr />
-                            <!-- File Uplad Component -->
-                            <file-upload></file-upload><!-- /File Uplad Component -->
-                        </div><!-- Upload file section-->
-        
-                        <!-- File Table Header -->
-                        <div class="file-table-header">
-                            <div class="row">
-                                <div class="col-md-3">Status</div>
-                                <div class="col-md-6">Details</div>
-                                <div class="col-md-3">
-                                    <!--<a ng-if="temporary_node.files || temporary_node.files.length===0" href="download_zip?url={{ setDownloadFolder(temporary_node.files[0].file_path) }}&page_name={{temporary_node.title.replace(' ', '_')}}">Download All (zip)</a>-->
-                                    <a href="javascript:void(0)" ng-click="downloadZip()"><i class="fa  fa-download "></i> Download All (zip)</a>
-                                </div>
-                            </div>
-                        </div><!-- /File Table Header -->
-        
-                        <!-- File Table Content Wrapper-->
-                        <div class="file-content-wrapper">
-                            <div  ng-if="!temporary_node.files && temporary_node.files.length!==0">
-                                 <div class="no-file">
-                                     <span class="fa-stack fa-lg">
-                                    <i class="fa fa-file-text-o fa-stack-1x"></i>
-                                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
-                                </span> 
-                                <span>There is no inserted files for this page</span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div ng-repeat="($index, file) in temporary_node.files track by $index">
-                                   
-                                    <div class="row">
-                                        <!-- Status Column -->
-                                        <div class="col-md-2">
-                                            <div  id="statuses" class="file-statuses" data-toggle="dropdown" ng-if="board.edit_board==='edit'">
-                                                <span class="file-status"  ng-class="{'open_status': file.file_status==='open', 'delivered': file.file_status==='delivered', 'transferred': file.file_status==='transferred', 'modified': file.file_status==='modified', 'released': file.file_status==='released'}"></span>
-                                                <span><i class="fa fa-angle-down angle-down"></i></span>
-                                        </div>
-                                         <div  id="statuses" class="file-statuses" ng-if="board.edit_board==='no_edit'">
-                                            <span class="file-status"  ng-class="{'open_status': file.file_status==='open', 'delivered': file.file_status==='delivered', 'transferred': file.file_status==='transferred', 'modified': file.file_status==='modified', 'released': file.file_status==='released'}"></span>
-                                            <span><i class="fa fa-angle-down angle-down"></i></span>
-                                        </div>
-                                        <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
-                                            <li ng-click="changeFileStatus($index, 'open')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'open', 'fa-check-square-o': file.file_status == 'open'}"></i> Open</a></li>
-                                            <!--<li ng-click="changeFileStatus($index, 'delivered')"><a href="javascript:void(0)" ><i class="fa" ng-class="{'fa-square-o': file.file_status != 'delivered', 'fa-check-square-o': file.file_status == 'delivered'}"></i> Delivered</a></li-->
-                                            <li ng-click="changeFileStatus($index, 'transferred')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'transferred', 'fa-check-square-o': file.file_status == 'transferred'}"></i> Transfered</a></li>
-                                            <li ng-click="changeFileStatus($index, 'modified')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'modified', 'fa-check-square-o': file.file_status == 'modified'}"></i> Modified</a></li>
-                                            <li ng-click="changeFileStatus($index, 'released')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'released', 'fa-check-square-o': file.file_status == 'released'}"></i> Released</a></li>
-                                        </ul>
-                                    </div><!-- Status Column -->
-                                    <!--file info column-->
-                                    <div class="col-md-7">
-                                        <div class="file-name-container"><strong>{{ file.file_name }}</strong></div>
-                                        <div>{{ file.file_date | toDate | date:"dd.MM.yy"}} | {{ file.user }}</div>
-                                        <div class="file-comment">{{ file.file_comment}}</div>
-                                        </div>
-                                    <div class="col-md-3 action-links"><!--file info column-->
-                                        <!-- file Actions-->
-                                        <div class="file-actions">
-                                            <a href="javascript:void(0)" ng-click="delete_file($index)" ng-if="board.edit_board==='edit'" ><i class="fa fa-trash-o"></i></a> <!---->
-                                            <a href="javascript:void(0)"  ng-if="board.edit_board==='no_edit'" ><i class="fa fa-trash-o"></i></a>&nbsp;&nbsp; <!--confirm-click="Would you like to delete this file?"-->
-                                            <!--<a href="file_download?mime={{ file.file_name | fileExtension }}&title={{ file.file_name }}&token={{file.file_path | Base64encode}}"><i class="fa  fa-download "></i></a>-->
-                                    
-                                            <a download="{{file.file_name}}" href="{{file.file_path}}" title="Download file"><i class="fa  fa-download "></i></a>&nbsp;&nbsp;
-                                            <a href="javascript:void(0)" data-ng-click="expandForm($event, $index+'d')"><i class="fa  fa-upload" title="Upload new version of the file"></i></a>
-                                        </div><!-- file Actions-->
-                                    </div>
-                                    <div class="col-md-12 form-class">
-                                        <file-replace user="user" index="$index" comment="file.file_comment" change-file-data="fileDataChange(index, data)" board-id="board.id" board-uid="temporary_node.uid"></file-replace><!-- /File Uplad Component -->
-                                    </div>
-                                </div>
-                                <hr ng-if="$index !== temporary_node.files.length - 1" />
+                                <li  ng-click="changeStatus('transferred')" ng-if="pageStatusLimit==='transferred' || pageStatusLimit==='modified' || pageStatusLimit==='released'"><a href="javascript:void(0)"><span class="transferred"></span>Transfered</a></li>
+                                <li style="color:#ccc" ng-if="pageStatusLimit!='transferred' && pageStatusLimit!='modified' && pageStatusLimit!='released'" ><a href="javascript:void(0)" class="fake-status"><span class="transferred"></span>Transfered</a></li>
+                                
+                                
+                                <li ng-click="changeStatus('modified')" ng-if="pageStatusLimit==='modified' || pageStatusLimit==='released'"><a href="javascript:void(0)"><span class="modified"></span>Modified</a></li>
+                                <li ng-if="pageStatusLimit!=='modified' && pageStatusLimit!=='released'"><a href="javascript:void(0)" class="fake-status"><span class="modified"></span>Modified</a></li>
+                                
+                                <li ng-click="changeStatus('released')" ng-if="pageStatusLimit==='released'"><a href="javascript:void(0)"><span class="released"></span>Released</a></li>
+                                <li ng-if="pageStatusLimit!=='released'"><a href="javascript:void(0)" class="fake-status"><span class="released"></span>Released</a></li>
+                            
+                            </ul>
+                        </div>
+                        <hr />
+                        <!-- File Uplad Component -->
+                        <file-upload></file-upload><!-- /File Uplad Component -->
+                    </div><!-- Upload file section-->
+    
+                    <!-- File Table Header -->
+                    <div class="file-table-header">
+                        <div class="row">
+                            <div class="col-md-3">Status</div>
+                            <div class="col-md-4">Details</div>
+                            <div class="col-md-5">
+                                <!--<a ng-if="temporary_node.files || temporary_node.files.length===0" href="download_zip?url={{ setDownloadFolder(temporary_node.files[0].file_path) }}&page_name={{temporary_node.title.replace(' ', '_')}}">Download All (zip)</a>-->
+                                <a class="download-btn" href="javascript:void(0)" ng-click="downloadZip()">Download All (ZIP)</a>
                             </div>
                         </div>
-                    </div><!-- /File Table Content Wrapper-->
-    
-    
+                    </div><!-- /File Table Header -->
+                </div><!-- /B SIDE container -->
+                <!-- File Table Content Wrapper-->
+                <div class="file-content-wrapper">
+                    <div ng-if="!temporary_node.files && temporary_node.files.length!==0">
+                         <div class="no-file">
+                             <span class="fa-stack fa-lg">
+                                <i class="fa fa-file-text-o fa-stack-1x"></i>
+                                <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                            </span> 
+                            <span>There is no inserted files for this page</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div ng-repeat="($index, file) in temporary_node.files track by $index">
+                            <div class="row">
+                                <!-- Status Column -->
+                                <div class="col-md-2">
+                                    <div  id="statuses" class="file-statuses" data-toggle="dropdown" ng-if="board.edit_board==='edit'">
+                                        <span class="file-status"  ng-class="{'open_status': file.file_status==='open', 'delivered': file.file_status==='delivered', 'transferred': file.file_status==='transferred', 'modified': file.file_status==='modified', 'released': file.file_status==='released'}"></span>
+                                        <span><i class="fa fa-angle-down angle-down"></i></span>
+                                    </div>
+                                    <div id="statuses" class="file-statuses" ng-if="board.edit_board==='no_edit'">
+                                        <span class="file-status"  ng-class="{'open_status': file.file_status==='open', 'delivered': file.file_status==='delivered', 'transferred': file.file_status==='transferred', 'modified': file.file_status==='modified', 'released': file.file_status==='released'}"></span>
+                                        <span><i class="fa fa-angle-down angle-down"></i></span>
+                                    </div>
+                                    <ul class="dropdown-menu" role="status" aria-labelledby="statuses">
+                                        <li ng-click="changeFileStatus($index, 'open')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'open', 'fa-check-square-o': file.file_status == 'open'}"></i> Open</a></li>
+                                        <!--<li ng-click="changeFileStatus($index, 'delivered')"><a href="javascript:void(0)" ><i class="fa" ng-class="{'fa-square-o': file.file_status != 'delivered', 'fa-check-square-o': file.file_status == 'delivered'}"></i> Delivered</a></li-->
+                                        <li ng-click="changeFileStatus($index, 'transferred')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'transferred', 'fa-check-square-o': file.file_status == 'transferred'}"></i> Transfered</a></li>
+                                        <li ng-click="changeFileStatus($index, 'modified')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'modified', 'fa-check-square-o': file.file_status == 'modified'}"></i> Modified</a></li>
+                                        <li ng-click="changeFileStatus($index, 'released')"><a href="javascript:void(0)"><i class="fa" ng-class="{'fa-square-o': file.file_status != 'released', 'fa-check-square-o': file.file_status == 'released'}"></i> Released</a></li>
+                                    </ul>
+                                </div><!-- Status Column -->
+                                <!--file info column-->
+                                <div class="col-md-7">
+                                    <div class="file-name-container"><strong>{{ file.file_name }}</strong></div>
+                                    <div>{{ file.file_date | toDate | date:"dd.MM.yy"}} | {{ file.user }}</div>
+                                    <div class="file-comment">{{ file.file_comment}}</div>
+                                </div>
+                                <div class="col-md-3 action-links"><!--file info column-->
+                                    <!-- file Actions-->
+                                    <div class="file-actions">
+                                        <a href="javascript:void(0)" ng-click="delete_file($index)" ng-if="board.edit_board==='edit'" ><i class="fa fa-trash-o"></i></a> <!---->
+                                        <a href="javascript:void(0)"  ng-if="board.edit_board==='no_edit'" ><i class="fa fa-trash-o"></i></a>&nbsp;&nbsp; <!--confirm-click="Would you like to delete this file?"-->
+                                        <!--<a href="file_download?mime={{ file.file_name | fileExtension }}&title={{ file.file_name }}&token={{file.file_path | Base64encode}}"><i class="fa  fa-download "></i></a>-->
+                                
+                                        <a download="{{file.file_name}}" href="{{file.file_path}}" title="Download file"><i class="fa  fa-download "></i></a>&nbsp;&nbsp;
+                                        <a href="javascript:void(0)" data-ng-click="expandForm($event, $index+'d')"><i class="fa  fa-upload" title="Upload new version of the file"></i></a>
+                                    </div><!-- file Actions-->
+                                </div>
+                                <div class="col-md-12 form-class">
+                                    <file-replace user="user" index="$index" comment="file.file_comment" change-file-data="fileDataChange(index, data)" board-id="board.id" board-uid="temporary_node.uid"></file-replace><!-- /File Uplad Component -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr ng-if="$index !== temporary_node.files.length - 1" />
                     <div class="sidebar-content-wrapper">
                         <div class="form-group input-group">
                             <input type="text"  ng-if="board.edit_board==='edit'" class="form-control" placeholder="Enter the URL of the old page..." id="old_page_url"  >
                             <input type="text"  ng-if="board.edit_board==='no_edit'" class="form-control" disabled placeholder="Enter the URL of the old page..."   >
                             <label class="input-group-btn">
                                 <span class="btn btn-default" ng-if="board.edit_board==='edit'" ng-click="saveOldLink()">
-                                    Save <i class="fa fa-lock "></i> 
+                                    Save <span class="ico ico-lock-s"></i> 
                                 </span>
                                 <span class="btn btn-default" ng-if="board.edit_board==='no_edit'" >
-                                    Save <i class="fa fa-lock "></i> 
+                                    Save <span class="ico ico-lock-s"></i> 
                                 </span>
                             </label>
                         </div>
@@ -231,16 +226,15 @@
                             <input type="checkbox" ng-if="board.edit_board==='edit'" id="transfer_oldcontent"/>
                             <input type="checkbox" ng-if="board.edit_board==='no_edit'" disabled   /> Transfer the content completely from the old page
                         </label>
-                        <div class="form-group"> 
-                            <button ng-if="board.edit_board==='edit'" type="button" ng-click="deleteSelectedPage()"  class="btn btn-default btn-stretched" ><i class="fa fa-trash-o fa-2x"></i></button>
-                            <button ng-if="board.edit_board==='no_edit'" type="button"  class="btn btn-default btn-stretched" ><i class="fa fa-trash-o fa-2x"></i></button> <!--confirmed-click="deletePage()" confirm-click="Would you like to delete this page?"-->
-                        </div>
                     </div>
-    
-                </div><!-- /B SIDE -->
+                </div><!-- /File Table Content Wrapper-->
+                <div class="page-delete-wrapper">
+                    <button ng-if="board.edit_board==='edit'" type="button" ng-click="deleteSelectedPage()" class="btn btn-transparent" ><span class="ico ico-delete-page"></span><span class="center-block">Delete page</span></button>
+                    <button ng-if="board.edit_board==='no_edit'" type="button"  class="btn btn-transparent" ><span class="ico ico-delete-page"></span><span class="center-block">Delete page</span></button> <!--confirmed-click="deletePage()" confirm-click="Would you like to delete this page?"-->
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
 <!-- Settings Modal Component -->
 <settings change-title="changeBoardTitle(title)" del-board="boardDelete()" board-name="{{board.name}}"></settings><!-- /Settings Modal Component -->
