@@ -1,21 +1,17 @@
-<div id="lockBoardModal" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
+<div id="lockBoardModal" class="modal fade" data-keyboard="false" data-backdrop="static" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content"><!--{{form_board.$valid}}-->
             <div class="modal-body">
-                <i class="fa fa-times fa-2x close-times"  aria-hidden="true" data-dismiss="modal"></i>
+                <span class="close-times" aria-hidden="true" data-dismiss="modal">&times;</span>
                 <!-- BOARD -->
-                <div>
-                    <div style="padding:80px 80px 80px 80px">
-                        <div class="form-group login-title-holder">
-                            <h2 class="login-title" ><strong>Board is lock!</h2>
-                        </div>
-                        <div class="form-group" style="margin-top:10px" >
-                            <p><blacquote><i>"Sorry, this board is locked actually, because the user {{board.user}} is working on it. You can view the board, but you can't edit it unless the user {{board.user}} has unlocked it again."</i></blackquote></p>
-                        </div>
-                        <button type="button" class="btn btn-primary login-btn color-btn" data-dismiss="modal" >OKAY&nbsp;&nbsp;<i class="fa fa-check-square-o"></i> </button>
-                    </div>
+                <div class="login-title-holder">
+                    <h2 class="login-title">Board is lock!</h2>
                 </div>
+                <div class="form-group">
+                    <p>Sorry, this board is locked actually, because the user {{board.user}} is working on it. You can view the board, but you can't edit it unless the user {{board.user}} has unlocked it again.</p>
+                </div>
+                <button type="button" class="btn btn-primary login-btn" data-dismiss="modal">Okay <span class="ico ico-check"></span></button>
             </div>     
         </div>
     </div>

@@ -1,7 +1,7 @@
 ((modul)=>{
         const mainController = ($scope, $http, $window, $localStorage, $location, $sessionStorage, $interval)=>{
         let promise_value;
-        $window.sessionStorage.ja = 'ja';
+       // $window.sessionStorage.ja = 'ja';
         /*console.log($window.sessionStorage.logged_in)*/
         if(!sessionStorage.logged_in){
             $location.path('/login');
@@ -20,7 +20,7 @@
             $http.get('/get_boards', {params:{temp_board_id:$scope.temp_board_id, user:$scope.board_user}}).then((response)=>{
                 if($scope.temp_board_id){
                     let temp_board = response.data[response.data.length-1];
-                    //console.log("TEMP BOARD :",temp_board);
+                    console.log("TEMP BOARD :",temp_board);
                     response.data.pop();
                     $scope.$broadcast('check-locked-board', temp_board);
                 }
@@ -49,7 +49,7 @@
             isEscape = (evt.keyCode == 27);
         }
         if (isEscape) {
-        /// console.log($('.nested-list-container').find("input[type='text']").length);
+        // console.log($('.nested-list-container').find("input[type='text']").length);
             var input_field = $('.nested-list-container').find("input[type='text']");
             if(input_field.length>0){
                 console.log($('.nested-list-container').find("input[type='text']").length);

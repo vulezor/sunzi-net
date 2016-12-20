@@ -18,7 +18,7 @@
         $scope.focus_screen = true;
         $scope.tab_limit = 7;
         $scope.previous_target = null;
-        $scope.pageStatusLimit = "delivered";
+        $scope.pageStatusLimit = "released";
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         //METHODS
         /**
@@ -59,8 +59,8 @@
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         $scope.unlockboard = ()=>{
             $http.put('unlockboard/'+$scope.board.id).then((response)=>{
-                //  console.log('unlock');
-                // console.log(response.data);
+                 //  console.log('unlock');
+                 // console.log(response.data);
             },(error)=>{
                 console.log(error)
             });
@@ -123,10 +123,12 @@
                         $(this).children().eq(1).addClass('bgColor');
                         $(this).children().eq(0).addClass('bgColor-handle');
                     });
+                   
+                    
                 }
                 $scope.close_sidebar = false; 
                 let elem_width = $('.bside-container').outerWidth();
-                //$scope.$parent.refreshBoardNames(); //start ajax interval to check board lock
+                $scope.$parent.refreshBoardNames(); //start ajax interval to check board lock
             },(error)=>{
                 console.log(error);
             }); 
@@ -146,16 +148,50 @@
                 $scope.data = angular.copy(JSON.parse(response.data[0].data)); 
                 $scope.$parent.board_id = response.data[0].id;
                 $scope.$parent.edit_board = response.data[0].edit_board;
-                alertify
-                .alert("This is an alert dialog.", function(){
-                    alertify.message('OK');
-                });
-               // console.log($localStorage.currentUser.user);
+                $scope.lineControll();
+               //console.log($localStorage.currentUser.user);
+            
                 if($scope.board.user != $localStorage.currentUser.user && $scope.board.user !="" ){
                     $('#lockBoardModal').modal();
                 }
             },(error)=>{
                 console.log(error);
+            });
+        }
+        
+        $scope.lineControll = ()=>{
+            $scope.removeLine($scope.data);
+            $scope.implementLine($scope.data);
+            $timeout(function(){
+                $.each($(".olelement"), function(i, item){
+                    if($(item).find('.last_item').length>0){
+                        let height = ( $(item).find(">li:last-child").offset().top - $(item).offset().top);
+                        $(item).find('.line').css({'min-height': (height+32)+'px'})
+                    }
+                })
+            }, 100);
+        };
+
+        $scope.removeLine = function(data){
+            data.forEach(function(item){
+                if(item.nodes && item.nodes.length>0){
+                    console.log(item.nodes.length)
+                    item.nodes[item.nodes.length-1].last_item = false;
+                    $scope.removeLine(item.nodes);
+                    console.log(item.nodes)
+                }   
+
+            });
+        }
+        
+
+        $scope.implementLine = function(data){
+            data.forEach(function(item){
+                if(item.nodes && item.nodes.length>0){
+                    console.log(item.nodes.length)
+                   item.nodes[item.nodes.length-1].last_item = true;
+                     $scope.implementLine(item.nodes);
+                }   
             });
         }
 
@@ -497,6 +533,8 @@
          * @description set status of the page. If files have same status, for that page we can confirm same status as those files
          */
         $scope.setPageStatusItem = (files)=>{
+          
+         
             let obj = {
                 open:0,
                 transferred:0, 
@@ -523,13 +561,14 @@
             }
             
             let status;
+          
             //if all files has same status unlock that status for page status selection 
             $.each(obj, (i, item)=>{
                 if(files.length === item){
                    status = i;
                 } 
             });
-            console.log("STATUS:", status);
+
             //if status of files has lower status delivered to page status
             if(typeof status === 'undefined' || !status){
                 if(obj.released >= 1){
@@ -555,7 +594,17 @@
 
         $scope.closeSidebar = ($event)=>{
             let elem_width = $('.bside-container').outerWidth();
+           
             $scope.close_sidebar = !$scope.close_sidebar;
+            if($scope.close_sidebar){
+                $('.content-tool-body').addClass('opened');
+                $timeout(()=>{
+                    $('.content-tool-body').addClass('after-open');
+                }, 1000);
+            } else {
+                $('.content-tool-body').removeClass('after-open');
+                $('.content-tool-body').removeClass('opened');
+            }
         } 
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -774,8 +823,64 @@
         $scope.$watch('pageStatusLimit', (newValue, oldValue, scope)=>{
             console.log(newValue);
         });
+
+
+      /*  $scope.fixChildren = (el,level)=>{
+            console.log('tototo');
+            el.find('> li').each(function(i,li){
+                 
+                var childrenTree = $(li).find('> ol');
+
+                // if has parent
+                if(level>0){
+                $(li).find('> .list-item').prepend('<span class="fromParent"></span>');
+                }
+
+                // add span if has children and if level>0
+                if(level>0 && childrenTree.children().length > 0){
+                $(li).find('> .list-item').prepend('<span class="toChild"></span>');
+                }
+
+                // if last child
+                if($(li).is(':last-child')){
+                $(li).find('> .list-item .fromParent').addClass('lastChild');
+                $(li).addClass('lastLi');
+                }
+                for(var i=1;i< level ;i++){
+                    $(li).find('> .list-item').prepend('<span class="beforeLine" style="left:'+(-11-(23*i))+'px"></span>');
+                }
+
+                // if has children
+                if(childrenTree.children().length > 0){
+                $scope.fixChildren($(li).find('> ol'),level+1);
+                }
+                console.log(li,level);
+            });
+        }*/
+
+      
        //stop ajax interval to check board lock
         $scope.init(); //start page Initialization
+
+
+        $scope.treeOptions = {
+        dropped: function(event) {
+            console.log('droped', event);
+            $scope.lineControll();
+        },
+        beforeDrop : function (e) {
+            console.log("EVENT: ", e);
+            console.log('before drop', e.dest.nodesScope.$parent.$parent.node);
+            console.log(e.dest.nodesScope.depth());
+            $scope.lineControll();
+        }
+      };
+      
+
+      
+
+
+
     };
     homeController.$inject = ['$scope', '$http', '$localStorage', "$state", "$stateParams", "$timeout", "$sessionStorage", "$window", "$interval", "BeforeUnload", "$location", "$filter"];
     modul.controller('homeController', homeController); 

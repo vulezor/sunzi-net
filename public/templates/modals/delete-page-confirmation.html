@@ -1,22 +1,18 @@
-<div id="deleteBoardPageConformation" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
+<div id="deleteBoardPageConformation" class="modal fade" data-keyboard="false" data-backdrop="static" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content"><!--{{form_board.$valid}}-->
             <div class="modal-body">
-                <i class="fa fa-times fa-2x close-times"  aria-hidden="true" data-dismiss="modal"></i>
+                <span class="close-times" aria-hidden="true" data-dismiss="modal">&times;</span>
                 <!-- BOARD -->
-                <div>
-                    <div style="padding:80px 80px 80px 80px">
-                        <div class="form-group login-title-holder">
-                            <h2 class="login-title" ><strong>Are you sure you want to delete this page node</strong></h2>
-                        </div>
-                        <div class="form-group" style="margin-top:10px" >
-                            <p>After submit there no turning back.</p>
-                        </div>
-                        <button type="button" class="btn btn-primary login-btn color-btn" data-dismiss="modal" data-ng-click="deletePage()">OKAY&nbsp;&nbsp;<i class="fa fa-check-square-o"></i> </button>
-                        <button type="button" class="btn btn-default btn-line-height" , data-dismiss="modal" aria-label="Close">Cancel</button>
-                    </div>
+                <div class="login-title-holder">
+                    <h2 class="login-title" >Are you sure you want to delete this page node</h2>
                 </div>
+                <div class="form-group">
+                    <p>After submit there no turning back.</p>
+                </div>
+                <button type="button" class="btn btn-primary login-btn" data-dismiss="modal" data-ng-click="deletePage()">Okay <span class="ico ico-check"></span></button>
+                <button type="button" class="btn btn-transparent btn-line-height" data-dismiss="modal" aria-label="Close">Cancel <span class="ico ico-reset">×</span></button>
             </div>     
         </div>
     </div>

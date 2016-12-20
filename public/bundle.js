@@ -51997,7 +51997,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
         $scope.focus_screen = true;
         $scope.tab_limit = 7;
         $scope.previous_target = null;
-        $scope.pageStatusLimit = "delivered";
+        $scope.pageStatusLimit = "released";
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         //METHODS
         /**
@@ -52104,7 +52104,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 }
                 $scope.close_sidebar = false;
                 var elem_width = $('.bside-container').outerWidth();
-                //$scope.$parent.refreshBoardNames(); //start ajax interval to check board lock
+                $scope.$parent.refreshBoardNames(); //start ajax interval to check board lock
             }, function (error) {
                 console.log(error);
             });
@@ -52124,15 +52124,48 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 $scope.data = angular.copy(JSON.parse(response.data[0].data));
                 $scope.$parent.board_id = response.data[0].id;
                 $scope.$parent.edit_board = response.data[0].edit_board;
-                alertify.alert("This is an alert dialog.", function () {
-                    alertify.message('OK');
-                });
-                // console.log($localStorage.currentUser.user);
+                $scope.lineControll();
+                //console.log($localStorage.currentUser.user);
+
                 if ($scope.board.user != $localStorage.currentUser.user && $scope.board.user != "") {
                     $('#lockBoardModal').modal();
                 }
             }, function (error) {
                 console.log(error);
+            });
+        };
+
+        $scope.lineControll = function () {
+            $scope.removeLine($scope.data);
+            $scope.implementLine($scope.data);
+            $timeout(function () {
+                $.each($(".olelement"), function (i, item) {
+                    if ($(item).find('.last_item').length > 0) {
+                        var height = $(item).find(">li:last-child").offset().top - $(item).offset().top;
+                        $(item).find('.line').css({ 'min-height': height + 32 + 'px' });
+                    }
+                });
+            }, 100);
+        };
+
+        $scope.removeLine = function (data) {
+            data.forEach(function (item) {
+                if (item.nodes && item.nodes.length > 0) {
+                    console.log(item.nodes.length);
+                    item.nodes[item.nodes.length - 1].last_item = false;
+                    $scope.removeLine(item.nodes);
+                    console.log(item.nodes);
+                }
+            });
+        };
+
+        $scope.implementLine = function (data) {
+            data.forEach(function (item) {
+                if (item.nodes && item.nodes.length > 0) {
+                    console.log(item.nodes.length);
+                    item.nodes[item.nodes.length - 1].last_item = true;
+                    $scope.implementLine(item.nodes);
+                }
             });
         };
 
@@ -52467,6 +52500,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
          * @description set status of the page. If files have same status, for that page we can confirm same status as those files
          */
         $scope.setPageStatusItem = function (files) {
+
             var obj = {
                 open: 0,
                 transferred: 0,
@@ -52493,13 +52527,14 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             }
 
             var status = void 0;
+
             //if all files has same status unlock that status for page status selection 
             $.each(obj, function (i, item) {
                 if (files.length === item) {
                     status = i;
                 }
             });
-            console.log("STATUS:", status);
+
             //if status of files has lower status delivered to page status
             if (typeof status === 'undefined' || !status) {
                 if (obj.released >= 1) {
@@ -52525,7 +52560,17 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
 
         $scope.closeSidebar = function ($event) {
             var elem_width = $('.bside-container').outerWidth();
+
             $scope.close_sidebar = !$scope.close_sidebar;
+            if ($scope.close_sidebar) {
+                $('.content-tool-body').addClass('opened');
+                $timeout(function () {
+                    $('.content-tool-body').addClass('after-open');
+                }, 1000);
+            } else {
+                $('.content-tool-body').removeClass('after-open');
+                $('.content-tool-body').removeClass('opened');
+            }
         };
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52741,8 +52786,52 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
         $scope.$watch('pageStatusLimit', function (newValue, oldValue, scope) {
             console.log(newValue);
         });
+
+        /*  $scope.fixChildren = (el,level)=>{
+              console.log('tototo');
+              el.find('> li').each(function(i,li){
+                   
+                  var childrenTree = $(li).find('> ol');
+                    // if has parent
+                  if(level>0){
+                  $(li).find('> .list-item').prepend('<span class="fromParent"></span>');
+                  }
+                    // add span if has children and if level>0
+                  if(level>0 && childrenTree.children().length > 0){
+                  $(li).find('> .list-item').prepend('<span class="toChild"></span>');
+                  }
+                    // if last child
+                  if($(li).is(':last-child')){
+                  $(li).find('> .list-item .fromParent').addClass('lastChild');
+                  $(li).addClass('lastLi');
+                  }
+                  for(var i=1;i< level ;i++){
+                      $(li).find('> .list-item').prepend('<span class="beforeLine" style="left:'+(-11-(23*i))+'px"></span>');
+                  }
+                    // if has children
+                  if(childrenTree.children().length > 0){
+                  $scope.fixChildren($(li).find('> ol'),level+1);
+                  }
+                  console.log(li,level);
+              });
+          }*/
+
         //stop ajax interval to check board lock
         $scope.init(); //start page Initialization
+
+
+        $scope.treeOptions = {
+            dropped: function dropped(event) {
+                console.log('droped', event);
+                $scope.lineControll();
+            },
+            beforeDrop: function beforeDrop(e) {
+                console.log("EVENT: ", e);
+                console.log('before drop', e.dest.nodesScope.$parent.$parent.node);
+                console.log(e.dest.nodesScope.depth());
+                $scope.lineControll();
+            }
+        };
     };
     homeController.$inject = ['$scope', '$http', '$localStorage', "$state", "$stateParams", "$timeout", "$sessionStorage", "$window", "$interval", "BeforeUnload", "$location", "$filter"];
     modul.controller('homeController', homeController);
@@ -52793,7 +52882,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
 (function (modul) {
     var mainController = function mainController($scope, $http, $window, $localStorage, $location, $sessionStorage, $interval) {
         var promise_value = void 0;
-        $window.sessionStorage.ja = 'ja';
+        // $window.sessionStorage.ja = 'ja';
         /*console.log($window.sessionStorage.logged_in)*/
         if (!sessionStorage.logged_in) {
             $location.path('/login');
@@ -52812,7 +52901,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
             $http.get('/get_boards', { params: { temp_board_id: $scope.temp_board_id, user: $scope.board_user } }).then(function (response) {
                 if ($scope.temp_board_id) {
                     var temp_board = response.data[response.data.length - 1];
-                    //console.log("TEMP BOARD :",temp_board);
+                    console.log("TEMP BOARD :", temp_board);
                     response.data.pop();
                     $scope.$broadcast('check-locked-board', temp_board);
                 }
@@ -52841,7 +52930,7 @@ module.exports = angular.module('sunzinet', ['ui.router', 'ngMessages', 'ngStora
                 isEscape = evt.keyCode == 27;
             }
             if (isEscape) {
-                /// console.log($('.nested-list-container').find("input[type='text']").length);
+                // console.log($('.nested-list-container').find("input[type='text']").length);
                 var input_field = $('.nested-list-container').find("input[type='text']");
                 if (input_field.length > 0) {
                     console.log($('.nested-list-container').find("input[type='text']").length);
@@ -53436,8 +53525,6 @@ require('bootstrap');
 require('../src/js/jquery-nestable.js');
 require('../src/js/nano-scroler.js');
 require('../src/js/custom.js');
-//require('alertify');
-
 
 //Angular Plugins
 require('angular-ui-router');
@@ -53482,8 +53569,6 @@ require('../src/filters/is-empty.js');
 require('../src/filters/to-date.js');
 require('../src/filters/base64.js');
 require('../src/filters/file-extension.js');
-
-//require('../src/js/alertify.min.js');
 
 },{"../bower_components/angular-ui-tree/dist/angular-ui-tree.js":1,"../src/app.js":25,"../src/controllers/home-controller.js":26,"../src/controllers/login-controller.js":27,"../src/controllers/main-controller.js":28,"../src/directives/confirm-click.js":29,"../src/directives/file-replace.js":30,"../src/directives/file-upload.js":31,"../src/directives/modals/confirm-delete-file.js":32,"../src/directives/modals/delete-board-modal-error.js":33,"../src/directives/modals/delete-page-confirmation.js":34,"../src/directives/modals/delete-page-modal.js":35,"../src/directives/modals/file-limitation.js":36,"../src/directives/modals/file-restriction.js":37,"../src/directives/modals/lock-board-modal.js":38,"../src/directives/modals/new-board.js":39,"../src/directives/modals/settings.js":40,"../src/directives/modals/stay-lock-modal.js":41,"../src/filters/base64.js":42,"../src/filters/file-extension.js":43,"../src/filters/is-empty.js":44,"../src/filters/to-date.js":45,"../src/js/custom.js":47,"../src/js/jquery-nestable.js":48,"../src/js/nano-scroler.js":49,"../src/services/angular-nestable.js":50,"../src/services/authentification-service.js":51,"../src/services/interceptor.js":52,"angular":9,"angular-beforeunload":2,"angular-messages":4,"angular-sessionstorage":6,"angular-ui-router":7,"bootstrap":10,"jquery":23,"ng-storage":24}],47:[function(require,module,exports){
 "use strict";

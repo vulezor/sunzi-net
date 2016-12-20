@@ -14,8 +14,6 @@ require('bootstrap');
 require('../src/js/jquery-nestable.js');
 require('../src/js/nano-scroler.js');
 require('../src/js/custom.js');
-//require('alertify');
-
 
 //Angular Plugins
 require('angular-ui-router');
@@ -60,6 +58,3 @@ require('../src/filters/is-empty.js');
 require('../src/filters/to-date.js');
 require('../src/filters/base64.js');
 require('../src/filters/file-extension.js');
-
-
-//require('../src/js/alertify.min.js');

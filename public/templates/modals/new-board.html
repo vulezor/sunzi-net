@@ -1,89 +1,64 @@
 <!-- Modal -->
-<div id="newBoardModal" class="modal fade" data-keyboard="false" data-backdrop="static"  role="dialog">
+<div id="newBoardModal" class="modal fade" ng-class="{'board': modalStatus==='board', 'transfer': modalStatus==='transfer', 'set_transfer': modalStatus==='set_transfer' }" data-keyboard="false" data-backdrop="static" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <i data-ng-if="boardLength!==0" class="fa fa-times fa-2x close-times"  aria-hidden="true" data-dismiss="modal"></i>
+                <span data-ng-if="boardLength!==0" class="close-times" aria-hidden="true" data-dismiss="modal">&times;</span>
                 
                 <!-- BOARD -->
                 <div ng-show="modalStatus==='board'">
-                    <form name="form_board"  ng-submit="form_board.$valid && addBoard($event)" novalidate>
-                        <div style="padding:80px 80px 80px 80px">
-                            <div data-ng-if="boardLength===0">There are no inital boards detected you must enter name of the board to continue.</div>
-                            <div class="login-title-holder">
-                                <h2 class="login-title" ><strong>Name your board</strong></h2>
-                                <p style="margin-top:10px">Enter the name of your new board (for example "France")</p>
-                            </div>
-                            <div class="form-group" ng-class="{ 'has-error': form_board.$submitted && form_board.board_name.$invalid }" >
-                                
-                                <input type="text" name="board_name" class="form-control input-lg" placeholder="Enter name..." autocomplete="off" ng-model="name" required />
-                                <div ng-messages="form_board.$submitted && form_board.board_name.$error" class="help-block">
-                                    <div ng-message="required">Name is required</div>
-                                </div>
-                            </div>
-                            <button  class="btn  btn-primary login-btn color-btn" type="submit" data-ng-if="boardLength===0">CREATE NEW BOARD</button>
-                            <button  class="btn  btn-primary login-btn color-btn" type="button" data-ng-if="boardLength!==0" ng-click="change_status('transfer')">CREATE NEW BOARD</button>
-                            
+                    <form name="form_board" ng-submit="form_board.$valid && addBoard($event)" novalidate>
+                        <div data-ng-if="boardLength===0">There are no inital boards detected you must enter name of the board to continue.</div>
+                        <div class="login-title-holder">
+                            <h2 class="login-title" >Name your board</h2>
+                            <p>Enter the name of your new board (for example "France")</p>
                         </div>
+                        <div class="form-group" ng-class="{ 'has-error': form_board.$submitted && form_board.board_name.$invalid }" >
+                            <input type="text" name="board_name" class="form-control input-lg" placeholder="Enter name..." autocomplete="off" ng-model="name" required />
+                            <div ng-messages="form_board.$submitted && form_board.board_name.$error" class="help-block">
+                                <div ng-message="required">Name is required</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary login-btn" type="submit" data-ng-if="boardLength===0">Create new board</button>
+                        <button class="btn btn-primary login-btn" type="button" data-ng-if="boardLength!==0" ng-click="change_status('transfer')">Create new board</button>
                     </form>
                 </div><!-- /BOARD -->
 
                 <!-- TRANSFER -->
                 <div ng-show="modalStatus==='transfer'">
-                        <div style="padding:80px 70px 80px 70px">
-                            <form name="transfer_board"  ng-submit="withoutSidemap()" novalidate>
-                            <div class="login-title-holder">
-                                <h2 class="login-title" ><strong>Pickup your board</strong></h2>
-                                <br/><br/>
+                    <form name="transfer_board" ng-submit="withoutSidemap()" novalidate>
+                        <div class="login-title-holder">
+                            <h2 class="login-title">Pickup your board</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 transfer">
+                                <button class="btn btn-default btn-transfer btn-block" type="button" ng-click="change_status('set_transfer')"><span>Transfer the sitemap for your new board</span><span class="ico ico-transfer"></span></button>
+                                <p class="text-muted">Transfer the site map of the board "Board Lorem Ipsum" to your new board</p>
                             </div>
-                            <div class="clearfix transfer">
-                                <div class="pull-left">
-                                    <button  class="btn  btn-default btn-transfer" type="button" ng-click="change_status('set_transfer')" style="text-align: left;">
-                                        <div style="text-align: left;display:inline-block;vertical-align:middle">
-                                            <strong>Transfer the sitemap<br />for your new board<strong>
-
-                                        </div>
-                                        <div style="display:inline-block;vertical-align:middle">
-                                            <i class="fa fa-exchange fa-2x"></i>
-                                        </div>
-                                    </button>
-                                    <br/><br/>
-                                    <p style="display:block">Transfer the site map of<br/> the board "Board Lorem<br/> Ipsum" to your new board</p>
-                                </div>
-                                <div class="pull-right">    
-                                    <button  class="btn  btn-default btn-transfer"  type="submit">
-                                        <div style="text-align: left;display:inline-block;vertical-align:middle"><strong>Create new board<br />without sitemap<strong></div>
-                                        <div style="display:inline-block;vertical-align:middle"><i class="fa fa-plus fa-2x"></i></div>
-                                    </button>
-                                    <br/><br/>
-                                    <p><pdiv style="display:block">Create an empty<br/>new board</p>
-                                </div>
+                            <div class="col-xs-6 transfer">
+                                <button class="btn btn-default btn-transfer btn-block" type="submit"><span>Create new board without sitemap</span><span class="ico ico-new-board"></span></button>
+                                <p class="text-muted">Create an empty new board</p>
                             </div>
-                            
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div><!-- /TRANSFER -->
 
                 <!-- SET_TRANSFER -->
                 <div ng-show="modalStatus==='set_transfer'">
-                        <div style="padding:80px 70px 80px 70px">
-                            <form name="form_transfer"  ng-submit="form_transfer.$valid && transferBoard()" novalidate>
-                            <div class="login-title-holder">
-                                <h2 class="login-title" ><strong>Transfer data to board</strong></h2>
-                                <br/><br/>
-                            </div>
-                            {{ }}
-                            <div class="form-group">
-                                <label for="sel1">Select board:</label>
-                                <select class="form-control input-lg" ng-options="obj.id as obj.name for obj in board" ng-model="sel_board">
-                                    <option value="">Default board</option>
-                                </select>
-                            </div>
-                            <button  class="btn  btn-primary login-btn color-btn" type="submit" >CREATE NEW BOARD</button>
-                        </form>
-                    </div>
+                    <form name="form_transfer" ng-submit="form_transfer.$valid && transferBoard()" novalidate>
+                        <div class="login-title-holder">
+                            <h2 class="login-title" >Transfer data to board</h2>
+                        </div>
+                        {{ }}
+                        <div class="form-group">
+                            <label for="sel1">Select board:</label>
+                            <select class="form-control input-lg" ng-options="obj.id as obj.name for obj in board" ng-model="sel_board">
+                                <option value="">Default board</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary login-btn" type="submit">Create new board</button>
+                    </form>
                 </div><!-- /SET_TRANSFER -->
-
             </div>
         </div>
     </div>
